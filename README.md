@@ -3,7 +3,6 @@
 **QuizTools** is a modern quiz package for Joomla! 5.3 and above.  
 It provides a flexible **component** and a set of **question-type plugins**, making it easy to build structured, interactive quizzes for learning, training, or engagement.
 
----
 
 ## Features
 
@@ -25,7 +24,6 @@ It provides a flexible **component** and a set of **question-type plugins**, mak
 - **Customizable**  
   Numerous built-in custom events allow you to extend functionality without hacks.
 
----
 
 ## Installation
 
@@ -34,7 +32,6 @@ It provides a flexible **component** and a set of **question-type plugins**, mak
 3. Please make sure the required **question plugins** are enabled.
 4. Start creating quizzes in the Joomla! administrator panel.
 
----
 
 ## Usage
 
@@ -44,7 +41,6 @@ It provides a flexible **component** and a set of **question-type plugins**, mak
 - Configure scoring, feedback, and display options.
 - Publish quizzes in menu items.
 
----
 
 ## Roadmap
 
@@ -54,20 +50,17 @@ Planned improvements include:
 - Additional question types.
 - Enhanced reporting and analytics.
 
----
 
 ## Support & Contact
 
 Have questions or feature requests?
 - Open an [issue](../../issues) on GitHub
 
----
 
 ## License
 
 This project is released under the [GPL v3](LICENSE).  
 
----
 
 ## Custom Development
 
@@ -76,6 +69,4 @@ We can **customize quizzes** to match your exact requirements — from new quest
 
 In addition, our team can develop **any Joomla! extension** or even a **full website solution** designed specifically for your project.
 
-Get in touch to discuss your ideas:
-- [GitHub](https://github.com/fsvblr/quiztools)
-- [Email](sf.webdev.box@gmail.com)
+Get in touch to discuss your ideas: sf.webdev.box@gmail.com
