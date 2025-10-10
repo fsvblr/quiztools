@@ -30,7 +30,7 @@ jobs:
           xmlstarlet sel -t -m "//files/file" -v "@id" -o ";" -v "." -n pkg_quiztools.xml | while IFS=";" read -r ID NAME; do
             echo "Packing folder $ID into $NAME.zip"
             if [ -d "$ID" ]; then
-              zip -r "build/${NAME}.zip" "$ID"
+              (cd "$ID" && zip -r "../build/${NAME}.zip" .)
             else
               echo "WARNING: folder $ID not found"
             fi
