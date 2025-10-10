@@ -52,4 +52,3 @@ jobs:
           name: pkg_quiztools_${{ env.VERSION }}
           path: build/pkg_quiztools_${{ env.VERSION }}.zip
           retention-days: 1
-
