@@ -1,0 +1,35 @@
+.quiz-app .quiz-main {
+    overflow: hidden;
+}
+.quiztools-blank.drop-target {
+    border-bottom: 0.0625rem solid #dfe3e7 !important;
+    display: inline-block;
+    min-height: 1rem;
+    min-width: 5rem;
+    padding-bottom: 0.125rem;
+}
+.quiztools-blank.drop-target:has(.filler) {
+    border-bottom: unset !important;
+    min-width: unset;
+}
+.quiztools-blank.draggable-zone {
+    margin: 2rem 0 1rem;
+}
+.quiztools-blank.filler {
+    border: 0.0625rem solid #dfe3e7;
+    cursor: grab;
+    display: inline-block;
+    margin-right: 2rem;
+    padding: 0.5rem 0.75rem;
+    touch-action: none;
+    user-select: none;
+}
+.quiztools-blank.filler:first-of-type {
+    margin-left: 0;
+}
+.quiztools-blank.filler.dragging {
+    cursor: grabbing;
+}
+.quiztools-blank.drop-target .filler {
+    margin: 0;
+}

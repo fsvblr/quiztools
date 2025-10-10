@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form addfieldprefix="Qt\Component\Quiztools\Administrator\Field">
+    <fieldset name="quiz">
+        <field
+            name="id"
+            type="text"
+            label="JGLOBAL_FIELD_ID_LABEL"
+            default="0"
+            readonly="true"
+            class="readonly"
+        />
+
+        <field
+            name="title"
+            type="text"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_TITLE_LABEL"
+            required="true"
+        />
+
+        <field
+            name="alias"
+            type="text"
+            label="JFIELD_ALIAS_LABEL"
+            description="JFIELD_ALIAS_DESC"
+            hint="JFIELD_ALIAS_PLACEHOLDER"
+        />
+
+        <field
+            name="catid"
+            type="categoryedit"
+            label="JCATEGORY"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_CATID_DESC"
+            extension="com_quiztools"
+            addfieldprefix="Joomla\Component\Categories\Administrator\Field"
+            required="true"
+            default=""
+            allowAdd="true"
+            customPrefix="#new#"
+        />
+
+        <field
+            name="description"
+            type="editor"
+            label="JGLOBAL_DESCRIPTION"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_DESCRIPTION_DESC"
+            filter="\Joomla\CMS\Component\ComponentHelper::filterText"
+            buttons="true"
+            hide="pagebreak,module,article,fields,contact,menu"
+        />
+
+        <field
+            name="type_access"
+            type="list"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_TYPE_ACCESS_LABEL"
+            default="0"
+            validate="options"
+        >
+            <option value="0">COM_QUIZTOOLS_QUIZ_FIELD_TYPE_ACCESS_OPTION_FREE</option>
+            <!--<option value="1">COM_QUIZTOOLS_QUIZ_FIELD_TYPE_ACCESS_OPTION_PAID</option>-->
+        </field>
+
+        <field
+            name="certificate_id"
+            type="certificateslist"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_CERTIFICATE_LABEL"
+            default="0"
+        >
+            <option value="0">COM_QUIZTOOLS_QUIZ_FIELD_CERTIFICATE_OPTION_NO</option>
+        </field>
+
+        <field
+            name="quiz_autostart"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_QUIZ_AUTOSTART_LABEL"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="allow_continue"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_ALLOW_CONTINUE_LABEL"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_ALLOW_CONTINUE_DESC"
+            layout="joomla.form.field.radio.switcher"
+            default="1"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="timer_show"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_TIMER_SHOW_LABEL"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_TIMER_SHOW_DESC"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+            showon="allow_continue:0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="timer_style"
+            type="list"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_TIMER_STYLE_LABEL"
+            default="0"
+            validate="options"
+            showon="allow_continue:0[AND]timer_show:1"
+        >
+            <option value="0">COM_QUIZTOOLS_QUIZ_FIELD_TIMER_STYLE_OPTION_STANDARD</option>
+            <option value="1">COM_QUIZTOOLS_QUIZ_FIELD_TIMER_STYLE_OPTION_REMAINING</option>
+            <option value="2">COM_QUIZTOOLS_QUIZ_FIELD_TIMER_STYLE_OPTION_STANDARD_LIMIT</option>
+        </field>
+
+        <field
+            name="limit_time"
+            type="number"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_LIMIT_TIME_LABEL"
+            default="0"
+            min="0"
+            max="9999"
+            step="1"
+            showon="allow_continue:0[AND]timer_show:1"
+        />
+
+        <field
+            name="limit_attempts"
+            type="number"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_LIMIT_ATTEMPTS_LABEL"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_LIMIT_ATTEMPTS_DESC"
+            default="0"
+            min="0"
+            max="9999"
+            step="1"
+        />
+
+        <field
+            name="attempts_reset_period"
+            type="number"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_ATTEMPTS_RESET_PERIOD_LABEL"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_ATTEMPTS_RESET_PERIOD_DESC"
+            default="0"
+            min="0"
+            max="9999"
+            step="1"
+            showon="limit_attempts!:0"
+        />
+
+        <field
+            name="attempts_reset_next_day"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_ATTEMPTS_RESET_NEXT_DAY_LABEL"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_ATTEMPTS_RESET_NEXT_DAY_DESC"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+            showon="attempts!:0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="passing_score"
+            type="number"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_PASSING_SCORE_LABEL"
+            default="0"
+            min="0"
+            max="100"
+            step="0.01"
+        />
+    </fieldset>
+
+    <fieldset name="questions">
+        <field
+            name="questions_on_page"
+            type="list"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_QUESTIONS_ON_PAGE_LABEL"
+            default="0"
+            validate="options"
+        >
+            <option value="0">COM_QUIZTOOLS_QUIZ_FIELD_QUESTIONS_ON_PAGE_OPTION_ONE</option>
+            <option value="1">COM_QUIZTOOLS_QUIZ_FIELD_QUESTIONS_ON_PAGE_OPTION_ALL</option>
+        </field>
+
+        <field
+            name="shuffle_questions"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_SHUFFLE_QUESTIONS_LABEL"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="skip_questions"
+            type="list"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_SKIP_QUESTIONS_LABEL"
+            default="0"
+            validate="options"
+            showon="questions_on_page:0"
+        >
+            <option value="0">COM_QUIZTOOLS_QUIZ_FIELD_SKIP_QUESTIONS_OPTION_NO</option>
+            <option value="1">COM_QUIZTOOLS_QUIZ_FIELD_SKIP_QUESTIONS_OPTION_YES_COMPULSORY</option>
+            <option value="2">COM_QUIZTOOLS_QUIZ_FIELD_SKIP_QUESTIONS_OPTION_YES_NOTANSWERED</option>
+        </field>
+
+        <field
+            name="enable_prev_button"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_ENABLE_PREV_BUTTON_LABEL"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+            showon="questions_on_page:0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="question_number"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_QUESTION_NUMBER_LABEL"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+            showon="questions_on_page:0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="question_points"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_QUESTION_POINTS_LABEL"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+            showon="questions_on_page:0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="question_pool"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_QUESTION_POOL_LABEL"
+            default="no"
+        >
+            <option value="no">COM_QUIZTOOLS_QUIZ_FIELD_QUESTION_POOL_OPTION_NO</option>
+            <option value="random">COM_QUIZTOOLS_QUIZ_FIELD_QUESTION_POOL_OPTION_RANDOM</option>
+            <option value="by_categories">COM_QUIZTOOLS_QUIZ_FIELD_QUESTION_POOL_OPTION_BY_CATEGORIES</option>
+        </field>
+
+        <field
+            name="question_pool_randon_qty"
+            type="number"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_QUESTION_POOL_RANDOM_QTY_LABEL"
+            default="1"
+            min="1"
+            step="1"
+            showon="question_pool:random"
+        />
+
+        <field
+            name="question_pool_categories"
+            type="subform"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_QUESTION_POOL_CATEGORIES_LABEL"
+            formsource="administrator/components/com_quiztools/forms/quiz_question_pool_categories.xml"
+            multiple="true"
+            showon="question_pool:by_categories" />
+    </fieldset>
+
+    <fieldset name="results">
+        <field
+            name="redirect_after_finish"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_REDIRECT_AFTER_FINISH_LABEL"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="redirect_after_finish_link"
+            type="url"
+            default="/"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_REDIRECT_AFTER_FINISH_LINK_LABEL"
+            description=""
+            relative="true"
+            showon="redirect_after_finish:1"
+        />
+
+        <field
+            name="redirect_after_finish_delay"
+            type="number"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_REDIRECT_AFTER_FINISH_DELAY_LABEL"
+            default="0"
+            min="0"
+            max="1000"
+            step="1"
+            showon="redirect_after_finish:1"
+        />
+
+        <field
+            name="note_final_page"
+            type="note"
+            default=""
+            label=""
+            description="COM_QUIZTOOLS_QUIZ_FIELD_NOTE_FINAL_PAGE_DESC"
+            showon="redirect_after_finish:1"
+        />
+
+        <field
+            name="results_by_categories"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_RESULTS_BY_CATEGORIES_LABEL"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_RESULTS_BY_CATEGORIES_DESC"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+            showon="redirect_after_finish:0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="results_with_questions"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_RESULTS_WITH_QUESTIONS_LABEL"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+            showon="redirect_after_finish:0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="results_pdf"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_RESULTS_PDF_LABEL"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+            showon="redirect_after_finish:0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="results_certificate"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_RESULTS_CERTIFICATE_LABEL"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_RESULTS_CERTIFICATE_DESC"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+            showon="redirect_after_finish:0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+    </fieldset>
+
+    <fieldset name="feedback">
+        <field
+            name="feedback_question"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_QUESTION_LABEL"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_QUESTION_DESC"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="feedback_question_pdf"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_QUESTION_PDF_LABEL"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="feedback_question_final"
+            type="radio"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_QUESTION_FINAL_LABEL"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="feedback_msg_right"
+            type="editor"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_MSG_RIGHT_LABEL"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_MSG_RIGHT_DESC"
+            filter="\Joomla\CMS\Component\ComponentHelper::filterText"
+            buttons="true"
+            hide="readmore,pagebreak,module,article,fields,contact,menu"
+            showon="feedback_question:1"
+        />
+
+        <field
+            name="feedback_msg_wrong"
+            type="editor"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_MSG_WRONG_LABEL"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_MSG_WRONG_DESC"
+            filter="\Joomla\CMS\Component\ComponentHelper::filterText"
+            buttons="true"
+            hide="readmore,pagebreak,module,article,fields,contact,menu"
+            showon="feedback_question:1"
+        />
+
+        <field
+            name="feedback_final_msg_options"
+            type="list"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_FINAL_MSG_OPTIONS_LABEL"
+            default="0"
+            validate="options"
+        >
+            <option value="hide">COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_FINAL_MSG_OPTIONS_OPTION_HIDE</option>
+            <option value="byPassed">COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_FINAL_MSG_OPTIONS_OPTION_PASSED</option>
+            <option value="byPercent">COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_FINAL_MSG_OPTIONS_OPTION_SCORE_PERCENT</option>
+            <option value="byPoints">COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_FINAL_MSG_OPTIONS_OPTION_SCORE_POINTS</option>
+        </field>
+
+        <field
+            name="feedback_final_msg_default_passed"
+            type="textarea"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_FINAL_MSG_DEFAULT_PASSED_LABEL"
+            rows="4"
+            showon="feedback_final_msg_options:byPassed" />
+
+        <field
+            name="feedback_final_msg_default_unpassed"
+            type="textarea"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_FINAL_MSG_DEFAULT_UNPASSED_LABEL"
+            rows="4"
+            showon="feedback_final_msg_options:byPassed" />
+
+        <field
+            name="feedback_final_msg"
+            type="subform"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_FINAL_MSG_LABEL"
+            formsource="administrator/components/com_quiztools/forms/quiz_feedback_final_msg.xml"
+            multiple="true"
+            showon="feedback_final_msg_options:byPercent[OR]feedback_final_msg_options:byPoints" />
+    </fieldset>
+
+    <fieldset name="publish">
+        <field
+            name="state"
+            type="list"
+            label="JSTATUS"
+            class="form-select-color-state"
+            default="1"
+            validate="options"
+        >
+            <option value="1">JPUBLISHED</option>
+            <option value="0">JUNPUBLISHED</option>
+        </field>
+
+        <field
+            name="asset_id"
+            type="hidden"
+            filter="unset"
+        />
+
+        <field
+            name="ordering"
+            type="ordering"
+            label="JFIELD_ORDERING_LABEL"
+            table="#__quiztools_quizzes"
+        />
+
+        <field
+            name="created"
+            type="calendar"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_CREATED_LABEL"
+            translateformat="true"
+            showtime="true"
+            filter="user_utc"
+        />
+
+        <field
+            name="created_by"
+            type="user"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_CREATED_BY_LABEL"
+            validate="UserId"
+        />
+
+        <field
+            name="modified"
+            type="calendar"
+            label="JGLOBAL_FIELD_MODIFIED_LABEL"
+            class="readonly"
+            readonly="true"
+            translateformat="true"
+            showtime="true"
+            filter="user_utc"
+        />
+
+        <field
+            name="modified_by"
+            type="user"
+            label="JGLOBAL_FIELD_MODIFIED_BY_LABEL"
+            class="readonly"
+            readonly="true"
+            filter="unset"
+            validate="UserId"
+        />
+
+        <field
+            name="checked_out"
+            type="hidden"
+            filter="unset"
+        />
+
+        <field
+            name="checked_out_time"
+            type="hidden"
+            filter="unset"
+        />
+
+        <field
+            name="access"
+            type="accesslevel"
+            label="JFIELD_ACCESS_LABEL"
+            filter="UINT"
+            validate="options"
+        />
+    </fieldset>
+
+    <fieldset name="metadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">
+        <field
+            name="metatitle"
+            type="text"
+            label="COM_QUIZTOOLS_QUIZ_FIELD_METATITLE_LABEL"
+        />
+
+        <field
+            name="metakey"
+            type="textarea"
+            label="JFIELD_META_KEYWORDS_LABEL"
+            rows="3"
+            cols="30"
+        />
+
+        <field
+            name="metadesc"
+            type="textarea"
+            label="JFIELD_META_DESCRIPTION_LABEL"
+            rows="3"
+            cols="30"
+            maxlength="300"
+            charcounter="true"
+        />
+    </fieldset>
+</form>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form addfieldprefix="Qt\Component\Quiztools\Administrator\Field">
+	<fields name="filter">
+		<field
+			name="search"
+			type="text"
+			inputmode="search"
+			label="COM_QUIZTOOLS_RESULTS_FILTER_SEARCH_LABEL"
+			description="COM_QUIZTOOLS_RESULTS_FILTER_SEARCH_DESC"
+			hint="COM_QUIZTOOLS_RESULTS_FILTER_SEARCH_HINT"
+		/>
+
+		<field
+			name="passed"
+			type="list"
+			label="COM_QUIZTOOLS_RESULTS_FILTER_PASSED_LABEL"
+			default=""
+			class="js-select-submit-on-change"
+		>
+			<option value="">COM_QUIZTOOLS_RESULTS_FILTER_PASSED_OPTION_SELECT</option>
+			<option value="1">COM_QUIZTOOLS_RESULTS_FILTER_PASSED_OPTION_PASSED</option>
+			<option value="0">COM_QUIZTOOLS_RESULTS_FILTER_PASSED_OPTION_FAILED</option>
+		</field>
+
+		<field
+			name="quiz_id"
+			type="quizzeslist"
+			label="COM_QUIZTOOLS_RESULTS_FILTER_QUIZ_ID_LABEL"
+			default=""
+			class="js-select-submit-on-change"
+			layout="joomla.form.field.list-fancy-select"
+		>
+			<option value="">COM_QUIZTOOLS_RESULTS_FILTER_QUIZ_ID_OPTION_SELECT</option>
+		</field>
+
+		<field
+			name="user_id"
+			type="usersresultslist"
+			label="COM_QUIZTOOLS_RESULTS_FILTER_USER_ID_LABEL"
+			default=""
+			layout="joomla.form.field.list-fancy-select"
+		>
+			<option value="">COM_QUIZTOOLS_RESULTS_FILTER_USER_ID_OPTION_SELECT</option>
+			<option value="0">COM_QUIZTOOLS_RESULTS_FILTER_USER_ID_OPTION_GUEST</option>
+		</field>
+
+		<field
+			name="from"
+			type="calendar"
+			label="COM_QUIZTOOLS_RESULTS_FILTER_FROM_LABEL"
+			class="js-select-submit-on-change"
+			filter="none"
+			singleheader="false"
+			todaybutton="false"
+			weeknumbers="false"
+		/>
+
+		<field
+			name="to"
+			type="calendar"
+			label="COM_QUIZTOOLS_RESULTS_FILTER_TO_LABEL"
+			class="js-select-submit-on-change"
+			filter="none"
+			singleheader="false"
+			todaybutton="false"
+			weeknumbers="false"
+		/>
+	</fields>
+	<fields name="list">
+		<field
+			name="fullordering"
+			type="list"
+			label="JGLOBAL_SORT_BY"
+			statuses="*,0,1"
+			class="js-select-submit-on-change"
+			default="a.id DESC"
+			validate="options"
+			>
+			<option value="">JGLOBAL_SORT_BY</option>
+			<option value="a.start_datetime ASC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_DATETIME_ASC</option>
+			<option value="a.start_datetime DESC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_DATETIME_DESC</option>
+			<option value="q.title ASC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_QUIZ_TITLE_ASC</option>
+			<option value="q.title DESC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_QUIZ_TITLE_DESC</option>
+			<option value="a.sum_points_received ASC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_USER_SCORE_ASC</option>
+			<option value="a.sum_points_received DESC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_USER_SCORE_DESC</option>
+			<option value="a.total_score ASC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_TOTAL_SCORE_ASC</option>
+			<option value="a.total_score DESC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_TOTAL_SCORE_DESC</option>
+			<option value="a.passing_score ASC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_PASSING_SCORE_ASC</option>
+			<option value="a.passing_score DESC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_PASSING_SCORE_DESC</option>
+			<option value="a.passed ASC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_PASSED_ASC</option>
+			<option value="a.passed DESC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_PASSED_DESC</option>
+			<option value="a.finished ASC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_FINISHED_ASC</option>
+			<option value="a.finished DESC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_FINISHED_DESC</option>
+			<option value="a.sum_time_spent ASC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_SPENT_TIME_ASC</option>
+			<option value="a.sum_time_spent DESC">COM_QUIZTOOLS_RESULTS_FILTER_ORDERING_SPENT_TIME_DESC</option>
+			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
+			<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
+		</field>
+
+		<field
+			name="limit"
+			type="limitbox"
+			label="JGLOBAL_LIST_LIMIT"
+			default="25"
+			class="js-select-submit-on-change"
+		/>
+	</fields>
+</form>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="quiztools" method="upgrade">
+	<name>PLG_QUIZTOOLS_BOILERPLATE</name>
+	<creationDate>September 2025</creationDate>
+	<authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
+	<copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
+	<license>GPL v3</license>
+	<version>1.0.0-rc1</version>
+	<description>PLG_QUIZTOOLS_BOILERPLATE_XML_DESCRIPTION</description>
+	<namespace path="src">Qt\Plugin\Quiztools\Boilerplate</namespace>
+	<scriptfile>script.php</scriptfile>
+	<media folder="media" destination="plg_quiztools_boilerplate">
+		<folder>css</folder>
+		<folder>js</folder>
+		<file>joomla.asset.json</file>
+	</media>
+	<files>
+		<folder plugin="boilerplate">services</folder>
+		<folder>forms</folder>
+		<folder>src</folder>
+	</files>
+	<languages client="administrator">
+		<language tag="en-GB">language/en-GB/plg_quiztools_boilerplate.ini</language>
+		<language tag="en-GB">language/en-GB/plg_quiztools_boilerplate.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+
+			</fieldset>
+		</fields>
+	</config>
+</extension>

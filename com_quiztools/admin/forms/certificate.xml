@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form addfieldprefix="Qt\Component\Quiztools\Administrator\Field">
+    <fieldset name="certificate">
+        <field
+            name="note"
+            type="note"
+            class="alert alert-info"
+            description="COM_QUIZTOOLS_CERTIFICATE_FIELD_NOTE_DESC"
+        />
+
+        <field
+            name="id"
+            type="text"
+            label="JGLOBAL_FIELD_ID_LABEL"
+            default="0"
+            readonly="true"
+            class="readonly"
+        />
+
+        <field
+            name="title"
+            type="text"
+            label="COM_QUIZTOOLS_CERTIFICATE_FIELD_TITLE_LABEL"
+            class="certificate-title"
+            required="true"
+        />
+
+        <field
+            name="file"
+            type="imagelist"
+            label="COM_QUIZTOOLS_CERTIFICATE_FIELD_FILE_LABEL"
+            directory="/images/quiztools/certificates"
+            fileFilter="\.png$|\.jpeg$|\.jpg$"
+            default=""
+            class="certificate-file"
+            stripext="false"
+            hide_none="true"
+            hide_default="true"
+            required="true"
+        >
+            <option value="">JSELECT</option>
+        </field>
+
+        <field
+            name="upload_image"
+            type="file"
+            label="COM_QUIZTOOLS_CERTIFICATE_FIELD_UPLOAD_IMAGE_LABEL"
+            description="COM_QUIZTOOLS_CERTIFICATE_FIELD_UPLOAD_IMAGE_DESC"
+            accept="image/*"
+            class="certificate-upload-image"
+        />
+
+        <field
+            name="fields"
+            type="subform"
+            label="COM_QUIZTOOLS_CERTIFICATE_FIELD_FIELDS_LABEL"
+            multiple="true"
+            min="0"
+            max="100"
+            layout="joomla.form.field.subform.repeatable-table"
+            buttons="add,remove"
+        >
+            <form>
+                <field
+                    name="text"
+                    type="text"
+                    label="COM_QUIZTOOLS_CERTIFICATE_FIELD_FIELDS_TEXT_LABEL"
+                    class="input-big text"
+                    default="Edit this text"
+                    readonly="true"
+                />
+
+                <field
+                    name="x"
+                    type="number"
+                    label="COM_QUIZTOOLS_CERTIFICATE_FIELD_FIELDS_X_LABEL"
+                    class="input-small coordinate-x"
+                    default="50"
+                    min="0"
+                    step="0.01"
+                    readonly="true"
+                />
+
+                <field
+                    name="y"
+                    type="number"
+                    label="COM_QUIZTOOLS_CERTIFICATE_FIELD_FIELDS_Y_LABEL"
+                    class="input-small coordinate-y"
+                    default="50"
+                    min="0"
+                    step="0.01"
+                    readonly="true"
+                />
+
+                <field
+                    name="font_family"
+                    type="filelist"
+                    label="COM_QUIZTOOLS_CERTIFICATE_FIELD_FIELDS_FONT_FAMILY_LABEL"
+                    class="input-medium font-family"
+                    directory="/media/com_quiztools/fonts"
+                    fileFilter="\.ttf$"
+                    default="arial"
+                    stripext="true"
+                    hide_none="true"
+                    hide_default="true"
+                />
+
+                <field
+                    name="font_size"
+                    type="number"
+                    label="COM_QUIZTOOLS_CERTIFICATE_FIELD_FIELDS_FONT_SIZE_LABEL"
+                    class="input-small font-size"
+                    default="28"
+                    min="1"
+                    step="1"
+                />
+
+                <field
+                    name="color"
+                    type="color"
+                    default="rgb(166,34,33)"
+                    label="COM_QUIZTOOLS_CERTIFICATE_FIELD_FIELDS_COLOR_LABEL"
+                    class="input-medium color"
+                    format="rgb"
+                />
+            </form>
+        </field>
+    </fieldset>
+
+    <fieldset name="publish">
+        <field
+            name="state"
+            type="list"
+            label="JSTATUS"
+            class="form-select-color-state"
+            default="1"
+            validate="options"
+        >
+            <option value="1">JPUBLISHED</option>
+            <option value="0">JUNPUBLISHED</option>
+        </field>
+
+        <field
+            name="created"
+            type="calendar"
+            label="COM_QUIZTOOLS_CERTIFICATE_FIELD_CREATED_LABEL"
+            translateformat="true"
+            showtime="true"
+            filter="user_utc"
+        />
+
+        <field
+            name="created_by"
+            type="user"
+            label="COM_QUIZTOOLS_CERTIFICATE_FIELD_CREATED_BY_LABEL"
+            validate="UserId"
+        />
+
+        <field
+            name="modified"
+            type="calendar"
+            label="JGLOBAL_FIELD_MODIFIED_LABEL"
+            class="readonly"
+            readonly="true"
+            translateformat="true"
+            showtime="true"
+            filter="user_utc"
+        />
+
+        <field
+            name="modified_by"
+            type="user"
+            label="JGLOBAL_FIELD_MODIFIED_BY_LABEL"
+            class="readonly"
+            readonly="true"
+            filter="unset"
+            validate="UserId"
+        />
+
+        <field
+            name="checked_out"
+            type="hidden"
+            filter="unset"
+        />
+
+        <field
+            name="checked_out_time"
+            type="hidden"
+            filter="unset"
+        />
+    </fieldset>
+</form>

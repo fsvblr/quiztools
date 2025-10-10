@@ -1,0 +1,12 @@
+.icon-results-passed, .icon-results-finished, .icon-results-pdf, .icon-results-certificate {
+    font-size: 1.5rem;
+}
+.icon-results-passed.passed, .icon-results-finished.finished {
+    color: #008000;
+}
+.icon-results-passed.failed, .icon-results-finished.not-finished {
+    color: #ff0000;
+}
+.icon-results-pdf {
+    color: #AD0B00 !important;
+}

@@ -1,0 +1,17 @@
+<form>
+    <field
+        name="category_id"
+        type="category"
+        label="COM_QUIZTOOLS_QUIZ_FIELD_QUESTION_POOL_CATEGORIES_CATEGORY_ID_LABEL"
+        extension="com_quiztools.question"
+    />
+
+    <field
+        name="questions_qty"
+        type="number"
+        label="COM_QUIZTOOLS_QUIZ_FIELD_QUESTION_POOL_CATEGORIES_QUESTIONS_QTY_LABEL"
+        default="0"
+        min="0"
+        step="1"
+    />
+</form>

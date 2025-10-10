@@ -1,0 +1,27 @@
+{
+    "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+    "name": "plg_quiztools_blank",
+    "version": "1.0.0",
+    "description": "A plugin that implements the functionality of the 'Fill in the blank' question type of the QuizTools component.",
+    "license": "GPL-3.0-or-later",
+    "assets": [
+        {
+            "name": "plg_quiztools_blank.blank",
+            "type": "style",
+            "uri": "plg_quiztools_blank/plg_quiztools_blank.css",
+            "version": "202508271945"
+        },
+        {
+            "name": "plg_quiztools_blank.blank",
+            "type": "script",
+            "uri": "plg_quiztools_blank/plg_quiztools_blank.js",
+            "dependencies": [
+                "core"
+            ],
+            "attributes": {
+                "defer": true
+            },
+            "version": "202508271945"
+        }
+    ]
+}

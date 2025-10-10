@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+	<layout title="COM_QUIZTOOLS_QUIZ_VIEW_DEFAULT_TITLE" option="COM_QUIZTOOLS_QUIZ_VIEW_DEFAULT_OPTION">
+		<message>
+			<![CDATA[COM_QUIZTOOLS_QUIZ_VIEW_DEFAULT_DESC]]>
+		</message>
+	</layout>
+
+	<!-- Add fields to the request variables for the layout. -->
+	<fields name="request">
+		<fieldset name="request"
+			addfieldprefix="Qt\Component\Quiztools\Administrator\Field" >
+
+			<field
+				name="id"
+				type="quizzeslist"
+				label="COM_QUIZTOOLS_QUIZ_MENU_ITEM_CHOOSE_QUIZ_LABEL"
+				default=""
+				required="true"
+			/>
+		</fieldset>
+	</fields>
+</metadata>

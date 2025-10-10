@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @package     QuizTools.Plugin
+ * @subpackage  QuizTools.boilerplate
+ *
+ * @copyright   (C) 2025 https://github.com/fsvblr/quiztools
+ */
+
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') or die;
+// phpcs:enable PSR1.Files.SideEffects
+
+use Joomla\CMS\Extension\PluginInterface;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\DI\Container;
+use Joomla\CMS\Factory;
+use Joomla\DI\ServiceProviderInterface;
+use Joomla\Event\DispatcherInterface;
+use Joomla\Database\DatabaseInterface;
+use Qt\Plugin\Quiztools\Boilerplate\Extension\Boilerplate;
+
+return new class implements ServiceProviderInterface
+{
+    /**
+     * Registers the service provider with a DI container.
+     *
+     * @param   Container  $container  The DI container.
+     *
+     * @return  void
+     *
+     * @since   4.2.0
+     */
+    public function register(Container $container)
+    {
+        $container->set(
+            PluginInterface::class,
+            function (Container $container) {
+                $plugin = new Boilerplate(
+                    $container->get(DispatcherInterface::class),
+                    (array) PluginHelper::getPlugin('quiztools', 'boilerplate')
+                );
+                $plugin->setApplication(Factory::getApplication());
+                $plugin->setDatabase($container->get(DatabaseInterface::class));
+
+                return $plugin;
+            }
+        );
+    }
+};

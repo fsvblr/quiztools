@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<help key="COM_QUIZTOOLS_HELP_VIEW_OPTIONS"/>
+	<inlinehelp button="show"/>
+	<fieldset
+		name="component"
+		label="COM_QUIZTOOLS_FIELDSET_CONFIG_QUIZZES_OPTIONS_LABEL"
+		description="COM_QUIZTOOLS_FIELDSET_CONFIG_QUIZZES_OPTIONS_DESC"
+		>
+
+	</fieldset>
+	<fieldset
+		name="permissions"
+		label="JCONFIG_PERMISSIONS_LABEL"
+		>
+		<field
+			name="rules"
+			type="rules"
+			label="JCONFIG_PERMISSIONS_LABEL"
+			filter="rules"
+			validate="rules"
+			component="com_quiztools"
+			section="component"
+		/>
+	</fieldset>
+</config>

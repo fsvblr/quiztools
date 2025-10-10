@@ -1,0 +1,128 @@
+<?php
+
+/**
+ * @package     QuizTools.Plugin
+ * @subpackage  QuizTools.blank
+ *
+ * @copyright   (C) 2025 https://github.com/fsvblr/quiztools
+ */
+
+namespace Qt\Plugin\Quiztools\Blank\PluginTraits;
+
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') or die;
+// phpcs:enable PSR1.Files.SideEffects
+
+use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\Event\Event;
+
+/**
+ * Get question options HTML for the final page
+ * of the quiz with the results of its completion.
+ *
+ * @since   4.0.0
+ */
+trait QuestionOptionsGetFinalPageHtml
+{
+	/**
+	 * Get question options HTML for the final page
+     * of the quiz with the results of its completion.
+	 *
+	 * @param   Event  $event
+	 *
+	 * @return bool
+	 */
+    public function QuestionOptionsGetFinalPageHtml($event): bool
+    {
+	    if (!($this->getApplication() instanceof CMSApplication)) {
+		    return false;
+	    }
+
+	    if (!$this->getApplication()->isClient('site')) {
+		    return false;
+	    }
+
+	    /**
+	     * @var   string|null        $context  The context for the data
+	     * @var   array|object|null  $data     An object or array containing the data for the form.
+	     */
+	    [$context, $data] = array_values($event->getArguments());
+
+	    if (!\in_array($context, ['com_quiztools.question.options.finalPageHtml'])) {
+		    return false;
+	    }
+
+	    if (\is_array($data)) {
+		    $data = (object) $data;  // =>question
+	    }
+
+	    // Check that the question is of the current plugin type.
+	    if ($data->type != $this->name) {
+		    return false;
+	    }
+
+        $html = '';
+        $html .= '<div class="result-options ' . $this->name . '">
+                <div class="result-options-header">
+                    <div class="w-5 text-center">#</div>
+                    <div class="w-25">' . Text::_('PLG_QUIZTOOLS_BLANK_FINAL_RESULT_HEADING_OPTION_TEXT') . '</div>
+                    <div class="w-35 text-center">' . Text::_('PLG_QUIZTOOLS_BLANK_FINAL_RESULT_HEADING_OPTION_RIGHT_ANSWER') . '</div>
+                    <div class="w-35 text-center">' . Text::_('PLG_QUIZTOOLS_BLANK_FINAL_RESULT_HEADING_OPTION_USER_ANSWER') . '</div>
+                </div>';
+
+        $j = 'A';
+        foreach ($data->results as $i => $option) {
+            $html .= '<div class="result-options-row row' . $i % 2 . '">
+                    <div class="w-5 text-center">' . $j . '</div>
+                    <div class="w-25">{blank' . ($i+1) . '}</div>
+                    <div class="w-35 text-center">';
+                        foreach ($option->answers as $k => $answer) {
+                            $html .= ($k > 0) ? ' / ' : '';
+                            $html .= htmlspecialchars($answer,  ENT_QUOTES, 'UTF-8');
+                        }
+                    $html .= '</div>
+                    <div class="w-35 text-center">';
+                        $userAnswerClass = $option->is_correct ? 'correct' : 'incorrect';
+                        $html .= '<span class="blank-user-answer ' . $userAnswerClass . '">' . $option->user_answer . '</span>';
+                    $html .= '</div>
+                </div>';
+            $j++;
+        }
+        $html .= '</div>';
+
+        $html .= '<div class="result-options-score">';
+        $html .= Text::_('PLG_QUIZTOOLS_BLANK_FINAL_RESULT_USER_SCORE') . ': ';
+        $html .= $data->points_received . '/' . $data->total_points;
+        $html .= '</div>';
+
+        if ($data->withFeedback) {
+            /** @var \Qt\Component\Quiztools\Site\Model\AjaxQuizModel $modelAjax */
+            $modelAjax = Factory::getApplication()->bootComponent('com_quiztools')
+                ->getMVCFactory()->createModel('AjaxQuiz', 'Site', ['ignore_request' => true]);
+
+            $savedQuestion = new \stdClass();
+            $savedQuestion->id = $data->question_id;
+            $savedQuestion->type = $data->type;
+            $savedQuestion->feedback_msg_right = $data->feedback_msg_right;
+            $savedQuestion->feedback_msg_wrong = $data->feedback_msg_wrong;
+            $savedQuestion->savedAnswerResult = [
+                'is_correct' => $data->is_correct,
+            ];
+
+            $feedback = $modelAjax->getQuestionFeedback($data->quizDataForFeedback, $savedQuestion);
+
+            if (!empty($feedback['text'])) {
+                $html .= '<div class="result-options-feedback"><span>' .
+                    Text::_('PLG_QUIZTOOLS_BLANK_FINAL_RESULT_FEEDBACK') . ': </span>' . $feedback['text'] . '</div>';
+            }
+        }
+
+        $data->resultHtml = $html;
+
+	    $event->setArgument('result', $data);
+
+	    return true;
+    }
+}

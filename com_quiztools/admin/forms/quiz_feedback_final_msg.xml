@@ -1,0 +1,25 @@
+<form>
+    <field
+        name="feedback_final_msg_from"
+        type="number"
+        label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_FINAL_MSG_FROM_LABEL"
+        default="0"
+        min="0"
+        step="1"
+    />
+
+    <field
+        name="feedback_final_msg_to"
+        type="number"
+        label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_FINAL_MSG_TO_LABEL"
+        default="0"
+        min="0"
+        step="1"
+    />
+
+    <field
+        name="feedback_final_msg_message"
+        type="textarea"
+        label="COM_QUIZTOOLS_QUIZ_FIELD_FEEDBACK_FINAL_MSG_MESSAGE_LABEL"
+        rows="2" />
+</form>

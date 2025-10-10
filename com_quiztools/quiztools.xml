@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" method="upgrade">
+    <name>COM_QUIZTOOLS</name>
+    <creationDate>September 2025</creationDate>
+    <authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
+    <copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
+    <license>GPL v3</license>
+    <version>1.0.0-rc1</version>
+    <description>COM_QUIZTOOLS_XML_DESC</description>
+    <namespace path="src">Qt\Component\Quiztools</namespace>
+    <scriptfile>script.php</scriptfile>
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <uninstall>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+    <update>
+        <schemas>
+            <schemapath type="mysql">sql/updates/mysql</schemapath>
+        </schemas>
+    </update>
+    <files folder="site">
+        <folder>forms</folder>
+        <folder>layouts</folder>
+        <folder>src</folder>
+        <folder>tmpl</folder>
+    </files>
+    <languages folder="site">
+        <language tag="en-GB">language/en-GB/com_quiztools.ini</language>
+    </languages>
+    <media destination="com_quiztools" folder="media">
+        <file>.gitignore</file>
+        <file>joomla.asset.json</file>
+        <file>package.json</file>
+        <file>vite.config.js</file>
+        <folder>dist</folder>
+        <folder>fonts</folder>
+        <folder>images</folder>
+        <folder>libs</folder>
+        <folder>src</folder>
+    </media>
+    <administration>
+        <menu img="class:fas fa-user-graduate">COM_QUIZTOOLS_MENU_TITLE</menu>
+        <submenu>
+            <menu
+                link="option=com_categories&amp;extension=com_quiztools"
+                view="categories"
+                img="class:quizzes-cat"
+                alt="QuizTools/Quizzes Categories"
+            >
+                COM_QUIZTOOLS_SUBMENU_QUIZZES_CATEGORIES
+            </menu>
+            <menu
+                link="option=com_quiztools&amp;view=quizzes"
+                view="quizzes"
+                img="class:quizzes"
+                alt="QuizTools/Quizzes"
+            >
+                COM_QUIZTOOLS_SUBMENU_QUIZZES
+            </menu>
+            <menu
+                link="option=com_categories&amp;extension=com_quiztools.question"
+                view="categories"
+                img="class:questions-cat"
+                alt="QuizTools/Questions Categories"
+            >
+                COM_QUIZTOOLS_SUBMENU_QUESTIONS_CATEGORIES
+            </menu>
+            <menu
+                link="option=com_quiztools&amp;view=questions"
+                view="questions"
+                img="class:questions"
+                alt="QuizTools/Questions"
+            >
+                COM_QUIZTOOLS_SUBMENU_QUESTIONS
+            </menu>
+            <menu
+                link="option=com_quiztools&amp;view=certificates"
+                view="certificates"
+                img="class:certificates"
+                alt="QuizTools/Certificates"
+            >
+                COM_QUIZTOOLS_SUBMENU_CERTIFICATES
+            </menu>
+            <menu
+                link="option=com_quiztools&amp;view=results"
+                view="results"
+                img="class:results"
+                alt="QuizTools/Results"
+            >
+                COM_QUIZTOOLS_SUBMENU_RESULTS
+            </menu>
+        </submenu>
+        <files folder="admin">
+            <filename>access.xml</filename>
+            <filename>composer.json</filename>
+            <filename>composer.lock</filename>
+            <filename>config.xml</filename>
+            <folder>forms</folder>
+            <folder>help</folder>
+            <folder>layouts</folder>
+            <folder>services</folder>
+            <folder>sql</folder>
+            <folder>src</folder>
+            <folder>tmpl</folder>
+            <folder>vendor</folder>
+        </files>
+        <languages folder="admin">
+            <language tag="en-GB">language/en-GB/com_quiztools.ini</language>
+            <language tag="en-GB">language/en-GB/com_quiztools.sys.ini</language>
+        </languages>
+    </administration>
+</extension>

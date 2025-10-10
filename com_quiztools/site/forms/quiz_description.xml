@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+    <fieldset>
+        <field
+            name="quiz[user][name]"
+            type="text"
+            label="COM_QUIZTOOLS_QUIZ_DESCRIPTION_USER_NAME_LABEL"
+            hint="COM_QUIZTOOLS_QUIZ_DESCRIPTION_USER_NAME_HINT"
+            required="true"
+        />
+
+        <field
+            name="quiz[user][surname]"
+            type="text"
+            label="COM_QUIZTOOLS_QUIZ_DESCRIPTION_USER_SURNAME_LABEL"
+            hint="COM_QUIZTOOLS_QUIZ_DESCRIPTION_USER_SURNAME_HINT"
+            required="true"
+        />
+
+        <field
+            name="quiz[user][email]"
+            type="email"
+            label="COM_QUIZTOOLS_QUIZ_DESCRIPTION_USER_EMAIL_LABEL"
+            hint="COM_QUIZTOOLS_QUIZ_DESCRIPTION_USER_EMAIL_HINT"
+            required="true"
+            validate="email"
+        />
+    </fieldset>
+</form>
