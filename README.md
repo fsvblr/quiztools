@@ -68,6 +68,6 @@ This project is released under the [GPL v3](LICENSE).
 Need features beyond the default QuizTools package?  
 We can **customize quizzes** to match your exact requirements — from new question types to tailored workflows.
 
-In addition, our team can develop **any Joomla! extension** or even a **full website solution** designed specifically for your project. 
+In addition, our team can develop **any Joomla! extension** or even a **full website solution** designed specifically for your project.
 
 Get in touch to discuss your ideas: sf.webdev.box@gmail.com
