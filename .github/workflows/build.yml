@@ -43,7 +43,13 @@ jobs:
           cp ../pkg_quiztools_script.php .
 
           FINAL="pkg_quiztools_${VERSION}.zip"
-          zip -r "$FINAL" *.zip pkg_quiztools.xml pkg_quiztools_script.php -x "$FINAL"
+
+          zip -r "$FINAL" \
+            $(ls *.zip | grep -v "$FINAL") \
+            pkg_quiztools.xml \
+            pkg_quiztools_script.php
+
+          echo "Contents of build/:"
           ls -lh
 
       - name: Upload final package
@@ -52,4 +58,3 @@ jobs:
           name: pkg_quiztools_${{ env.VERSION }}
           path: build/pkg_quiztools_${{ env.VERSION }}.zip
           retention-days: 1
-
