@@ -50,7 +50,6 @@ jobs:
           cd dist
           zip -r "../output/$FINAL" * 
           cd ..
-
           ls -lh output
 
       - name: Upload final package
@@ -58,4 +57,6 @@ jobs:
         with:
           name: pkg_quiztools_${{ env.VERSION }}
           path: output/pkg_quiztools_${{ env.VERSION }}.zip
+          if-no-files-found: error
+          compression-level: 0
           retention-days: 1
