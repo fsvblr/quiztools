@@ -23,7 +23,7 @@ jobs:
 
       - name: Parse pkg_quiztools.xml and build sub-zips
         run: |
-          mkdir build
+          mkdir -p build/subzips
           VERSION=$(xmlstarlet sel -t -v "//version" pkg_quiztools.xml)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
@@ -31,7 +31,8 @@ jobs:
           xmlstarlet sel -t -m "//files/file" -v "@id" -o ";" -v "." -n pkg_quiztools.xml | while IFS=";" read -r ID NAME; do
             echo "Packing folder $ID into $NAME.zip"
             if [ -d "$ID" ]; then
-              zip -r "build/$NAME.zip" "$ID"
+              # Place the sub-archives in a separate folder
+              zip -r "build/subzips/${NAME}.zip" "$ID"
             else
               echo "WARNING: folder $ID not found"
             fi
@@ -42,7 +43,10 @@ jobs:
           cd build
           cp ../pkg_quiztools.xml .
           cp ../pkg_quiztools_script.php .
-          zip -r "pkg_quiztools_${VERSION}.zip" *.zip pkg_quiztools.xml pkg_quiztools_script.php
+
+          # Explicitly specify the source of zip files from a separate folder and exclude the final file itself
+          FINAL="pkg_quiztools_${VERSION}.zip"
+          zip -r "$FINAL" subzips pkg_quiztools.xml pkg_quiztools_script.php -x "$FINAL"
           ls -lh
 
       - name: Upload final package
