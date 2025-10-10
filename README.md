@@ -47,6 +47,7 @@ It provides a flexible **component** and a set of **question-type plugins**, mak
 Planned improvements include:
 - Adding paid quizzes.
 - Creating learning paths.
+- Export-import of quizzes and questions.
 - Additional question types.
 - Enhanced reporting and analytics.
 
