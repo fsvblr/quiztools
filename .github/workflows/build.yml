@@ -36,25 +36,18 @@ jobs:
             fi
           done
 
-      - name: Build final package
+      - name: Prepare dist folder
         run: |
           VERSION=${{ env.VERSION }}
           mkdir -p dist
           cp build/*.zip dist/
           cp pkg_quiztools.xml dist/
           cp pkg_quiztools_script.php dist/
-
-          mkdir -p output
-          FINAL="pkg_quiztools_${VERSION}.zip"
-
-          cd dist
-          zip -r "../output/$FINAL" * 
-          cd ..
-          ls -lh output
+          ls -lh dist
 
       - name: Upload final package
         uses: actions/upload-artifact@v4
         with:
           name: pkg_quiztools_${{ env.VERSION }}
-          path: output/
+          path: dist/
           retention-days: 1
