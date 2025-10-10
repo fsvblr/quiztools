@@ -38,23 +38,20 @@ jobs:
 
       - name: Build final package
         run: |
-          cd build
-          cp ../pkg_quiztools.xml .
-          cp ../pkg_quiztools_script.php .
-
+          VERSION=${{ env.VERSION }}
+          mkdir -p dist
+          cp build/*.zip dist/
+          cp pkg_quiztools.xml dist/
+          cp pkg_quiztools_script.php dist/
+          cd dist
           FINAL="pkg_quiztools_${VERSION}.zip"
-
-          zip -r "$FINAL" \
-            $(ls *.zip | grep -v "$FINAL") \
-            pkg_quiztools.xml \
-            pkg_quiztools_script.php
-
-          echo "Contents of build/:"
+          zip -r "../$FINAL" ./*
+          cd ..
           ls -lh
 
       - name: Upload final package
         uses: actions/upload-artifact@v4
         with:
           name: pkg_quiztools_${{ env.VERSION }}
-          path: build/pkg_quiztools_${{ env.VERSION }}.zip
+          path: pkg_quiztools_${{ env.VERSION }}.zip
           retention-days: 1
