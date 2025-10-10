@@ -1,0 +1,52 @@
+name: Build QuizTools Package
+
+on:
+  push:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y zip unzip xmlstarlet
+
+      - name: Parse pkg_quiztools.xml and build sub-zips
+        run: |
+          mkdir build
+          VERSION=$(xmlstarlet sel -t -v "//version" pkg_quiztools.xml)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+          # Go through all <file>
+          xmlstarlet sel -t -m "//files/file" -v "@id" -o ";" -v "." -n pkg_quiztools.xml | while IFS=";" read -r ID NAME; do
+            echo "Packing folder $ID into $NAME.zip"
+            if [ -d "$ID" ]; then
+              zip -r "build/$NAME.zip" "$ID"
+            else
+              echo "WARNING: folder $ID not found"
+            fi
+          done
+
+      - name: Build final package
+        run: |
+          cd build
+          cp ../pkg_quiztools.xml .
+          cp ../pkg_quiztools_script.php .
+          zip -r "pkg_quiztools_${VERSION}.zip" *.zip pkg_quiztools.xml pkg_quiztools_script.php
+          ls -lh
+
+      - name: Upload final package
+        uses: actions/upload-artifact@v4
+        with:
+          name: pkg_quiztools_${{ env.VERSION }}
+          path: build/pkg_quiztools_${{ env.VERSION }}.zip
