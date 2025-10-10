@@ -16,6 +16,6 @@
         <file type="plugin" id="mresponse" group="quiztools">plg_quiztools_mresponse.zip</file>
     </files>
     <updateservers>
-		<server type="extension" name="QuizTools Updates">https://raw.githubusercontent.com/fsvblr/quiztools/refs/heads/master/quiztools.xml?token=GHSAT0AAAAAAC4SKSPMQ6SD44PVEO3JH7KY2HI4KGA</server>
+		<server type="extension" name="QuizTools Updates">https://raw.githubusercontent.com/fsvblr/quiztools/master/quiztools.xml</server>
     </updateservers>
 </extension>
