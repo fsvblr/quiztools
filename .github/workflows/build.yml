@@ -45,7 +45,7 @@ jobs:
           cp pkg_quiztools_script.php dist/
           cd dist
           FINAL="pkg_quiztools_${VERSION}.zip"
-          zip -r "../$FINAL" . -x "../$FINAL"
+          zip -r "../$FINAL" * -x "../$FINAL"
           cd ..
           ls -lh
 
