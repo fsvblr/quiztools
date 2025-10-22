@@ -6,7 +6,7 @@
     <authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
     <copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
     <license>GPL v3</license>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <scriptfile>pkg_quiztools_script.php</scriptfile>
     <files>
         <file type="component" id="com_quiztools">com_quiztools.zip</file>
