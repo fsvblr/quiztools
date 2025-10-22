@@ -3,26 +3,42 @@
 **QuizTools** is a modern quiz package for Joomla! 5.3 and above.  
 It provides a flexible **component** and a set of **question-type plugins**, making it easy to build structured, interactive quizzes for learning, training, or engagement.
 
-
 ## Features
 
-- **Native Joomla! 5.3+ support**  
-  Built with the latest Joomla framework standards in mind.
+This quiz package offers a complete toolkit for creating, managing, and delivering assessments with ease.
 
-- **Extensible architecture**  
-  Core component + modular plugins for question types.
+**Quiz setup and control**
+- Organize quizzes and questions into categories for clear structure
+- Build quizzes from scratch or assemble them from a shared question pool
+- Configure options such as auto‑start, resumable sessions, time limits, number of attempts, and custom pass thresholds
 
-- **Currently supported question types**:
-    - **Boilerplate** – informational text blocks (no scoring, context only)
-    - **Fill in the Blank** – open text input with distractors
-    - **Multiple Choice** – single correct answer
-    - **Multiple Response** – multiple correct answers
+**Question types**
+- **Boilerplate** – informational text blocks (no scoring, context only)
+- **Fill in the Blank** – open text input with distractors
+- **Multiple Choice** – single correct answer
+- **Multiple Response** – multiple correct answers
 
-- **Clean integration**  
-  Designed to work seamlessly with Joomla’s admin and frontend.
+**Feedback and results**
+- Instant feedback on each question during the quiz
+- Detailed results page after completion: answers given, correct solutions, explanations
+- Option to save results as PDF
 
-- **Customizable**  
-  Numerous built-in custom events allow you to extend functionality without hacks.
+**Certificates and recognition**
+- Built‑in certificate designer in the admin panel
+- Certificate download for learners who pass
+
+**Analytics and exports**
+- View and filter results both in the admin panel and on the front end
+- Export results to Excel for deeper analysis
+
+**Native Joomla! 5.3+ support**  
+- Built with the latest Joomla framework standards in mind.
+
+**Extensible architecture**  
+- Core component + modular plugins for question types.
+
+**Customizable**  
+- Numerous built-in custom events allow you to extend functionality without hacks.
 
 
 ## Installation
@@ -67,7 +83,5 @@ This project is released under the [GPL v3](LICENSE).
 
 Need features beyond the default QuizTools package?  
 We can **customize quizzes** to match your exact requirements — from new question types to tailored workflows.
-
 In addition, our team can develop **any Joomla! extension** or even a **full website solution** designed specifically for your project.
-
-Get in touch to discuss your ideas: sf.webdev.box@gmail.com
+Get in touch to discuss your ideas: [sf.webdev.box@gmail.com](mailto:sf.webdev.box@gmail.com)
