@@ -21,6 +21,47 @@ namespace Qt\Component\Quiztools\Site\Helper;
 abstract class RouteHelper
 {
     /**
+     * Get the list of Learning Paths route.
+     *
+     * @param   integer  $catid     The category ID.
+     *
+     * @return  string  The list of Learning Paths route.
+     *
+     * @since   1.5
+     */
+    public static function getLpathsRoute($catid = 0)
+    {
+        $link = 'index.php?option=com_quiztools&view=lpaths';
+
+        if ((int) $catid > 1) {
+            $link .= '&catid=' . $catid;
+        }
+
+        return $link;
+    }
+
+    /**
+     * Get the Learning Path route.
+     *
+     * @param   integer  $id        The route of the item.
+     * @param   integer  $catid     The category ID.
+     *
+     * @return  string  The Learning Path route.
+     *
+     * @since   1.5
+     */
+    public static function getLpathRoute($id, $catid = 0)
+    {
+        $link = 'index.php?option=com_quiztools&view=lpath&id=' . $id;
+
+        if ((int) $catid > 1) {
+            $link .= '&catid=' . $catid;
+        }
+
+        return $link;
+    }
+
+    /**
      * Get the list of quizzes route.
      *
      * @param   integer  $catid     The category ID.

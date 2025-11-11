@@ -15,7 +15,6 @@
 			type="usersresultslist"
 			label="COM_QUIZTOOLS_RESULTS_FILTER_USER_ID_LABEL"
 			default=""
-			layout="joomla.form.field.list-fancy-select"
 		>
 			<option value="">COM_QUIZTOOLS_RESULTS_FILTER_USER_ID_OPTION_SELECT</option>
 			<option value="0">COM_QUIZTOOLS_RESULTS_FILTER_USER_ID_OPTION_GUEST</option>
@@ -26,8 +25,7 @@
 			type="quizzeslist"
 			label="COM_QUIZTOOLS_RESULTS_FILTER_QUIZ_ID_LABEL"
 			default=""
-			class="js-select-submit-on-change"
-			layout="joomla.form.field.list-fancy-select"
+			class="form-select js-select-submit-on-change"
 		>
 			<option value="">COM_QUIZTOOLS_RESULTS_FILTER_QUIZ_ID_OPTION_SELECT</option>
 		</field>

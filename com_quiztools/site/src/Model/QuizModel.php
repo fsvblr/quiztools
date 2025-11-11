@@ -17,6 +17,7 @@ use Joomla\CMS\MVC\Model\ItemModel;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\ParameterType;
 use Joomla\Registry\Registry;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -155,12 +156,7 @@ class QuizModel extends ItemModel
 				// If the quiz description contains the "readmore" insert, the first part of the description
 	            // will be shown in the category, and the second part in the quiz.
 	            // Otherwise, the entire description will be shown in the quiz.
-	            $separator = '|||';
-	            $data->description = preg_replace('#<hr\s+id=("|\')system-readmore("|\')\s*\/*>#i', $separator, $data->description);
-	            $descriptions = explode($separator, $data->description);
-	            if (count($descriptions) > 1 && !empty(trim($descriptions[1]))) {
-		            $data->description = trim($descriptions[1]);
-	            }
+                $data->description = QuiztoolsHelper::getDescriptionInItem($data->description);
 
 	            $dispatcher = $this->getDispatcher();
 	            PluginHelper::importPlugin('content', null, true, $dispatcher);

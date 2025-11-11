@@ -1,0 +1,39 @@
+.quiztools.lpaths-list {
+    margin: 1rem auto 2rem;
+}
+.quiztools .lpaths-filters {
+    margin: 2rem 0;
+}
+.quiztools .lpaths-filters-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.quiztools .lpaths-filters .btn {
+    margin-top: -0.25rem;
+    padding: 0.125rem 0.75rem;
+}
+.quiztools .lpaths-filters select {
+    padding-top: 0.125rem;
+    padding-bottom: 0.125rem;
+}
+.quiztools .lpaths-list__item {
+    margin-bottom: 1.5rem;
+}
+.quiztools .lpaths-list__item-title a {
+    font-size: 1.25rem;
+}
+.quiztools .lpaths-list__item-desc {
+    margin-top: 0.5rem;
+}
+.quiztools .lpaths-list__pagination {
+    margin: 3rem 0 2rem;
+}
+@media (max-width: 36rem) {   /* 576px */
+    .quiztools .lpaths-filters-form {
+        display: block;
+    }
+    .quiztools .lpaths-filters select {
+        margin-top: 1.5rem;
+    }
+}

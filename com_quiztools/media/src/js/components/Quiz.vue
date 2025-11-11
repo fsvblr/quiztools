@@ -28,7 +28,7 @@
             </div>
 
             <div class="quiz-main">
-                <img v-if="this.isLoading" src="../../../images/spinning-dots.svg" class="preloader" alt="Preloader" />
+                <Preloader :isLoading />
                 <form @submit.prevent action="#" name="quiz_form" id="quizForm" class="form-validate">
                     <QuizDescription v-if="this.quiz.quiz_autostart===0 && !this.started" :description="this.quiz.description" />
                     <QuizQuestion v-if="this.started" :questions :questionsFeedback :showFeedback />
@@ -37,6 +37,7 @@
                     <input type="hidden" name="quiz[resultQuizId]" v-model="this.resultQuizId" />
                     <input type="hidden" name="quiz[uniqueId]" v-model="this.uniqueId" />
                     <input type="hidden" name="quiz[action]" v-model="this.action" />
+                    <input type="hidden" name="quiz[lp]" :value="JSON.stringify(this.lp)" />
                 </form>
             </div>
 
@@ -94,7 +95,7 @@
                     @click="this.clickButtonAction('start')" />
             </div>
         </div>
-        <QuizResult v-if="this.action === 'result'" :resultQuizId />
+        <QuizResult v-if="this.action === 'result'" :resultQuizId :isLP />
     </div>
 </template>
 
@@ -106,10 +107,12 @@ import QuizDescription from './QuizDescription.vue'
 import QuizQuestion from './QuizQuestion.vue'
 import QuizButtonAction from './QuizButtonAction.vue'
 import QuizResult from './QuizResult.vue'
+import Preloader from "./Preloader.vue"
 import axios from 'axios'
 
 export default {
     components: {
+        Preloader,
         QuizCountQuestions,
         QuizAnswerPoints,
         QuizTimer,
@@ -143,11 +146,18 @@ export default {
             totalQuestions: 1,
             pointsCurrentQuestion: 0,
             unansweredQuestionsIds: [],  // !!! array elements are strings
+
+            // Learning Path
+            isLP: false,
+            lp: {},
         }
     },
     methods: {
         clickButtonAction(action) {
             Joomla.removeMessages()
+            if (this.lp && this.lp.nextStep) {
+                this.lp.nextStep = null
+            }
             this.action = action
 
             if (['next', 'prev', 'finish'].includes(action)) {
@@ -192,6 +202,13 @@ export default {
             this.nextData = {}
             this.questionsFeedback = {}
             this.showFeedback = false
+
+            // 'this.lp.nextStep' must be set before 'this.action' is set
+            if (data.hasOwnProperty('lpNextStepData')) {
+                if (data.lpNextStepData.nextStep) {
+                    this.lp.nextStep = data.lpNextStepData.nextStep
+                }
+            }
 
             // If there is feedback in the answer:
             if (data.hasOwnProperty('questionsFeedback')) {
@@ -303,6 +320,40 @@ export default {
         updateAction(action) {
             this.action = action
         },
+        // the URL-query parser supports arbitrary nesting:
+        parseNestedParams(queryString) {
+            const params = new URLSearchParams(queryString)
+            const result = {}
+            for (const [key, value] of params.entries()) {
+                const keys = key.replace(/\]/g, '')       // removing the closing brackets
+                    .split(/\[|\]/g)                                     // splitting by opening brackets
+                let current = result
+                for (let i = 0; i < keys.length; i++) {
+                    const k = keys[i]
+                    if (i === keys.length - 1) {
+                        current[k] = value
+                    } else {
+                        if (!(k in current)) {
+                            current[k] = {}
+                        }
+                        current = current[k]
+                    }
+                }
+            }
+            return result
+        },
+    },
+    watch: {
+        action(newVal) {
+            // The quiz has completed within the Learning Path.
+            // Transferring data from the iframe (quiz) to the parent window (LP):
+            if (newVal === 'result' && this.isLP === true && this.lp?.nextStep) {
+                window.parent.postMessage(
+                    { 'quizFinished': true, 'lpNextStep': JSON.stringify(this.lp.nextStep) },
+                    '*'
+                )
+            }
+        }
     },
     mounted() {
         this.form = document.querySelector('#quizForm')
@@ -317,6 +368,14 @@ export default {
         if (this.quiz.questions_on_page === 1) {  // All questions on one page
             this.isFirstQuestion = true
             this.isLastQuestion = true
+        }
+
+        // URL parameters:
+        const parsedUrlParameters = this.parseNestedParams(window.location.search);
+
+        if (parsedUrlParameters.lp) {  // Quiz inside the Learning Path
+            this.isLP = true
+            this.lp = parsedUrlParameters.lp
         }
     },
 }

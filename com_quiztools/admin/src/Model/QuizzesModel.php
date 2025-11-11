@@ -41,7 +41,7 @@ class QuizzesModel extends ListModel
 		        'title', 'a.title',
 		        'catid', 'a.catid', 'category_title',
 		        'state', 'a.state',
-		        'created', 'a.created',
+                'type_access', 'a.type_access',
 		        'ordering', 'a.ordering',
 		        'total_score', 'a.total_score',
 		        'passing_score', 'a.passing_score',
@@ -75,6 +75,9 @@ class QuizzesModel extends ListModel
 	    $category_id = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id');
 	    $this->setState('filter.category_id', $category_id);
 
+        $type_access = $this->getUserStateFromRequest($this->context . '.filter.type_access', 'filter_type_access');
+        $this->setState('filter.type_access', $type_access);
+
 	    parent::populateState($ordering, $direction);
     }
 
@@ -95,6 +98,7 @@ class QuizzesModel extends ListModel
         $id .= ':' . $this->getState('filter.search');
         $id .= ':' . $this->getState('filter.state');
 	    $id .= ':' . $this->getState('filter.category_id');
+        $id .= ':' . $this->getState('filter.type_access');
 
         return parent::getStoreId($id);
     }
@@ -123,7 +127,7 @@ class QuizzesModel extends ListModel
 					$db->qn('a.total_score'),
 					$db->qn('a.passing_score'),
 					$db->qn('a.ordering'),
-					$db->qn('a.created'),
+					$db->qn('a.type_access'),
 					$db->qn('a.checked_out'),
 					$db->qn('a.checked_out_time'),
                     $db->qn('a.question_pool'),
@@ -153,6 +157,14 @@ class QuizzesModel extends ListModel
 			$query->where($db->qn('a.catid') . ' = :categoryId')
 				->bind(':categoryId', $category_id, ParameterType::INTEGER);
 		}
+
+        // Filter by type access (free / paid)
+        $type_access = $this->getState('filter.type_access');
+        if (is_numeric($type_access)) {
+            $type_access = (int) $type_access;
+            $query->where($db->qn('a.type_access') . ' = :typeAccess')
+                ->bind(':typeAccess', $type_access, ParameterType::INTEGER);
+        }
 
 		// Filter by search in title
 		if ($search = $this->getState('filter.search')) {
@@ -186,7 +198,7 @@ class QuizzesModel extends ListModel
 	}
 
 	/**
-	 * Getting a list of quizzes to build a select.
+	 * Getting a list of quizzes to build a 'select' in forms.
 	 *
 	 * @return array|mixed
 	 * @throws \Exception
@@ -197,7 +209,29 @@ class QuizzesModel extends ListModel
 		$query = $db->createQuery()
 			->select($db->qn('id', 'value'))
 			->select($db->qn('title', 'text'))
-			->from($db->qn('#__quiztools_quizzes'));
+            ->select($db->qn('type_access'))
+			->from($db->qn('#__quiztools_quizzes'))
+            ->order($db->qn('title') . ' ASC');
+
+        $state = (string) $this->getState('filter.state');
+        if (is_numeric($state)) {
+            $state = (int) $state;
+            $query->where($db->qn('state') . ' = :state')
+                ->bind(':state', $state, ParameterType::INTEGER);
+        }
+
+        // used in administrator/components/com_quiztools/forms/filter_questions.xml
+        $withoutPool = $this->getState('filter.withoutPool');
+        if ($withoutPool) {
+            $query->where($db->qn('question_pool') . '=' . $db->q('no'));
+        }
+
+        // used in components/com_quiztools/tmpl/quiz/default.xml (menu type)
+        $onlyFree = $this->getState('filter.onlyFree');
+        if ($onlyFree) {
+            $query->where($db->qn('type_access') . '=' . $db->q(0));
+        }
+
 		$db->setQuery($query);
 
 		try {

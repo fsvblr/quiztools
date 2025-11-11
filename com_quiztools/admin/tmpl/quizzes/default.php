@@ -79,7 +79,7 @@ $display_total_score_note = false;
 								<?php echo HTMLHelper::_('searchtools.sort', 'COM_QUIZTOOLS_QUIZZES_HEADING_PASSING_SCORE', 'a.passing_score', $listDirn, $listOrder); ?>
                             </th>
                             <th scope="col" class="w-15 text-center d-none d-md-table-cell">
-								<?php echo HTMLHelper::_('searchtools.sort', 'COM_QUIZTOOLS_QUIZZES_HEADING_CREATED', 'a.created', $listDirn, $listOrder); ?>
+								<?php echo HTMLHelper::_('searchtools.sort', 'COM_QUIZTOOLS_QUIZZES_HEADING_TYPE_ACCESS', 'a.type_access', $listDirn, $listOrder); ?>
                             </th>
                             <th scope="col" class="w-5 text-center d-none d-md-table-cell">
 								<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
@@ -136,12 +136,14 @@ $display_total_score_note = false;
                                         <div class="small break-word">
 											<?php echo Text::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
                                         </div>
+                                        <?php if ($item->question_pool === 'no'): ?>
                                         <div class="small break-word">
 		                                    <a href="<?php echo Route::_('index.php?option=com_quiztools&view=questions&filter[quiz_id]=' . (int) $item->id); ?>"
                                                target="_blank" rel="noopener noreferrer" >
 			                                    [<?php echo Text::_('COM_QUIZTOOLS_QUIZZES_TEXT_VIEW_QUESTIONS'); ?>]
                                             </a>
                                         </div>
+                                        <?php endif; ?>
                                     </div>
                                 </th>
                                 <td class="d-none d-md-table-cell">
@@ -161,7 +163,11 @@ $display_total_score_note = false;
 	                                <?php echo $item->passing_score; ?>
                                 </td>
                                 <td class="text-center d-none d-md-table-cell">
-		                            <?php echo date("Y-m-d", strtotime($item->created)); ?>
+                                    <?php if ((int) $item->type_access === 0): ?>
+                                        <?php echo Text::_('COM_QUIZTOOLS_QUIZZES_TEXT_TYPE_ACCESS_FREE'); ?>
+                                    <?php elseif ((int) $item->type_access === 1): ?>
+                                        <?php echo Text::_('COM_QUIZTOOLS_QUIZZES_TEXT_TYPE_ACCESS_PAID'); ?>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="text-center d-none d-md-table-cell">
 									<?php echo $item->id; ?>

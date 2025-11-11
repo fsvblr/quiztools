@@ -39,20 +39,24 @@ class Dispatcher extends ComponentDispatcher
 
 		if ($task == 'ajax.getQuizData') {
 			$view = 'quiz';
-		}
+		} else if ($task == 'ajax.getLpathData') {
+            $view = 'lpath';
+        }
 
-	    $checkAccess = in_array($view, ['quiz', 'results', 'result']);
+	    $checkAccess = in_array($view, ['quiz', 'lpath', 'lpaths', 'results', 'result']);
+        $isAjax = in_array($task, ['ajax.getQuizData', 'ajax.getLpathData']);
 
 	    if ($checkAccess && !$this->app->getIdentity()->authorise('core.admin', 'com_quiztools')) {
 		    $hasAccess = HTMLHelper::getServiceRegistry()->getService('quiztoolsaccess')->isAccess($view);
 
 		    if (!$hasAccess) {
-			    if ($task == 'ajax.getQuizData') {
+			    if ($isAjax) {
 				    echo new JsonResponse([], Text::_('JERROR_ALERTNOAUTHOR'), true);
 					jexit();
 			    } else {
 				    $this->app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'warning');
 			    }
+
 			    return;
 		    }
 	    }

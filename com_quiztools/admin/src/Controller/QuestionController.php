@@ -48,7 +48,7 @@ class QuestionController extends FormController
 		$category_id = 0;
 
 		if ($record_id) {
-            $category_id = (int)$this->getModel()->getItem($record_id)->catid;
+            $category_id = (int) $this->getModel()->getItem($record_id)->catid;
 		}
 
 		if ($category_id) {

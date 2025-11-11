@@ -117,7 +117,7 @@ class AccessService
 
 		// Check paid access
 		if ($quiz->type_access == QuiztoolsComponent::CONDITION_TYPE_ACCESS_PAID) {
-			if (!$this->checkQuizPaidAccess($quiz)) {
+			if (!$this->checkPaidAccess($quiz)) {
 				return false;
 			}
 		}
@@ -204,13 +204,6 @@ class AccessService
 		} else {
 			return false;
 		}
-	}
-
-	private function checkQuizPaidAccess($quiz)
-	{
-		// ToDo: Write a method when paid quizzes will be added.
-
-		return true;
 	}
 
     /**
@@ -362,5 +355,104 @@ class AccessService
         $hashesMatch = Crypt::timingSafeCompare($referenceHMAC, $tokenHMAC);
 
         return $hashesMatch;
+    }
+
+    /**
+     * Checking access to Learning Paths
+     *
+     * @return bool
+     */
+    private function isAccessLpaths()
+    {
+        $user = Factory::getApplication()->getIdentity();
+
+        // Learning Paths are available only to authorized users.
+        if ((int) $user->id === 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checking access to the Learning Path.
+     *
+     * @param   int  $pk  Primary key
+     *
+     * @return bool
+     */
+    private function isAccessLpath($pk)
+    {
+        $pk = (int) $pk;
+        $user = Factory::getApplication()->getIdentity();
+        $input = Factory::getApplication()->getInput();
+
+        if (!$pk) {
+            $pk = $input->getInt('id');
+
+            if (!$pk && ($input->get('task') == 'ajax.getLpathData')) {
+                $ajaxData = $input->get('lpath', [], 'ARRAY');
+                $pk = (int) $ajaxData['id'] ?: 0;
+            }
+        }
+
+        if (!$pk) {
+            return false;
+        }
+
+        // Learning Path is available only to authorized users.
+        if ((int) $user->id === 0) {
+            return false;
+        }
+
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $query = $db->createQuery()
+            ->select($db->qn(['a.id', 'a.type_access', 'a.access']))
+            ->from($db->qn('#__quiztools_lpaths', 'a'))
+            ->join(
+                'INNER',
+                $db->qn('#__categories', 'c'),
+                $db->qn('c.id') . ' = ' . $db->qn('a.catid')
+            )
+            ->where(
+                [
+                    $db->qn('a.id') . ' = :pk',
+                    $db->qn('a.state') . ' = 1',
+                    $db->qn('c.published') . ' = 1',
+                ]
+            )
+            ->bind(':pk', $pk, ParameterType::INTEGER)
+        ;
+
+        $lpath = $db->setQuery($query)->loadObject() ?: null;
+
+        if ($lpath === null) {
+            return false;
+        }
+
+        // Check access level
+        $groups = $user->getAuthorisedViewLevels();
+        if (!in_array($lpath->access, $groups)) {
+            return false;
+        }
+
+        // Check paid access
+        if ($lpath->type_access == QuiztoolsComponent::CONDITION_TYPE_ACCESS_PAID) {
+            if (!$this->checkPaidAccess($lpath)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function checkPaidAccess($item)
+    {
+        // ToDo: Write a method when paid quizzez && lpaths will be added.
+
+        // Check what is included in the subscription the user has paid for,
+        // and for which the terms of use (attempts, days, etc.) have not expired.
+
+        return true;
     }
 }

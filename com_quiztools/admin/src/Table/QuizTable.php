@@ -13,7 +13,7 @@ use Joomla\CMS\Application\ApplicationHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\Table;
-use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseInterface;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Registry\Registry;
 
@@ -39,12 +39,12 @@ class QuizTable extends Table
     /**
      * Constructor
      *
-     * @param   DatabaseDriver        $db          Database connector object
+     * @param   DatabaseInterface        $db          Database connector object
      * @param   ?DispatcherInterface  $dispatcher  Event dispatcher for this table
      *
      * @since   1.5
      */
-    public function __construct(DatabaseDriver $db, DispatcherInterface $dispatcher = null)
+    public function __construct(DatabaseInterface $db, DispatcherInterface $dispatcher = null)
     {
         $this->typeAlias = 'com_quiztools.quiz';
 
@@ -65,6 +65,7 @@ class QuizTable extends Table
     {
         $date = Factory::getDate()->toSql();
 	    $user = Factory::getApplication()->getIdentity();
+        $db = $this->getDatabase();
 
         try {
             parent::check();
@@ -128,8 +129,8 @@ class QuizTable extends Table
 	    // Set ordering
 	    if (empty($this->ordering)) {
 		    // Set ordering to last if ordering was 0
-		    $this->ordering = self::getNextOrder($this->_db->qn('catid') . ' = ' . ((int) $this->catid)
-			    . ' AND ' . $this->_db->qn('state') . ' >= 0');
+		    $this->ordering = self::getNextOrder($db->qn('catid') . ' = ' . ((int) $this->catid)
+			    . ' AND ' . $db->qn('state') . ' >= 0');
 	    }
 
 		// Set language
@@ -152,24 +153,25 @@ class QuizTable extends Table
      */
     public function bind($src, $ignore = [])
     {
-	    $src['question_pool_categories'] = (isset($src['question_pool_categories']) && \is_array($src['question_pool_categories']))
-		    ? $src['question_pool_categories'] : [];
-	    $registry = new Registry($src['question_pool_categories']);
-	    $src['question_pool_categories'] = (string) $registry;
+        if (isset($src['question_pool_categories']) && \is_array($src['question_pool_categories'])) {
+            $registry = new Registry($src['question_pool_categories']);
+            $src['question_pool_categories'] = (string) $registry;
+        }
 
-	    $src['feedback_final_msg'] = (isset($src['feedback_final_msg']) && \is_array($src['feedback_final_msg']))
-		    ? $src['feedback_final_msg'] : [];
-	    $registry = new Registry($src['feedback_final_msg']);
-	    $src['feedback_final_msg'] = (string) $registry;
+        if (isset($src['feedback_final_msg']) && \is_array($src['feedback_final_msg'])) {
+            $registry = new Registry($src['feedback_final_msg']);
+            $src['feedback_final_msg'] = (string) $registry;
+        }
 
 	    // The `params` field is reserved for custom jobs. Used in custom plugins(?).
 	    if (!empty($src['id'])) {
-		    $query = $this->_db->getQuery(true)
-			    ->select($this->_db->qn(('params')))
-			    ->from($this->_db->qn($this->_tbl))
-			    ->where($this->_db->qn('id') . ' = ' . $this->_db->q((int) $src['id']));
-		    $this->_db->setQuery($query);
-		    $params = $this->_db->loadResult();
+            $db = $this->getDatabase();
+            $query = $db->createQuery()
+			    ->select($db->qn(('params')))
+			    ->from($db->qn($this->_tbl))
+			    ->where($db->qn('id') . ' = ' . $db->q((int) $src['id']));
+            $db->setQuery($query);
+		    $params = $db->loadResult();
 	    } else {
 		    $params = '';
 	    }
@@ -195,10 +197,10 @@ class QuizTable extends Table
 	public function store($updateNulls = true)
 	{
 		// Verify that the alias is unique
-		$table = new self($this->getDbo(), $this->getDispatcher());
+		$table = new self($this->getDatabase(), $this->getDispatcher());
 
 		if ($table->load(['alias' => $this->alias, 'catid' => $this->catid]) && ($table->id != $this->id || $this->id == 0)) {
-			throw new \Exception(Text::_('COM_QUIZTOOLS_ERROR_UNIQUE_ALIAS'));
+			throw new \Exception(Text::_('COM_QUIZTOOLS_QUIZ_ERROR_UNIQUE_ALIAS'));
 		}
 
 		return parent::store($updateNulls);

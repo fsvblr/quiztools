@@ -27,8 +27,11 @@
 			type="quizzeslist"
 			label="COM_QUIZTOOLS_QUESTIONS_FILTER_QUIZ_ID_LABEL"
 			default=""
+			class="form-select js-select-submit-on-change"
+			quizWithoutPool="true"
 		>
 			<option value="">COM_QUIZTOOLS_QUESTIONS_FILTER_QUIZ_ID_OPTION_SELECT</option>
+			<option value="0">COM_QUIZTOOLS_QUESTIONS_FILTER_QUIZ_ID_OPTION_POOL</option>
 		</field>
 
 		<field

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+	<layout title="COM_QUIZTOOLS_LPATH_VIEW_DEFAULT_TITLE" option="COM_QUIZTOOLS_LPATH_VIEW_DEFAULT_OPTION">
+		<message>
+			<![CDATA[COM_QUIZTOOLS_LPATH_VIEW_DEFAULT_DESC]]>
+		</message>
+	</layout>
+
+	<!-- Add fields to the request variables for the layout. -->
+	<fields name="request">
+		<fieldset name="request"
+			addfieldprefix="Qt\Component\Quiztools\Administrator\Field" >
+
+			<field
+				name="id"
+				type="lpathslist"
+				label="COM_QUIZTOOLS_LPATH_MENU_ITEM_CHOOSE_LPATH_LABEL"
+				default=""
+				required="true"
+				class="form-select"
+				id="lpath_id"
+				onlyFree="true"
+			>
+				<option value="">COM_QUIZTOOLS_LPATH_MENU_ITEM_CHOOSE_LPATH_OPTION_SELECT</option>
+			</field>
+		</fieldset>
+	</fields>
+</metadata>

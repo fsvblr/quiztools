@@ -88,6 +88,7 @@ class QuiztoolsComponent extends MVCComponent implements
         $sections = [
             'quiz' => 'quiztools_quizzes',
             'question' => 'quiztools_questions',
+            'lpath' => 'quiztools_lpaths',
         ];
 
         $table_name = $sections[$section] ?? 'quiztools_quizzes';

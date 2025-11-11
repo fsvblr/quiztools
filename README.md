@@ -12,6 +12,14 @@ This quiz package offers a complete toolkit for creating, managing, and deliveri
 - Build quizzes from scratch or assemble them from a shared question pool
 - Configure options such as auto‑start, resumable sessions, time limits, number of attempts, and custom pass thresholds
 
+**Learning Path integration**
+
+Beyond standalone quizzes, QuizTools now supports Learning Paths — structured sequences that can combine quizzes and articles into a guided journey.
+- Create multi‑step learning flows that mix assessments with reading materials
+- Define progression rules: require quiz completion before moving to the next article
+- Track learner progress across the entire path, not just individual quizzes
+- Use Learning Paths for courses, onboarding programs, or blended training scenarios
+
 **Question types**
 - **Boilerplate** – informational text blocks (no scoring, context only)
 - **Fill in the Blank** – open text input with distractors
@@ -61,8 +69,7 @@ This quiz package offers a complete toolkit for creating, managing, and deliveri
 ## Roadmap
 
 Planned improvements include:
-- Adding paid quizzes.
-- Creating learning paths.
+- Adding subscriptions for paid access to quizzes/learning paths.
 - Export-import of quizzes and questions.
 - Additional question types.
 - Enhanced reporting and analytics.

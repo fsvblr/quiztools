@@ -52,11 +52,12 @@
             name="type_access"
             type="list"
             label="COM_QUIZTOOLS_QUIZ_FIELD_TYPE_ACCESS_LABEL"
+            description="COM_QUIZTOOLS_QUIZ_FIELD_TYPE_ACCESS_DESC"
             default="0"
             validate="options"
         >
             <option value="0">COM_QUIZTOOLS_QUIZ_FIELD_TYPE_ACCESS_OPTION_FREE</option>
-            <!--<option value="1">COM_QUIZTOOLS_QUIZ_FIELD_TYPE_ACCESS_OPTION_PAID</option>-->
+            <option value="1">COM_QUIZTOOLS_QUIZ_FIELD_TYPE_ACCESS_OPTION_PAID</option>
         </field>
 
         <field

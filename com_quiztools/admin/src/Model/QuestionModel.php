@@ -136,9 +136,9 @@ class QuestionModel extends AdminModel
                 }
             }
 
-			// Convert the params field to an array.
-			$registry = new Registry($item->params);
-			$item->params = $registry->toArray();
+			// Convert the params field to an array. => in parent
+			//$registry = new Registry($item->params);
+			//$item->params = $registry->toArray();
 
 			if (!empty($item->type)) {
 				// Getting data from a question type plugin:

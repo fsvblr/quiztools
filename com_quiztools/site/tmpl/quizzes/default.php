@@ -11,7 +11,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
-use Qt\Component\Quiztools\Administrator\Extension\QuiztoolsComponent;
 use Qt\Component\Quiztools\Site\Helper\RouteHelper;
 
 /** @var \Qt\Component\Quiztools\Site\View\Quizzes\HtmlView $this */
@@ -44,11 +43,6 @@ $wa->useStyle('com_quiztools.quizzes');
                         <a href="<?php echo Route::_(RouteHelper::getQuizRoute($item->id, $item->catid)); ?>">
                             <?php echo $this->escape($item->title); ?>
                         </a>
-                        <?php if ($item->type_access == QuiztoolsComponent::CONDITION_TYPE_ACCESS_PAID) : ?>
-                            <span class="badge-access-paid">
-                                <?php echo Text::_('COM_QUIZTOOLS_QUIZZES_BADGE_ACCESS_PAID'); ?>
-                            </span>
-                        <?php endif; ?>
                     </div>
                     <?php if (!empty($item->description)): ?>
                         <div class="quizzes-list__item-desc">

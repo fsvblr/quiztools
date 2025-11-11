@@ -87,8 +87,8 @@ if (!empty($result->results_pdf)
     <?php endif; ?>
 
     <div class="quiz-result-block quiz-result-actions">
-        <div class="quiz-result-action">
-            <?php if (!empty($result->results_pdf)): ?>
+        <?php if (!empty($result->results_pdf)): ?>
+            <div class="quiz-result-action">
                 <img src="/media/com_quiztools/images/icon-pdf.svg" class="quiz-result-icon"
                     alt="<?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_PDF_ALT'); ?>" />
                 <a href="<?php echo Route::_('index.php?option=com_quiztools&task=result.getPdf&id=' . (int) $result->id .
@@ -96,10 +96,11 @@ if (!empty($result->results_pdf)
                 >
                     <?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_PDF_DOWNLOAD'); ?>
                 </a>
-            <?php endif; ?>
-        </div>
-        <div class="quiz-result-action">
-            <?php if (!empty($result->passed) && !empty($result->results_certificate)): ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($result->passed) && !empty($result->results_certificate)): ?>
+            <div class="quiz-result-action">
                 <img src="/media/com_quiztools/images/icon-award.svg" class="quiz-result-icon"
                     alt="<?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_CERTIFICATE_ALT'); ?>" />
                 <a href="<?php echo Route::_('index.php?option=com_quiztools&task=result.getCertificate&id=' . (int) $result->id .
@@ -107,15 +108,18 @@ if (!empty($result->results_pdf)
                 >
                     <?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_CERTIFICATE_DOWNLOAD'); ?>
                 </a>
-            <?php endif; ?>
-        </div>
-        <div class="quiz-result-action">
-            <img src="/media/com_quiztools/images/icon-reload.svg" class="quiz-result-icon"
-                 alt="<?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_QUIZ_AGAIN_ALT'); ?>" />
-            <a href="<?php echo Route::_('index.php?option=com_quiztools&view=quiz&id=' . (int) $result->quiz_id); ?>">
-                <?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_QUIZ_AGAIN'); ?>
-            </a>
-        </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!$isLP):  // This is NOT a Learning Path ?>
+            <div class="quiz-result-action">
+                <img src="/media/com_quiztools/images/icon-reload.svg" class="quiz-result-icon"
+                     alt="<?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_QUIZ_AGAIN_ALT'); ?>" />
+                <a href="<?php echo Route::_('index.php?option=com_quiztools&view=quiz&id=' . (int) $result->quiz_id); ?>">
+                    <?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_QUIZ_AGAIN'); ?>
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
 
     <?php if (!empty($result->results_with_questions) && !empty($result->results_questions)): ?>
