@@ -97,9 +97,9 @@ class QuizModel extends AdminModel
 	public function getItem($pk = null)
 	{
 		if ($item = parent::getItem($pk)) {
-			// Convert the params field to an array.
-			$registry = new Registry($item->params);
-			$item->params = $registry->toArray();
+			// Convert the params field to an array. => in parent
+			//$registry = new Registry($item->params);
+			//$item->params = $registry->toArray();
 
 			$registry = new Registry($item->question_pool_categories);
 			$item->question_pool_categories = $registry->toArray();

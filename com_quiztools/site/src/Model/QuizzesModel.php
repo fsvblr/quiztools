@@ -15,6 +15,7 @@ use Joomla\Database\ParameterType;
 use Joomla\Database\QueryInterface;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -41,10 +42,8 @@ class QuizzesModel extends ListModel
                 'id', 'a.id',
                 'title', 'a.title',
                 'alias', 'a.alias',
-                'catid', 'a.catid', 'category_title',
-                'type_access', 'a.type_access',  // free/paid
+                'catid', 'a.catid', 'category_title', 'category_id',
                 'ordering', 'a.ordering',
-	            'search', 'category_id',
             ];
         }
 
@@ -102,10 +101,6 @@ class QuizzesModel extends ListModel
 			$category_id = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id');
 		}
 	    $this->setState('filter.category_id', $category_id);
-
-		// type_access: free (0)/paid (1)
-	    $type_access = $this->getUserStateFromRequest($this->context . '.filter.type_access', 'filter_type_access');
-	    $this->setState('filter.type_access', $type_access);
     }
 
     /**
@@ -121,7 +116,6 @@ class QuizzesModel extends ListModel
     {
         $id .= ':' . $this->getState('filter.filter.search');
 	    $id .= ':' . $this->getState('filter.category_id');
-	    $id .= ':' . $this->getState('filter.type_access');
 
         return parent::getStoreId($id);
     }
@@ -148,7 +142,6 @@ class QuizzesModel extends ListModel
                     $db->qn('a.title'),
                     $db->qn('a.alias'),
 	                $db->qn('a.catid'),
-	                $db->qn('a.type_access'),
                     $db->qn('a.description'),
                     $db->qn('a.ordering'),
 	                $db->qn('c.title', 'category_title'),
@@ -158,6 +151,7 @@ class QuizzesModel extends ListModel
         )
 	        ->from($db->qn('#__quiztools_quizzes', 'a'))
             ->join('LEFT', $db->qn('#__categories', 'c'), $db->qn('c.id') . ' = ' . $db->qn('a.catid'))
+            ->where($db->qn('type_access') . ' = ' . $db->q(0))
         ;
 
         // Filter by access level.
@@ -174,14 +168,6 @@ class QuizzesModel extends ListModel
 		    $category_id = (int) $category_id;
 		    $query->where($db->qn('a.catid') . ' = :categoryId')
 			    ->bind(':categoryId', $category_id, ParameterType::INTEGER);
-	    }
-
-		// Filter by type_access: free (0)/paid (1) => ToDo
-	    $type_access = $this->getState('filter.type_access');
-	    if (is_numeric($type_access)) {
-		    $type_access = (int) $type_access;
-		    $query->where($db->qn('a.type_access') . ' = :typeAccess')
-			    ->bind(':typeAccess', $type_access, ParameterType::INTEGER);
 	    }
 
 	    // Filter by search by title, alias, id
@@ -220,18 +206,12 @@ class QuizzesModel extends ListModel
 
 		if (!empty($items)) {
 			foreach ($items as $item) {
-				$item->params = new Registry($item->params);
+                $registry = new Registry($item->params);
+                $item->params = $registry->toArray();
 
 				// If the quiz description contains the "readmore" insert, the first part of the description
 				// will be shown in the category. Otherwise, there is no quiz description in the category.
-				$separator = '|||';
-				$item->description = preg_replace('#<hr\s+id=("|\')system-readmore("|\')\s*\/*>#i', $separator, $item->description);
-				$descriptions = explode($separator, $item->description);
-				if (count($descriptions) > 1 && !empty(trim($descriptions[0]))) {
-					$item->description = trim($descriptions[0]);
-				} else {
-					$item->description = '';
-				}
+                $item->description = QuiztoolsHelper::getDescriptionInCategory($item->description);
 			}
 		}
 

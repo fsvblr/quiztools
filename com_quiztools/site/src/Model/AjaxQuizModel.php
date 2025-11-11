@@ -345,6 +345,20 @@ class AjaxQuizModel extends BaseDatabaseModel
 		$result['task'] = 'start';
 		$result['questions'] = $this->prepareQuestionsData($resultQuizId, $questionsIdsSet);
 
+        // If the quiz is within a learning path, mark the step as completed:
+        $lp = !empty($data['lp']) ? json_decode($data['lp'], true) : [];
+        if (!empty($lp['id'])) {
+            /** @var AjaxLpathModel $AjaxLpathModel */
+            $AjaxLpathModel = $app->bootComponent('com_quiztools')->getMVCFactory()
+                ->createModel('AjaxLpath', 'Site', ['ignore_request' => true]);
+            try {
+                $lpNextStep = $AjaxLpathModel->lpathMarkQuiz('start');
+            } catch (\Exception $e) {}
+            if (!empty($lpNextStep)) {
+                $result['lpNextStepData'] = $lpNextStep;
+            }
+        }
+
 		return $result;
 	}
 
@@ -480,6 +494,21 @@ class AjaxQuizModel extends BaseDatabaseModel
             if (empty($notAnsweredQuestionsIDs) || $quiz->skip_questions === 2) {  // Enable skip questions: Yes, and allow submit quiz with not answered questions
                 $this->setQuizFinished($quizResult, $quiz);
                 $result['task'] = 'result';
+
+                // If the quiz is within a learning path, mark the step as completed:
+                $lp = !empty($data['lp']) ? json_decode($data['lp'], true) : [];
+                if (!empty($lp['id'])) {
+                    /** @var AjaxLpathModel $AjaxLpathModel */
+                    $AjaxLpathModel = $app->bootComponent('com_quiztools')->getMVCFactory()
+                        ->createModel('AjaxLpath', 'Site', ['ignore_request' => true]);
+                    try {
+                        $lpNextStep = $AjaxLpathModel->lpathMarkQuiz('finish');
+                    } catch (\Exception $e) {}
+                    if (!empty($lpNextStep)) {
+                        $result['lpNextStepData'] = $lpNextStep;
+                    }
+                }
+
                 return $result;
             } else {
                 $action = 'next';
@@ -599,7 +628,8 @@ class AjaxQuizModel extends BaseDatabaseModel
 			$questions = $db->loadObjectList();
 		} catch (\Exception $e) {
 			Factory::getApplication()->enqueueMessage(
-				Text::sprintf('JLIB_DATABASE_ERROR_FUNCTION_FAILED', $e->getCode(), $e->getMessage()),
+				//Text::sprintf('JLIB_DATABASE_ERROR_FUNCTION_FAILED', $e->getCode(), $e->getMessage()),
+                'Error: ajaxQuiz, code 01',
 				'warning'
 			);
 
@@ -950,6 +980,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 
         $data = $input->get('quiz', [], 'ARRAY');
         $resultQuizId = (int) $data['resultQuizId'] ?: 0;
+        $isLP = isset($data['isLP']) ? filter_var($data['isLP'], FILTER_VALIDATE_BOOLEAN) : false;  // Learning Path
 
         /** @var ResultModel $modelResult */
         $modelResult = $app->bootComponent('com_quiztools')->getMVCFactory()
@@ -964,7 +995,7 @@ class AjaxQuizModel extends BaseDatabaseModel
         $result = $modelResult->getItem();
 
         $return = [
-            'html' => LayoutHelper::render('result', ['result' => $result]),
+            'html' => LayoutHelper::render('result', ['result' => $result, 'isLP' => $isLP]),
             'redirect' => [
                 'redirectAfterFinish' => $result->redirect_after_finish,
                 'redirectAfterFinishLink' => $result->redirect_after_finish_link,

@@ -81,4 +81,50 @@ class QuiztoolsHelper
 
         return $localTimeString;
     }
+
+    /**
+     * If Item's description contains the "readmore" insert,
+     * the first part of the description will be shown in the category.
+     * Otherwise, there is no description in the category.
+     *
+     * @param $description
+     * @return mixed|string
+     */
+    public static function getDescriptionInCategory($description = '')
+    {
+        $separator = '|||';
+
+        $description = preg_replace('#<hr\s+id=("|\')system-readmore("|\')\s*\/*>#i', $separator, $description);
+        $descriptions = explode($separator, $description);
+
+        if (count($descriptions) > 1 && !empty(trim($descriptions[0]))) {
+            $description = trim($descriptions[0]);
+        } else {
+            $description = '';
+        }
+
+        return $description;
+    }
+
+    /**
+     * If Item's description contains the "readmore" insert,
+     * the first part of the description will be shown in the category, and the second part in the item.
+     * Otherwise, the entire description will be shown in the item.
+     *
+     * @param $description
+     * @return mixed|string
+     */
+    public static function getDescriptionInItem($description = '')
+    {
+        $separator = '|||';
+
+        $description = preg_replace('#<hr\s+id=("|\')system-readmore("|\')\s*\/*>#i', $separator, $description);
+        $descriptions = explode($separator, $description);
+
+        if (count($descriptions) > 1 && !empty(trim($descriptions[1]))) {
+            $description = trim($descriptions[1]);
+        }
+
+        return $description;
+    }
 }

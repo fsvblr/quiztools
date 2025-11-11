@@ -9,10 +9,8 @@
 
 namespace Qt\Component\Quiztools\Administrator\Controller;
 
-use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
-use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Router\Route;
 use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 use Qt\Component\Quiztools\Administrator\Model\ResultsModel;
@@ -163,10 +161,8 @@ class ResultsController extends AdminController
         // Remove zero values resulting from input filter
         $cid = array_filter($cid);
 
-        /** @var MVCFactoryInterface $factory */
-        $factory = Factory::getApplication()->bootComponent('com_quiztools')->getMVCFactory();
         /** @var ResultsModel $model */
-        $model = $factory->createModel('Results', 'Administrator', ['ignore_request' => true]);
+        $model = $this->factory->createModel('Results', 'Administrator', ['ignore_request' => true]);
 
         // Forces the populateState() method to be called (and filling the '__state_set' property).
         // If it is called later, it will override the model's State.

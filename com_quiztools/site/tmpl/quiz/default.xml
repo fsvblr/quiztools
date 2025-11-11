@@ -17,7 +17,12 @@
 				label="COM_QUIZTOOLS_QUIZ_MENU_ITEM_CHOOSE_QUIZ_LABEL"
 				default=""
 				required="true"
-			/>
+				class="form-select"
+				id="quiz_id"
+				onlyFree="true"
+			>
+				<option value="">COM_QUIZTOOLS_QUIZ_MENU_ITEM_CHOOSE_QUIZ_OPTION_SELECT</option>
+			</field>
 		</fieldset>
 	</fields>
 </metadata>

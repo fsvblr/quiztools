@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" group="quiztools" method="upgrade">
 	<name>PLG_QUIZTOOLS_BOILERPLATE</name>
-	<creationDate>September 2025</creationDate>
+	<creationDate>November 2025</creationDate>
 	<authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
 	<copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
 	<license>GPL v3</license>
-	<version>1.0.1</version>
+	<version>1.1.0</version>
 	<description>PLG_QUIZTOOLS_BOILERPLATE_XML_DESCRIPTION</description>
 	<namespace path="src">Qt\Plugin\Quiztools\Boilerplate</namespace>
 	<scriptfile>script.php</scriptfile>

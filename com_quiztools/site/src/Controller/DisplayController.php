@@ -37,7 +37,7 @@ class DisplayController extends BaseController
     {
         $cachable = true;
 
-	    $view = $this->input->get('view', 'category');
+	    $view = $this->input->get('view', 'quizzes');
 	    $this->input->set('view', $view);
 
 	    if ($this->app->getIdentity()->id) {

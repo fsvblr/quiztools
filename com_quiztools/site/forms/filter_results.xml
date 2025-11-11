@@ -15,8 +15,7 @@
 			type="quizzeslist"
 			label="COM_QUIZTOOLS_RESULTS_FILTER_QUIZ_ID_LABEL"
 			default=""
-			class="js-select-submit-on-change"
-			layout="joomla.form.field.list-fancy-select"
+			class="form-select js-select-submit-on-change"
 		>
 			<option value="">COM_QUIZTOOLS_RESULTS_FILTER_QUIZ_ID_OPTION_SELECT</option>
 		</field>

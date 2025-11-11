@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" method="upgrade">
     <name>COM_QUIZTOOLS</name>
-    <creationDate>September 2025</creationDate>
+    <creationDate>November 2025</creationDate>
     <authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
     <copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
     <license>GPL v3</license>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <description>COM_QUIZTOOLS_XML_DESC</description>
     <namespace path="src">Qt\Component\Quiztools</namespace>
     <scriptfile>script.php</scriptfile>
@@ -47,6 +47,22 @@
     <administration>
         <menu img="class:fas fa-user-graduate">COM_QUIZTOOLS_MENU_TITLE</menu>
         <submenu>
+            <menu
+                link="option=com_categories&amp;extension=com_quiztools.lpath"
+                view="categories"
+                img="class:lpath-cat"
+                alt="QuizTools/Learning Path Categories"
+            >
+                COM_QUIZTOOLS_SUBMENU_LPATHS_CATEGORIES
+            </menu>
+            <menu
+                link="option=com_quiztools&amp;view=lpaths"
+                view="lpaths"
+                img="class:lpaths"
+                alt="QuizTools/Learning Paths"
+            >
+                COM_QUIZTOOLS_SUBMENU_LPATHS
+            </menu>
             <menu
                 link="option=com_categories&amp;extension=com_quiztools"
                 view="categories"

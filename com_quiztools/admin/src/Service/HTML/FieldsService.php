@@ -34,7 +34,7 @@ class FieldsService
      *
      * @throws  \Exception
      */
-    public function categorieslist($extension='com_quiztools', $catid=0)
+    public function categorieslist($extension = 'com_quiztools', $catid = 0)
     {
 	    $user = Factory::getApplication()->getIdentity();
 

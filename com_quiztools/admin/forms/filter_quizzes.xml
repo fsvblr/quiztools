@@ -31,6 +31,18 @@
 			>
 			<option value="">JOPTION_SELECT_CATEGORY</option>
 		</field>
+
+		<field
+			name="type_access"
+			type="list"
+			label="COM_QUIZTOOLS_QUIZZES_FILTER_TYPE_ACCESS_LABEL"
+			default=""
+			class="form-select js-select-submit-on-change"
+		>
+			<option value="">COM_QUIZTOOLS_QUIZZES_FILTER_TYPE_ACCESS_OPTION_SELECT</option>
+			<option value="0">COM_QUIZTOOLS_QUIZZES_FILTER_TYPE_ACCESS_OPTION_FREE</option>
+			<option value="1">COM_QUIZTOOLS_QUIZZES_FILTER_TYPE_ACCESS_OPTION_PAID</option>
+		</field>
 	</fields>
 	<fields name="list">
 		<field
@@ -55,8 +67,8 @@
 			<option value="a.total_score DESC">COM_QUIZTOOLS_QUIZZES_FILTER_ORDERING_TOTAL_SCORE_DESC</option>
 			<option value="a.passing_score ASC">COM_QUIZTOOLS_QUIZZES_FILTER_ORDERING_PASSING_SCORE_ASC</option>
 			<option value="a.passing_score DESC">COM_QUIZTOOLS_QUIZZES_FILTER_ORDERING_PASSING_SCORE_DESC</option>
-			<option value="a.created ASC">COM_QUIZTOOLS_QUIZZES_FILTER_ORDERING_CREATED_ASC</option>
-			<option value="a.created DESC">COM_QUIZTOOLS_QUIZZES_FILTER_ORDERING_CREATED_DESC</option>
+			<option value="a.type_access ASC">COM_QUIZTOOLS_QUIZZES_FILTER_ORDERING_TYPE_ACCESS_ASC</option>
+			<option value="a.type_access DESC">COM_QUIZTOOLS_QUIZZES_FILTER_ORDERING_TYPE_ACCESS_DESC</option>
 			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
 			<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
 		</field>

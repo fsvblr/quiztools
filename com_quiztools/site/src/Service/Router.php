@@ -52,6 +52,13 @@ class Router extends RouterView
 	{
 		$this->db = $db;
 
+        $lpaths = (new RouterViewConfiguration('lpaths'));
+        $this->registerView($lpaths);
+
+        $lpath = new RouterViewConfiguration('lpath');
+        $lpath->setKey('id')->setParent($lpaths, 'catid');
+        $this->registerView($lpath);
+
 		$quizzes = (new RouterViewConfiguration('quizzes'));
 		$this->registerView($quizzes);
 
@@ -72,6 +79,57 @@ class Router extends RouterView
 		$this->attachRule(new StandardRules($this));
 		$this->attachRule(new NomenuRules($this));
 	}
+
+    /**
+     * Method to get the segment(s) for a Learning Path
+     *
+     * @param   string  $id     ID of the Learning Path to retrieve the segments for
+     * @param   array   $query  The request that is built right now
+     *
+     * @return  array  The segments of this item
+     */
+    public function getLpathSegment(int $id, array $query): array
+    {
+        $db = $this->db;
+        $querydb = $db->createQuery()
+            ->select($db->qn('alias'))
+            ->from($db->qn('#__quiztools_lpaths'))
+            ->where($db->qn('id') . ' = :id')
+            ->bind(':id', $id, ParameterType::INTEGER);
+
+        $segment = $db->setQuery($querydb)->loadResult() ?: null;
+
+        if ($segment === null) {
+            return [];
+        }
+
+        return [$segment];
+    }
+
+    /**
+     * Method to get Learning Path ID
+     *
+     * @param   string  $segment  Segment of the Learning Path to retrieve the ID for
+     * @param   array   $query    The request that is parsed right now
+     *
+     * @return  mixed   The id of this item or false
+     */
+    public function getLpathId(string $segment, array $query): bool|int
+    {
+        $db = $this->db;
+        $querydb = $db->createQuery()
+            ->select($db->qn('id'))
+            ->from($db->qn('#__quiztools_lpaths'))
+            ->where($db->qn('alias') . ' = :segment')
+            ->bind(':segment', $segment);
+
+        if (!empty($query['catid'])) {
+            $querydb->where($db->qn('catid') . ' = :catId')
+                ->bind(':catId', $query['catid'], ParameterType::INTEGER);
+        }
+
+        return  $db->setQuery($querydb)->loadResult() ?: false;
+    }
 
 	/**
 	 * Method to get the segment(s) for a quiz
@@ -161,7 +219,10 @@ class Router extends RouterView
 	 */
 	public function build(&$query)
 	{
-		if (isset($query['view']) && $query['view'] == 'quizzes' && isset($query['catid'])) {
+		if (isset($query['view'])
+            && ($query['view'] == 'quizzes' || $query['view'] == 'lpaths')
+                && isset($query['catid'])
+        ) {
 			unset($query['catid']);
 		}
 

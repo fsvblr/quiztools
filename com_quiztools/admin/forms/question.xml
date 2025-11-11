@@ -15,7 +15,10 @@
             type="quizzeslist"
             label="COM_QUIZTOOLS_QUESTION_FIELD_QUIZ_ID_LABEL"
             default="0"
-        />
+            class="form-select"
+        >
+            <option value="0">COM_QUIZTOOLS_QUESTION_FIELD_QUIZ_ID_OPTION_POOL</option>
+        </field>
 
         <field
             name="catid"

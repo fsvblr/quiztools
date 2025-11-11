@@ -11,7 +11,7 @@ namespace Qt\Component\Quiztools\Administrator\Table;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Table\Table;
-use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseInterface;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Registry\Registry;
 
@@ -37,12 +37,12 @@ class ResultQuizTable extends Table
     /**
      * Constructor
      *
-     * @param   DatabaseDriver        $db          Database connector object
+     * @param   DatabaseInterface        $db          Database connector object
      * @param   ?DispatcherInterface  $dispatcher  Event dispatcher for this table
      *
      * @since   1.5
      */
-    public function __construct(DatabaseDriver $db, DispatcherInterface $dispatcher = null)
+    public function __construct(DatabaseInterface $db, DispatcherInterface $dispatcher = null)
     {
         $this->typeAlias = 'com_quiztools.result.quiz';
 
@@ -95,12 +95,13 @@ class ResultQuizTable extends Table
     {
 	    // The `params` field is reserved for custom jobs. Used in custom plugins(?).
 	    if (!empty($src['id'])) {
-		    $query = $this->_db->getQuery(true)
-			    ->select($this->_db->qn(('params')))
-			    ->from($this->_db->qn($this->_tbl))
-			    ->where($this->_db->qn('id') . ' = ' . $this->_db->q((int) $src['id']));
-		    $this->_db->setQuery($query);
-		    $params = $this->_db->loadResult();
+            $db = $this->getDatabase();
+            $query = $db->createQuery()
+			    ->select($db->qn(('params')))
+			    ->from($db->qn($this->_tbl))
+			    ->where($db->qn('id') . ' = ' . $db->q((int) $src['id']));
+            $db->setQuery($query);
+		    $params = $db->loadResult();
 	    } else {
 		    $params = '';
 	    }

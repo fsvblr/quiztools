@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+	<layout title="COM_QUIZTOOLS_LPATHS_VIEW_DEFAULT_TITLE" option="COM_QUIZTOOLS_LPATHS_VIEW_DEFAULT_OPTION">
+		<message>
+			<![CDATA[COM_QUIZTOOLS_LPATHS_VIEW_DEFAULT_DESC]]>
+		</message>
+	</layout>
+
+	<fields name="request">
+		<fieldset name="request"
+			addfieldprefix="Joomla\Component\Categories\Administrator\Field"
+		>
+			<field
+				name="catid"
+				type="modal_category"
+				label="COM_QUIZTOOLS_LPATHS_MENU_ITEM_CHOOSE_CATEGORY_LABEL"
+				extension="com_quiztools.lpath"
+				select="true"
+				clear="true"
+			/>
+		</fieldset>
+	</fields>
+
+	<fields name="params">
+		<fieldset name="basic" label="COM_QUIZTOOLS_LPATHS_MENU_ITEM_FIELDSET_OPTIONS">
+			<field
+				name="show_lpaths_filters"
+				type="list"
+				label="COM_QUIZTOOLS_LPATHS_MENU_ITEM_OPTION_SHOW_FILTERS"
+				class="form-select-color-state"
+				validate="options"
+				default="1"
+			>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+		</fieldset>
+	</fields>
+</metadata>

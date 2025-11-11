@@ -13,7 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
-use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseInterface;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Registry\Registry;
 
@@ -39,12 +39,12 @@ class QuestionTable extends Table
 	/**
 	 * Constructor
 	 *
-	 * @param   DatabaseDriver        $db          Database connector object
+	 * @param   DatabaseInterface        $db          Database connector object
 	 * @param   ?DispatcherInterface  $dispatcher  Event dispatcher for this table
 	 *
 	 * @since   1.5
 	 */
-	public function __construct(DatabaseDriver $db, DispatcherInterface $dispatcher = null)
+	public function __construct(DatabaseInterface $db, DispatcherInterface $dispatcher = null)
 	{
 		$this->typeAlias = 'com_quiztools.question';
 
@@ -65,6 +65,7 @@ class QuestionTable extends Table
 	{
         $date = Factory::getDate()->toSql();
 		$user = Factory::getApplication()->getIdentity();
+        $db = $this->getDatabase();
 
 		try {
 			parent::check();
@@ -124,8 +125,8 @@ class QuestionTable extends Table
 		// Set ordering
 		if (empty($this->ordering)) {
 			// Set ordering to last if ordering was 0
-			$this->ordering = self::getNextOrder($this->_db->qn('catid') . ' = ' . ((int) $this->catid)
-				. ' AND ' . $this->_db->qn('state') . ' >= 0');
+			$this->ordering = self::getNextOrder($db->qn('catid') . ' = ' . ((int) $this->catid)
+				. ' AND ' . $db->qn('state') . ' >= 0');
 		}
 
 		return true;
@@ -145,12 +146,13 @@ class QuestionTable extends Table
 	{
 		// The `params` field is reserved for custom jobs. Used in custom plugins(?).
 		if (!empty($src['id'])) {
-			$query = $this->_db->getQuery(true)
-				->select($this->_db->qn(('params')))
-				->from($this->_db->qn($this->_tbl))
-				->where($this->_db->qn('id') . ' = ' . $this->_db->q((int) $src['id']));
-			$this->_db->setQuery($query);
-			$params = $this->_db->loadResult();
+            $db = $this->getDatabase();
+            $query = $db->createQuery()
+				->select($db->qn(('params')))
+				->from($db->qn($this->_tbl))
+				->where($db->qn('id') . ' = ' . $db->q((int) $src['id']));
+            $db->setQuery($query);
+			$params = $db->loadResult();
 		} else {
 			$params = '';
 		}

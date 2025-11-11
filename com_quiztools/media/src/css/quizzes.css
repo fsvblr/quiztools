@@ -23,15 +23,6 @@
 .quiztools .quizzes-list__item-title a {
     font-size: 1.25rem;
 }
-.quiztools .badge-access-paid {
-    background: #B6212B;
-    color: #fff;
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin: 0 0.5rem;
-    padding: 0.0625rem 0.25rem;
-}
 .quiztools .quizzes-list__item-desc {
     margin-top: 0.5rem;
 }
