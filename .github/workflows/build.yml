@@ -27,7 +27,7 @@ jobs:
           VERSION=$(xmlstarlet sel -t -v "//version" pkg_quiztools.xml)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-          xmlstarlet sel -t -m "//files/file" -v "@id" -n pkg_quiztools.xml | while read -r ID; do
+          xmlstarlet sel -t -m "//files/file" -v "@data-id" -n pkg_quiztools.xml | while read -r ID; do
             echo "Packing folder $ID into $ID.zip"
             if [ -d "$ID" ]; then
               (cd "$ID" && zip -r "../build/${ID}.zip" .)

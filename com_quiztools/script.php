@@ -10,9 +10,11 @@
 use Joomla\CMS\Application\AdministratorApplication;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Installer\InstallerScriptInterface;
+use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseInterface;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
+use Joomla\Filesystem\Exception\FilesystemException;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -69,9 +71,17 @@ return new class () implements ServiceProviderInterface {
 
 				public function postflight(string $type, InstallerAdapter $adapter): bool
 				{
+                    $this->assetsCreating($type);
+                    $this->assetsDeleting($type);
+
+                    return true;
+				}
+
+                private function assetsCreating($type)
+                {
                     // Creating a folder for certificates and initial certificate templates.
-                    $sourceDir = JPATH_SITE . '/media/com_quiztools/images/certificates';
-                    $destinationDir = JPATH_SITE . '/images/quiztools/certificates';
+                    $sourceDir = JPATH_ROOT . '/media/com_quiztools/images/certificates';
+                    $destinationDir = JPATH_ROOT . '/images/quiztools/certificates';
 
                     if (!file_exists($destinationDir)) {
                         mkdir($destinationDir, 0755, true);
@@ -87,10 +97,41 @@ return new class () implements ServiceProviderInterface {
                             }
                         }
                     }
+                }
 
-                    return true;
-				}
-			}
+                private function assetsDeleting($type)
+                {
+                    if ($type == 'uninstall') {
+                        $this->deleteDir(JPATH_ROOT . '/images/quiztools');
+                    }
+                }
+
+                private function deleteDir($dir) {
+                    if (!is_dir($dir)) {
+                        return false;
+                    }
+
+                    foreach (scandir($dir) as $item) {
+                        if ($item == '.' || $item == '..') {
+                            continue;
+                        }
+
+                        $path = $dir . DIRECTORY_SEPARATOR . $item;
+
+                        if (is_dir($path)) {
+                            $this->deleteDir($path);
+                        } else {
+                            try {
+                                unlink($path);
+                            } catch (FilesystemException $e) {
+                                echo Text::sprintf('FILES_JOOMLA_ERROR_FILE_FOLDER', $file) . '<br>';
+                            }
+                        }
+                    }
+
+                    return rmdir($dir);
+                }
+            }
 		);
 	}
 };
