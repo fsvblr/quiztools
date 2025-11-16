@@ -1,14 +1,9 @@
 <template>
-    <div id="quiz-description" class="quiz-description" v-html="this.description"></div>
+    <div id="quiz-description" class="quiz-description" v-html="description"></div>
 </template>
 
-<script>
-export default {
-    props: {
-        description: {
-            type: String,
-            default: ''
-        },
-    },
-}
+<script setup>
+const props = defineProps({
+    description: { type: String, default: '' },
+})
 </script>
