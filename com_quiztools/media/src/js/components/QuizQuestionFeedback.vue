@@ -1,27 +1,19 @@
 <template>
     <div
         class="quiz-question__feedback"
-        :class="this.feedback.class"
-        v-html="this.feedback.text"
+        :class="feedback.class"
+        v-html="feedback.text"
     ></div>
 </template>
 
-<script>
-export default {
-    props: {
-        feedback: {
-            type: Object,
-            default: {
-                text: {
-                    type: String,
-                    default: '',
-                },
-                class: {
-                    type: String,
-                    default: '',
-                },
-            },
-        },
+<script setup>
+const props = defineProps({
+    feedback: {
+        type: Object,
+        default: () => ({
+            text: '',
+            class: '',
+        }),
     },
-}
+})
 </script>

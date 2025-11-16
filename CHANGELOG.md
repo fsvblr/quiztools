@@ -1,8 +1,12 @@
 # Changelog
 
-## [1.1.1] - 2025-11-13
+## [1.1.2] - 2025-11-16
 
-### Added
+### Changed
+- Refactoring Vue Components.
+
+
+## [1.1.1] - 2025-11-13
 
 ### Changed
 - Refactoring of asset creation and deletion methods during package installation and removal.
