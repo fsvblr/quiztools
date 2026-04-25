@@ -19,7 +19,7 @@
 				required="true"
 				class="form-select"
 				id="quiz_id"
-				onlyFree="true"
+				typeAccess="0"
 			>
 				<option value="">COM_QUIZTOOLS_QUIZ_MENU_ITEM_CHOOSE_QUIZ_OPTION_SELECT</option>
 			</field>

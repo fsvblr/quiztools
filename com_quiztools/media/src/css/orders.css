@@ -1,0 +1,50 @@
+.quiztools.orders-list {
+    margin: 1rem auto 2rem;
+}
+.quiztools .orders-filters {
+    margin: 2rem 0;
+}
+.quiztools .orders-filters-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.quiztools .orders-filters .btn {
+    margin-top: -0.25rem;
+    padding: 0.125rem 0.75rem;
+}
+.quiztools .orders-list__item {
+    margin-bottom: 1.5rem;
+}
+.quiztools .orders-list__item-title,
+.quiztools .orders-list__item-title a {
+    font-size: 1.25rem;
+}
+.quiztools .orders-list__item-noaccess {
+    color: #AD0B00;
+    font-size: 0.75rem;
+}
+.quiztools .orders-list__item-data {
+    display: flex;
+    font-size: 0.75rem;
+}
+.quiztools .orders-list__data-separator {
+    display: inline-block;
+    width: 1rem;
+}
+.quiztools .orders-list__pagination {
+    margin: 3rem 0 2rem;
+}
+@media (max-width: 36rem) {   /* 576px */
+    .quiztools .orders-filters-form {
+        display: block;
+    }
+}
+@media (max-width: 25rem) {   /* 400px */
+    .quiztools .orders-list__item-data {
+        flex-direction: column;
+    }
+    .quiztools .orders-list__data-separator {
+        width: 0;
+    }
+}

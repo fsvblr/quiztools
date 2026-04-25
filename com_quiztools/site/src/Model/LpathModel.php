@@ -12,6 +12,7 @@ namespace Qt\Component\Quiztools\Site\Model;
 use Joomla\CMS\Event\Content;
 use Joomla\CMS\Event\Model;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\ItemModel;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -19,7 +20,9 @@ use Joomla\CMS\Router\Route;
 use Joomla\Component\Content\Site\Helper\RouteHelper as ArticleRouteHelper;
 use Joomla\Database\ParameterType;
 use Joomla\Registry\Registry;
+use Qt\Component\Quiztools\Administrator\Extension\QuiztoolsComponent;
 use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
+use Qt\Component\Quiztools\Administrator\Model\OrderModel;
 use Qt\Component\Quiztools\Site\Helper\RouteHelper as QuizRouteHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -58,6 +61,11 @@ class LpathModel extends ItemModel
 
         $params = $app->getParams();
         $this->setState('params', $params);
+
+        $order_id = $app->getInput()->getInt('order_id');
+        if (!empty($order_id)) {
+            $this->setState('lpath.orderId', $order_id);
+        }
     }
 
     /**
@@ -143,7 +151,7 @@ class LpathModel extends ItemModel
                 }
 
                 $stepsData = $this->getSteps($data->id);
-                $data->steps       = !empty($stepsData['steps']) ? $stepsData['steps'] : [];
+                $data->steps = !empty($stepsData['steps']) ? $stepsData['steps'] : [];
                 $data->countStepsTotal  = !empty($stepsData['countStepsTotal']) ? $stepsData['countStepsTotal'] : 0;
                 $data->countStepsPassed = !empty($stepsData['countStepsPassed']) ? $stepsData['countStepsPassed'] : 0;
 
@@ -288,7 +296,7 @@ class LpathModel extends ItemModel
         $quizzes = [];
         if (!empty($quizzes_ids)) {
             $query->clear();
-            $query->select($db->qn(['id', 'title', 'catid']))
+            $query->select($db->qn(['id', 'title', 'catid', 'type_access']))
                 ->select($db->qn('description', 'desc'))
                 ->from($db->qn('#__quiztools_quizzes'))
                 ->where($db->qn('state') . '=' . $db->q(1))
@@ -322,6 +330,7 @@ class LpathModel extends ItemModel
                     $steps[$i]->title = $quizzes[$steps[$i]->type_id]->title;
                     $steps[$i]->catid = $quizzes[$steps[$i]->type_id]->catid;
                     $steps[$i]->desc = $quizzes[$steps[$i]->type_id]->desc;
+                    $steps[$i]->type_access = (int) $quizzes[$steps[$i]->type_id]->type_access;
                 } else {
                     unset($steps[$i]);
                 }
@@ -344,15 +353,17 @@ class LpathModel extends ItemModel
             }
         }
 
+        $order_id = $this->getState('lpath.orderId');
+
         $first_not_passed = false;
-        $steps = array_map(function ($step) use (&$first_not_passed, $id) {
+        $steps = array_map(function ($step) use (&$first_not_passed, $id, $order_id) {
             $deleteId = true;
             $step->canStart = false;
             if ($step->passed || !$first_not_passed) {
                 if ($step->type === 'a') {
                     $step->link = Route::_(ArticleRouteHelper::getArticleRoute($step->type_id, $step->catid) . '&tmpl=component', false);
                 } else if ($step->type === 'q') {
-                    $step->link = Route::_(QuizRouteHelper::getQuizRoute($step->type_id, $step->catid)
+                    $step->link = Route::_(QuizRouteHelper::getQuizRoute($step->type_id, $step->catid, $order_id)
                         . '&lp[id]=' . $id .  '&lp[uniqueId]=' . urlencode($step->uniqueId) . '&tmpl=component', false);
                 }
                 $step->canStart = true;
@@ -367,6 +378,38 @@ class LpathModel extends ItemModel
             unset($step->catid);
             return $step;
         }, $steps);
+
+        $accessService = HTMLHelper::getServiceRegistry()->getService('quiztoolsaccess');
+
+        if (!empty((int) $order_id)) {
+            /** @var OrderModel $modelOrder */
+            $modelOrder = Factory::getApplication()->bootComponent('com_quiztools')->getMVCFactory()
+                ->createModel('Order', 'Administrator', ['ignore_request' => true]);
+            $order = $modelOrder->getItem((int) $order_id);
+        }
+
+        foreach ($steps as $step) {
+            if ($step->type === 'q' && $step->canStart && isset($step->type_id)) {
+                // The attempt limit in a FREE quiz matters:
+                if ($step->type_access == QuiztoolsComponent::CONDITION_TYPE_ACCESS_FREE) {
+                    $isAccessQuiz = $accessService->isAccessQuiz((int) $step->type_id, (int) $order_id);  // limit of attempts ?
+
+                // It is possible to have access to a Learning Path, but not have access to that Learning Path's quiz due to exhaustion of attempts:
+                } else if ($step->type_access == QuiztoolsComponent::CONDITION_TYPE_ACCESS_PAID) {
+                    if (!empty($order->attempts_used_byQuizzes[$step->type_id]) && isset($order->attempts_max)) {
+                        $isAccessQuiz = (int) $order->attempts_used_byQuizzes[$step->type_id] < (int) $order->attempts_max;
+                    }
+                }
+
+                if (isset($isAccessQuiz) && !$isAccessQuiz) {
+                    $step->link = '';
+                    $step->canStart = false;
+                    if (isset($step->type_id)) {
+                        unset($step->type_id);
+                    }
+                }
+            }
+        }
 
         $stepsData = [
             'steps' => $steps,
@@ -391,6 +434,8 @@ class LpathModel extends ItemModel
             return [];
         }
 
+        $order_id = $this->getState('lpath.orderId', 0);
+
         $db = $this->getDatabase();
         $query = $db->createQuery()
             ->select($db->qn(['type', 'type_id', 'unique_id']))
@@ -398,8 +443,11 @@ class LpathModel extends ItemModel
             ->where($db->qn('user_id') . ' = :userId')
             ->where($db->qn('lpath_id') . ' = :lpathId')
             ->where($db->qn('passed') . '=' . $db->q(1))
+            ->where($db->qn('order_id') . ' = :orderId')
             ->bind(':userId', $user->id, ParameterType::INTEGER)
-            ->bind(':lpathId', $id, ParameterType::INTEGER);
+            ->bind(':lpathId', $id, ParameterType::INTEGER)
+            ->bind(':orderId', $order_id, ParameterType::INTEGER);
+        ;
         $db->setQuery($query);
         $passedSteps = $db->loadObjectList();
 
@@ -433,7 +481,7 @@ class LpathModel extends ItemModel
             $isCurrent = false;
 
             foreach ($steps as $step) {
-                if ($isCurrent) {
+                if ($isCurrent && $step->canStart) {
                     $nextStep = $step;
                     break;
                 }

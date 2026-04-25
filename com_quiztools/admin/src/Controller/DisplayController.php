@@ -50,7 +50,7 @@ class DisplayController extends BaseController
         $id     = $this->input->getInt('id');
 
         // Check for edit form.
-        if (in_array($view, ['quiz', 'question', 'certificate'])
+        if (in_array($view, ['quiz', 'question', 'lpath', 'certificate', 'subscription', 'order'])
                 && $layout == 'edit'
                     && !$this->checkEditId('com_quiztools.edit.'.$view, $id)
         ) {
@@ -62,7 +62,10 @@ class DisplayController extends BaseController
             $redirect_list_view = [
 				'quiz'=>'quizzes',
 				'question'=>'questions',
-				'certificate'=>'certificates'
+                'lpath'=>'lpaths',
+				'certificate'=>'certificates',
+                'subscription'=>'subscriptions',
+                'order'=>'orders'
             ];
 
             $this->setRedirect(Route::_('index.php?option=com_quiztools&view=' . $redirect_list_view[$view], false));

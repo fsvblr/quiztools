@@ -11,3 +11,6 @@ DROP TABLE IF EXISTS `#__quiztools_results_users`;
 DROP TABLE IF EXISTS `#__quiztools_results_questions`;
 DROP TABLE IF EXISTS `#__quiztools_results_chains`;
 
+DROP TABLE IF EXISTS `#__quiztools_subscriptions`;
+DROP TABLE IF EXISTS `#__quiztools_orders`;
+DROP TABLE IF EXISTS `#__quiztools_order_users`;

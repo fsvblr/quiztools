@@ -54,7 +54,7 @@ class TagifyField extends FormField
 			$attr  .= ' required class="required"';
 		}
 
-	    /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
+        /** @var \Joomla\CMS\WebAsset\WebAssetManager $wa */
 	    $wa = Factory::getApplication()->getDocument()->getWebAssetManager();
 	    $wa->useStyle('com_quiztools.tagify')
             ->useScript('com_quiztools.tagify');

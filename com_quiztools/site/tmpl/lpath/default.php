@@ -9,6 +9,7 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 
@@ -28,6 +29,9 @@ $wa->useStyle('com_quiztools.lpath')
 
 $this->getDocument()->addScriptOptions('com_quiztools.lpath', (array) $this->lpath);
 $this->getDocument()->addScriptOptions('com_quiztools.token', array('value' => Session::getFormToken()));
+
+$order_id = Factory::getApplication()->getInput()->getInt('order_id', 0);
+$this->getDocument()->addScriptOptions('com_quiztools.orderId', $order_id);
 
 ?>
 <div class="quiztools lpath<?php echo !empty($this->pageclass_sfx) ? ' lpath-'.$this->pageclass_sfx : ''; ?>">

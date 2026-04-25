@@ -9,5 +9,5 @@
         if (to) {
             to.setAttribute('placeholder', Joomla.Text._('COM_QUIZTOOLS_RESULTS_FILTER_PLACEHOLDER_TO'))
         }
-    });
+    })
 })()

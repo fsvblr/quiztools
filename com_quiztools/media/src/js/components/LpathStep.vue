@@ -52,43 +52,84 @@ let timer = null
 const clickButtonAction = inject('clickButtonAction')
 const nextStep = inject('nextStep')
 
-// Setting the height of an iframe to its contents
-function updateHeight() {
-    try {
-        const iframe = iframeRef.value
-        const doc = iframe.contentDocument || iframe.contentWindow.document
-
-        iframe.style.height = 'auto'
-
-        const newHeight = Math.max(
-            doc.body.scrollHeight,
-            doc.documentElement.scrollHeight
-        )
-
-        iframe.style.height = newHeight + 'px'
-    } catch (e) {
-        //console.warn('Error measuring iframe height:', e)
-    }
-}
-
 function observeChanges() {
+    observer?.disconnect()
+
     const iframe = iframeRef.value
-    const doc = iframe.contentDocument || iframe.contentWindow.document
+    const doc = iframe.contentDocument || iframe.contentWindow?.document
 
     // Primary processing of links
     attachLinkHandler(doc)
 
     observer = new MutationObserver(() => {
-        updateHeight()
         attachLinkHandler(doc)
     })
 
     observer.observe(doc.body, {
         childList: true,
-        subtree: true,
-        attributes: true,
-        characterData: true
+        subtree: true
     })
+}
+
+let resizeObserver = null
+let lastHeight = 0
+// Variable to block cyclic updates
+let isAdjusting = false
+function observeResize() {
+    const iframe = iframeRef.value
+    if (!iframe) return
+
+    const doc = iframe.contentDocument || iframe.contentWindow?.document
+    if (!doc || !doc.body) return
+
+    // Just in case, we disable the previous observer:
+    if (resizeObserver) {
+        resizeObserver.disconnect()
+    }
+
+    resizeObserver = new ResizeObserver(() => {
+        if (isAdjusting) return  // Blocking the loop
+
+        try {
+            isAdjusting = true
+
+            // Seamless measurement method:
+            // 1. Maintain the current height to avoid jumping
+            const currentHeight = iframe.style.height
+
+            // 2. Temporarily "compress" to understand the minimum required content height
+            iframe.style.height = '1px'
+
+            // 3. Take the maximum value from possible height sources
+            const newHeight = Math.max(
+                doc.body.scrollHeight,
+                doc.documentElement.scrollHeight,
+                doc.body.offsetHeight,
+                doc.documentElement.offsetHeight
+            )
+
+            // 4. Apply the new height (with a small 2px margin for subpixel errors)
+            const finalHeight = Math.ceil(newHeight) + 2
+
+            if (Math.abs(finalHeight - lastHeight) > 2) {
+                lastHeight = finalHeight
+                iframe.style.height = `${finalHeight}px`
+            } else {
+                // If the difference is insignificant, we return it as it was
+                iframe.style.height = currentHeight
+            }
+
+        } catch (e) {
+            // silent
+        } finally {
+            // Unlock after completing all manipulations in the current frame
+            requestAnimationFrame(() => {
+                isAdjusting = false
+            })
+        }
+    })
+
+    resizeObserver.observe(doc.body)
 }
 
 // When click on any link inside the iframe, it should open in a separate tab.
@@ -141,7 +182,7 @@ function scrollToTop() {
         window.scrollTo({
             top: 0,
             behavior: 'smooth',
-        });
+        })
     }
 }
 
@@ -164,24 +205,29 @@ watch(
         iframe.addEventListener(
             'load',
             () => {
-                updateHeight()
-                observeChanges()
-                isVisible.value = true // Enable fade-in
-                emit('loaded')   // Informing the parent that the download is complete
+                // Give the browser a micropause to render conten
+                setTimeout(() => {
+                    observeResize()
+                    observeChanges()
 
-                // Show the "To list" button
-                showStepsButton.value = true
+                    isVisible.value = true // Enable fade-in
+                    emit('loaded')   // Informing the parent that the download is complete
 
-                // If there's an article:
-                if (newStep.type === 'a') {
-                    // Immediately mark it as started
-                    clickButtonAction({ type: 'markArticle', step: newStep, stepStage: 'start' })
-                    // After X seconds mark it as finished
-                    let minTime = (newStep.minTime && parseInt(newStep.minTime)) ? parseInt(newStep.minTime) : 10;
-                    timer = setTimeout(() => {
-                        clickButtonAction({ type: 'markArticle', step: props.step, stepStage: 'finish' })
-                    }, minTime * 1000)
-                }
+                    // Show the "To list" button
+                    showStepsButton.value = true
+
+                    // If there's an article:
+                    if (newStep.type === 'a') {
+                        // Immediately mark it as started
+                        clickButtonAction({ type: 'markArticle', step: newStep, stepStage: 'start' })
+                        if (timer) clearTimeout(timer)
+                        // After X seconds mark it as finished
+                        let minTime = (newStep.minTime && parseInt(newStep.minTime)) ? parseInt(newStep.minTime) : 10
+                        timer = setTimeout(() => {
+                            clickButtonAction({ type: 'markArticle', step: props.step, stepStage: 'finish' })
+                        }, minTime * 1000)
+                    }
+                }, 150)
             },
             { once: true }
         )
@@ -199,9 +245,8 @@ watch(
 )
 
 onBeforeUnmount(() => {
-    if (observer) {
-        observer.disconnect()
-    }
+    resizeObserver?.disconnect()
+    observer?.disconnect()
 
     if (timer) {
         clearTimeout(timer)

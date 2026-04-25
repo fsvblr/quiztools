@@ -145,10 +145,8 @@ class HtmlView extends BaseHtmlView
             $toolbar->preferences('com_quiztools');
         }
 
-        //$toolbar->help('COM_QUIZTOOLS_HELP_VIEW_RESULTS', true);
-
         $toolbar->help('COM_QUIZTOOLS_HELP_VIEW_CUSTOMERS', true)
             ->text('COM_QUIZTOOLS_HELP_VIEW_CUSTOMERS_BTN_TITLE')
-            ->icon('fas fa-cart-shopping');
+            ->icon('fas fa-headset');
     }
 }

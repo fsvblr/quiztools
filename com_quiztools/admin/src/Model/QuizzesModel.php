@@ -226,10 +226,12 @@ class QuizzesModel extends ListModel
             $query->where($db->qn('question_pool') . '=' . $db->q('no'));
         }
 
-        // used in components/com_quiztools/tmpl/quiz/default.xml (menu type)
-        $onlyFree = $this->getState('filter.onlyFree');
-        if ($onlyFree) {
-            $query->where($db->qn('type_access') . '=' . $db->q(0));
+        // Filter by type access (free / paid)
+        $type_access = $this->getState('filter.type_access');
+        if (is_numeric($type_access)) {
+            $type_access = (int) $type_access;
+            $query->where($db->qn('type_access') . ' = :typeAccess')
+                ->bind(':typeAccess', $type_access, ParameterType::INTEGER);
         }
 
 		$db->setQuery($query);

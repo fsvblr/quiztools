@@ -235,10 +235,12 @@ class LpathsModel extends ListModel
                 ->bind(':state', $state, ParameterType::INTEGER);
         }
 
-        // used in components/com_quiztools/tmpl/lpath/default.xml (menu type)
-        $onlyFree = $this->getState('filter.onlyFree');
-        if ($onlyFree) {
-            $query->where($db->qn('type_access') . '=' . $db->q(0));
+        // Filter by type access (free / paid)
+        $type_access = $this->getState('filter.type_access');
+        if (is_numeric($type_access)) {
+            $type_access = (int) $type_access;
+            $query->where($db->qn('type_access') . ' = :typeAccess')
+                ->bind(':typeAccess', $type_access, ParameterType::INTEGER);
         }
 
 		$db->setQuery($query);

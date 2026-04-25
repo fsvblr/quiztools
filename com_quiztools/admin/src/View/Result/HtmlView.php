@@ -114,6 +114,8 @@ class HtmlView extends BaseHtmlView
             $toolbar->cancel('result.cancelQuiz', 'JTOOLBAR_CANCEL');
         }
 
-        //$toolbar->help('COM_QUIZTOOLS_HELP_VIEW_RESULT', true);
+        $toolbar->help('COM_QUIZTOOLS_HELP_VIEW_CUSTOMERS', true)
+            ->text('COM_QUIZTOOLS_HELP_VIEW_CUSTOMERS_BTN_TITLE')
+            ->icon('fas fa-headset');
 	}
 }

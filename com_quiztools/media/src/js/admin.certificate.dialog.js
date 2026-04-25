@@ -17,9 +17,12 @@ window.addEventListener('load', function() {
             .then((result) => {
                 if(result) {
                     certificateDialog = new JoomlaDialog({
-                        popupType: 'iframe',
+                        popupType: 'image',
                         textHeader: certificateTitle,
                         src: 'index.php?option=com_quiztools&task=certificate.previewCertificate&id=' + certificateId + '&' + token + '=1',
+                        width: '80vw',
+                        height: '80vw',
+                        className: 'preview-certificate-dialog',
                     })
                     certificateDialog.show()
                 }

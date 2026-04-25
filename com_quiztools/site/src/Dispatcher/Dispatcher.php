@@ -37,22 +37,38 @@ class Dispatcher extends ComponentDispatcher
 		$view = $this->input->get('view');
 	    $task = $this->input->get('task');
 
-		if ($task == 'ajax.getQuizData') {
+        $ajaxLpathAction = '';
+        $isLpathPaid = false;
+
+		if ($task == 'ajaxQuiz.getQuizData') {
 			$view = 'quiz';
-		} else if ($task == 'ajax.getLpathData') {
+		} else if ($task == 'ajaxLpath.getLpathData') {
             $view = 'lpath';
+
+            $lpathData = $this->input->get('lpath', [], 'ARRAY');
+            $ajaxLpathAction = !empty($lpathData['action']) ? $lpathData['action'] : '';
+            $isLpathPaid = !empty($lpathData['orderId']) ? true : false;
         }
 
-	    $checkAccess = in_array($view, ['quiz', 'lpath', 'lpaths', 'results', 'result']);
-        $isAjax = in_array($task, ['ajax.getQuizData', 'ajax.getLpathData']);
+	    $checkAccess = in_array($view, ['quiz', 'lpath', 'lpaths', 'result', 'results', 'orders']);
+        $isAjax = in_array($task, ['ajaxQuiz.getQuizData', 'ajaxLpath.getLpathData']);
 
 	    if ($checkAccess && !$this->app->getIdentity()->authorise('core.admin', 'com_quiztools')) {
-		    $hasAccess = HTMLHelper::getServiceRegistry()->getService('quiztoolsaccess')->isAccess($view);
+            $accessService = HTMLHelper::getServiceRegistry()->getService('quiztoolsaccess');
+		    $hasAccess = $accessService->isAccess($view);
 
 		    if (!$hasAccess) {
 			    if ($isAjax) {
-				    echo new JsonResponse([], Text::_('JERROR_ALERTNOAUTHOR'), true);
-					jexit();
+                    if ($isLpathPaid && $ajaxLpathAction === 'steps') {
+                        // Redirect to the subscriptions page without displaying an error message.
+                        // Only if the Learning Path is paid and the "steps" are requested via ajax.
+                        $response = $accessService->getResponseAccessRestrictPaidLpath();
+                        echo new JsonResponse($response);
+                        jexit();
+                    } else {
+                        echo new JsonResponse([], Text::_('JERROR_ALERTNOAUTHOR'), true);
+                        jexit();
+                    }
 			    } else {
 				    $this->app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'warning');
 			    }

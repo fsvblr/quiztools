@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="quiztoolspayment" method="upgrade">
+	<name>PLG_QUIZTOOLSPAYMENT_VIRTUEMART</name>
+	<creationDate>2026-04-25</creationDate>
+	<author>QuizTools</author>
+	<authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
+	<copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
+	<license>GPL v3</license>
+	<version>1.2.0</version>
+	<description>PLG_QUIZTOOLSPAYMENT_VIRTUEMART_XML_DESCRIPTION</description>
+	<namespace path="src">Qt\Plugin\Quiztoolspayment\Virtuemart</namespace>
+	<scriptfile>script.php</scriptfile>
+	<media folder="media" destination="plg_quiztoolspayment_virtuemart">
+		<folder>js</folder>
+		<file>joomla.asset.json</file>
+	</media>
+	<files>
+		<folder plugin="virtuemart">services</folder>
+		<folder>src</folder>
+	</files>
+	<languages client="administrator">
+		<language tag="en-GB">language/en-GB/plg_quiztoolspayment_virtuemart.ini</language>
+		<language tag="en-GB">language/en-GB/plg_quiztoolspayment_virtuemart.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic" addfieldprefix="Qt\Plugin\Quiztoolspayment\Virtuemart\Field">
+				<field
+					name="access_statuses"
+					type="orderstatuseslist"
+					label="PLG_QUIZTOOLSPAYMENT_VIRTUEMART_FIELD_ACCESS_STATUSES_LABEL"
+					description="PLG_QUIZTOOLSPAYMENT_VIRTUEMART_FIELD_ACCESS_STATUSES_DESC"
+					default=""
+					multiple="true"
+					layout="joomla.form.field.list-fancy-select" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>

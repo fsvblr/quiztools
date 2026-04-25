@@ -40,9 +40,14 @@ $wa->useStyle('com_quiztools.quizzes');
             <?php foreach ($this->items as $item) : ?>
                 <div class="quizzes-list__item">
                     <div class="quizzes-list__item-title">
-                        <a href="<?php echo Route::_(RouteHelper::getQuizRoute($item->id, $item->catid)); ?>">
-                            <?php echo $this->escape($item->title); ?>
-                        </a>
+                        <?php if ($item->isAccessQuiz): ?>
+                            <a href="<?php echo Route::_(RouteHelper::getQuizRoute($item->id, $item->catid)); ?>">
+                                <?php echo $this->escape($item->title); ?>
+                            </a>
+                        <?php else: ?>
+                            <?php echo $this->escape($item->title); ?>&nbsp;
+                            <small>[<?php echo Text::_('COM_QUIZTOOLS_QUIZZES_ATTEMPTS_ARE_OVER'); ?>]</small>
+                        <?php endif; ?>
                     </div>
                     <?php if (!empty($item->description)): ?>
                         <div class="quizzes-list__item-desc">

@@ -38,9 +38,8 @@ class QuizzeslistField extends ListField
             $model_quizzes->setState('filter.withoutPool', true);
         }
 
-        $onlyFree = !empty($this->element['onlyFree']) ? $this->element['onlyFree'] : false;
-        if ($onlyFree) {
-            $model_quizzes->setState('filter.onlyFree', true);
+        if (isset($this->element['typeAccess'])) {  // 0-free/1-paid
+            $model_quizzes->setState('filter.type_access', (int) $this->element['typeAccess']);
         }
 
         $quizzes = $model_quizzes->getQuizzesList();
@@ -53,12 +52,14 @@ class QuizzeslistField extends ListField
         $options = $this->getOptions();
         $options = array_merge(parent::getOptions(), $options);
 
-        $options = array_map(function ($option) {
-            if (isset($option->type_access) && (int) $option->type_access === 1) {  // paid
-                $option->text = $option->text . ' [' . Text::_('COM_QUIZTOOLS_FIELD_QUIZZESLIST_TYPE_ACCESS_PAID') . ']';
-            }
-            return $option;
-        }, $options);
+        if (!isset($this->element['typeAccess'])) {  // all types
+            $options = array_map(function ($option) {
+                if (isset($option->type_access) && (int)$option->type_access === 1) {  // paid
+                    $option->text = $option->text . ' [' . Text::_('COM_QUIZTOOLS_FIELD_QUIZZESLIST_TYPE_ACCESS_PAID') . ']';
+                }
+                return $option;
+            }, $options);
+        }
 
         $idtag = $this->id ?: false;
         $class = $this->element['class'] ?: null;

@@ -1,0 +1,10 @@
+.reactivate-form {
+    padding: 1.5rem;
+}
+.reactivate-note {
+    margin-bottom: 3rem;
+}
+.dialog-order-reactivate dialog {
+    height: 37.5rem;
+    max-width: 56.25rem;
+}

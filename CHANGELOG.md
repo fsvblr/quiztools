@@ -1,10 +1,24 @@
 # Changelog
 
+## [1.2.0] - 2026-04-25
+
+### Added
+- Subscriptions to paid quizzes and Learning Paths.
+- Creating orders ("manual" payment).
+- Integration with the VirtueMart e-store component (automatic order creation).
+- Reactivating an order in the admin panel.
+
+### Changed
+- The minimum version of Joomla is from 5.3.0 to 5.4.0.
+- Dependencies updated to the latest stable versions.
+
+### Fixed
+- Lots of minor code fixes and refactoring of code fragments.
+
 ## [1.1.2] - 2025-11-16
 
 ### Changed
 - Refactoring Vue Components.
-
 
 ## [1.1.1] - 2025-11-13
 

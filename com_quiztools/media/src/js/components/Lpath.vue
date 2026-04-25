@@ -45,6 +45,11 @@ const sendRequest = async (actionType, stepData = step.value, stepStage = null) 
     formData.append('lpath[step]', JSON.stringify(stepData))
     formData.append(token.value, 1)
 
+    const orderId = Joomla.getOptions('com_quiztools.orderId')
+    if (parseInt(orderId) > 0) {
+        formData.append('lpath[orderId]', orderId)
+    }
+
     if (actionType === 'markArticle' && stepStage) {
         formData.append('lpath[stepStage]', stepStage)
     }
@@ -100,8 +105,14 @@ const clickButtonAction = async ({ type, step: clickedStep, stepStage = null }) 
 }
 
 const processingResponse = (data) => {
-    if (data.hasOwnProperty('markedType')) {  // after action 'markArticle'
-        if (data.nextStep) {
+    // after action 'markArticle' or 'markQuiz'
+    if (data.hasOwnProperty('markedType')) {
+        if (data.nextStep && typeof data.nextStep === 'object') {
+            // To display the link to the next step, we need wait until the step 'article' is marked as 'finished' (lpath[stepStage] === 'finish')
+            if (data.markedType === 'a' && data?.markedArticlePrevStage && data.markedArticlePrevStage === 'start') {
+                data.nextStep.canStart = false
+            }
+
             nextStep.value = data.nextStep
         }
         return
@@ -113,7 +124,12 @@ const processingResponse = (data) => {
     step.value = {}
     action.value = 'steps'
 
-    if (data.hasOwnProperty('steps')) {
+    if (data.hasOwnProperty('steps') && typeof data.steps === 'object') {
+        if (typeof data.setRedirect === 'string' && data.setRedirect !== '') {
+            window.location.replace(data.setRedirect);
+            return;
+        }
+
         lpath.value.steps = data.steps.steps
         countStepsTotal.value = parseInt(data.steps.countStepsTotal)
         countStepsPassed.value = parseInt(data.steps.countStepsPassed)

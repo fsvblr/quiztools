@@ -9,6 +9,7 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 
@@ -39,6 +40,9 @@ $wa->useStyle('com_quiztools.quiz')
 
 $this->getDocument()->addScriptOptions('com_quiztools.quiz', (array) $this->quiz);
 $this->getDocument()->addScriptOptions('com_quiztools.token', array('value' => Session::getFormToken()));
+
+$order_id = Factory::getApplication()->getInput()->getInt('order_id', 0);
+$this->getDocument()->addScriptOptions('com_quiztools.orderId', $order_id);
 
 ?>
 <div class="quiztools quiz<?php echo !empty($this->pageclass_sfx) ? ' quiz-'.$this->pageclass_sfx : ''; ?>">

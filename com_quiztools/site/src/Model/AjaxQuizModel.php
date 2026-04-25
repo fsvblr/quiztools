@@ -45,6 +45,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 
 		$data = $input->get('quiz', [], 'ARRAY');
 		$quiz_id = (int) $data['id'] ?: 0;
+        $order_id = isset($data['orderId']) ? (int) $data['orderId'] : 0;
 
 		/** @var QuizModel $model_quiz */
 		$model_quiz = $app->bootComponent('com_quiztools')->getMVCFactory()
@@ -72,11 +73,13 @@ class AjaxQuizModel extends BaseDatabaseModel
             $query->clear();
             $query->select($db->qn(['id', 'unique_id', 'start_datetime']))  // `start_datetime` in UTC
                 ->from($db->qn('#__quiztools_results_quizzes'))
-                ->where($db->qn('quiz_id') . ' = :quiz_id')
-                ->where($db->qn('user_id') . ' = :user_id')
+                ->where($db->qn('quiz_id') . ' = :quizId')
+                ->where($db->qn('user_id') . ' = :userId')
+                ->where($db->qn('order_id') . ' = :orderId')
                 ->where($db->qn('finished') . ' = ' . $db->q(0))
-                ->bind(':quiz_id', $quiz->id, ParameterType::INTEGER)
-                ->bind(':user_id', $user->id, ParameterType::INTEGER)
+                ->bind(':quizId', $quiz->id, ParameterType::INTEGER)
+                ->bind(':userId', $user->id, ParameterType::INTEGER)
+                ->bind(':orderId', $order_id, ParameterType::INTEGER)
                 ->order($db->qn('id') . ' DESC');
 
             if (!empty($unique_id)) {
@@ -155,6 +158,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 			$resultQuiz->sum_points_received = 0;
 			$resultQuiz->passed = 0;
 			$resultQuiz->finished = 0;
+            $resultQuiz->order_id = (int) $order_id;
 			$resultQuiz->start_datetime = Factory::getDate()->toSql();  // in UTC
 			$resultQuiz->sum_time_spent = 0;
 			$resultQuiz->unique_id = $unique_id;
@@ -196,7 +200,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 			} elseif ($quiz->question_pool == 'by_categories') {
 				$questionsIdsObjs = [];
 				foreach ($quiz->question_pool_categories as $pool_category) {
-					$questions_by_category = $this->getQuizQuestions(0, $pool_category->category_id, 'rand()', $pool_category->questions_qty, false);
+					$questions_by_category = $this->getQuizQuestions(0, $pool_category['category_id'], 'rand()', $pool_category['questions_qty'], false);
 					$questionsIdsObjs = array_merge($questionsIdsObjs, $questions_by_category);
 				}
 			} else { // =='no': pool is not used
@@ -268,18 +272,8 @@ class AjaxQuizModel extends BaseDatabaseModel
 			$query->clear();
 			$query->select($db->qn('ch.chain'))
 				->from($db->qn('#__quiztools_results_chains', 'ch'))
-				/*
-				->join(
-					'INNER',
-					$db->qn('#__quiztools_results_quizzes', 'r'),
-					$db->qn('r.unique_id') . ' = ' . $db->qn('ch.unique_id')
-				)
-				->where($db->qn('r.id') . ' = :id')
-				->bind(':id', $resultQuizId, ParameterType::INTEGER)
-				*/
                 ->where($db->qn('ch.result_quiz_id') . ' = :resultQuizId')
-                ->bind(':resultQuizId', $resultQuizId, ParameterType::INTEGER)
-            ;
+                ->bind(':resultQuizId', $resultQuizId, ParameterType::INTEGER);
 			$db->setQuery($query);
 			$chain = $db->loadResult();
 
@@ -981,6 +975,7 @@ class AjaxQuizModel extends BaseDatabaseModel
         $data = $input->get('quiz', [], 'ARRAY');
         $resultQuizId = (int) $data['resultQuizId'] ?: 0;
         $isLP = isset($data['isLP']) ? filter_var($data['isLP'], FILTER_VALIDATE_BOOLEAN) : false;  // Learning Path
+        $orderId = isset($data['orderId']) ? (int) $data['orderId'] : null;
 
         /** @var ResultModel $modelResult */
         $modelResult = $app->bootComponent('com_quiztools')->getMVCFactory()
@@ -995,7 +990,7 @@ class AjaxQuizModel extends BaseDatabaseModel
         $result = $modelResult->getItem();
 
         $return = [
-            'html' => LayoutHelper::render('result', ['result' => $result, 'isLP' => $isLP]),
+            'html' => LayoutHelper::render('result', ['result' => $result, 'isLP' => $isLP, 'orderId' => $orderId]),
             'redirect' => [
                 'redirectAfterFinish' => $result->redirect_after_finish,
                 'redirectAfterFinishLink' => $result->redirect_after_finish_link,
