@@ -23,6 +23,16 @@ $wa->useScript('table.columns')
     ->useScript('multiselect')
     ->useScript('joomla.dialog-autocreate');
 
+$wa->addInlineStyle('
+.preview-certificate-dialog .joomla-dialog-body {
+    display: flex;
+    justify-content: center;
+}
+.preview-certificate-dialog img {
+    max-width: 100%;
+}
+');
+
 $user      = $this->getCurrentUser();
 $user_id   = $user->id;
 $listOrder = $this->escape($this->state->get('list.ordering'));
@@ -101,7 +111,8 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                                     <img src="/images/quiztools/certificates/<?php echo $item->file; ?>"
                                          alt="<?php echo $this->escape($item->title); ?>"
                                          style="width: 80%; max-width: 50px; cursor: pointer;"
-                                         data-joomla-dialog='{"popupType": "iframe", "width":"80vw", "height": "80vh",
+                                         data-joomla-dialog='{"popupType": "image", "width":"80vw", "height": "80vh",
+                                            "className":"preview-certificate-dialog",
                                             "textHeader":"<?php echo $this->escape($item->title); ?>",
                                             "src":"index.php?option=com_quiztools&task=certificate.previewCertificate&id=<?php echo $item->id; ?>&<?php echo Session::getFormToken(); ?>=1"}'
                                     />

@@ -1,30 +1,39 @@
-# QuizTools for Joomla! 5.3+
+# QuizTools for Joomla! 5.4+
 
-**QuizTools** is a modern quiz package for Joomla! 5.3 and above.  
-It provides a flexible **component** and a set of **question-type plugins**, making it easy to build structured, interactive quizzes for learning, training, or engagement.
+**QuizTools** is a professional-grade quiz and e-learning ecosystem for Joomla! 5.4 and above.
+It provides a robust framework for creating interactive assessments, structured learning paths, and monetized educational content.
+
+## New Features in this Version
+
+The latest release transforms QuizTools into a commercial e-learning solution:
+- **Paid Subscriptions**: Sell access to individual quizzes or comprehensive Learning Paths.
+- **VirtueMart Integration**: Seamlessly connect with the VirtueMart e-commerce component for automatic order creation and payment processing.
+- **Order Management**: Create manual orders in the administrator panel for offline payments or custom access.
+- **Order Reactivation**: Easily reactivate or extend expired orders directly from the backend.
 
 ## Features
 
-This quiz package offers a complete toolkit for creating, managing, and delivering assessments with ease.
+**Monetization and Sales**
+- Integration with VirtueMart for automated sales flows. Tested on version 4.4.10.
+- Support for manual order entry and administrative override of access rights.
+- Subscription-based access control for educational content.
 
-**Quiz setup and control**
-- Organize quizzes and questions into categories for clear structure
-- Build quizzes from scratch or assemble them from a shared question pool
-- Configure options such as auto‑start, resumable sessions, time limits, number of attempts, and custom pass thresholds
+**Learning Path Integration**
+- Combine quizzes and articles into a guided educational journey.
+- Define progression rules.
+- Track learner progress across multi-step courses.
+- Suitable for onboarding, certification programs, and academic courses.
 
-**Learning Path integration**
-
-Beyond standalone quizzes, QuizTools now supports Learning Paths — structured sequences that can combine quizzes and articles into a guided journey.
-- Create multi‑step learning flows that mix assessments with reading materials
-- Define progression rules: require quiz completion before moving to the next article
-- Track learner progress across the entire path, not just individual quizzes
-- Use Learning Paths for courses, onboarding programs, or blended training scenarios
+**Quiz Configuration**
+- Organize content into hierarchical categories.
+- Assemble quizzes from a global question pool or create unique sets.
+- Advanced controls: time limits, attempt limits, pass thresholds, and resumable sessions.
 
 **Question types**
-- **Boilerplate** – informational text blocks (no scoring, context only)
-- **Fill in the Blank** – open text input with distractors
-- **Multiple Choice** – single correct answer
-- **Multiple Response** – multiple correct answers
+- **Boilerplate** – Static text and media blocks for context or instructions
+- **Fill in the Blank** – Text input with support for distractors
+- **Multiple Choice** – Single correct answer selection
+- **Multiple Response** – Selection of multiple correct answers
 
 **Feedback and results**
 - Instant feedback on each question during the quiz
@@ -39,7 +48,12 @@ Beyond standalone quizzes, QuizTools now supports Learning Paths — structured 
 - View and filter results both in the admin panel and on the front end
 - Export results to Excel for deeper analysis
 
-**Native Joomla! 5.3+ support**  
+**Using third-party plugins**
+
+Quiz descriptions, question text, question options and feedback are processed by content plugins. This allows for 
+the use of mathematical/chemical formulas, video/audio, and other content inserted via third-party content plugins at specified points.
+
+**Native Joomla! 5.4+ support**  
 - Built with the latest Joomla framework standards in mind.
 
 **Extensible architecture**  
@@ -48,14 +62,12 @@ Beyond standalone quizzes, QuizTools now supports Learning Paths — structured 
 **Customizable**  
 - Numerous built-in custom events allow you to extend functionality without hacks.
 
-
 ## Installation
 
 1. Download the latest release from the [Releases](../../releases) page.
 2. Install the package via the Joomla! Extension Manager.
-3. Please make sure the required **question plugins** are enabled.
+3. Please make sure the required **question / payment plugins** are enabled.
 4. Start creating quizzes in the Joomla! administrator panel.
-
 
 ## Usage
 
@@ -65,26 +77,22 @@ Beyond standalone quizzes, QuizTools now supports Learning Paths — structured 
 - Configure scoring, feedback, and display options.
 - Publish quizzes in menu items.
 
-
 ## Roadmap
 
 Planned improvements include:
-- Adding subscriptions for paid access to quizzes/learning paths.
+- Multi-user Subscriptions: "Teacher-Student" functionality allowing a single purchaser to share access with a group of students (including automated account creation).
 - Export-import of quizzes and questions.
 - Additional question types.
 - Enhanced reporting and analytics.
-
 
 ## Support & Contact
 
 Have questions or feature requests?
 - Open an [issue](../../issues) on GitHub
 
-
 ## License
 
 This project is released under the [GPL v3](LICENSE).  
-
 
 ## Custom Development
 

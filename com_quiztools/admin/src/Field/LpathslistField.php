@@ -33,9 +33,8 @@ class LpathslistField extends ListField
 
         $model_lpaths->setState('filter.state', 1);
 
-        $onlyFree = !empty($this->element['onlyFree']) ? $this->element['onlyFree'] : false;
-        if ($onlyFree) {
-            $model_lpaths->setState('filter.onlyFree', true);
+        if (isset($this->element['typeAccess'])) {  // 0-free/1-paid
+            $model_lpaths->setState('filter.type_access', (int) $this->element['typeAccess']);
         }
 
         $quizzes = $model_lpaths->getLearningPathsList();
@@ -48,12 +47,14 @@ class LpathslistField extends ListField
         $options = $this->getOptions();
         $options = array_merge(parent::getOptions(), $options);
 
-        $options = array_map(function ($option) {
-            if (isset($option->type_access) && (int) $option->type_access === 1) {  // paid
-                $option->text = $option->text . ' [' . Text::_('COM_QUIZTOOLS_FIELD_LPATHSLIST_TYPE_ACCESS_PAID') . ']';
-            }
-            return $option;
-        }, $options);
+        if (!isset($this->element['typeAccess'])) {  // all types
+            $options = array_map(function ($option) {
+                if (isset($option->type_access) && (int)$option->type_access === 1) {  // paid
+                    $option->text = $option->text . ' [' . Text::_('COM_QUIZTOOLS_FIELD_LPATHSLIST_TYPE_ACCESS_PAID') . ']';
+                }
+                return $option;
+            }, $options);
+        }
 
         $idtag = $this->id ?: false;
         $class = $this->element['class'] ?: null;

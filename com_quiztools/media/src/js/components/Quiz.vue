@@ -102,7 +102,7 @@
                 />
             </div>
         </div>
-        <QuizResult v-if="action === 'result'" :resultQuizId="resultQuizId" :isLP="isLP" />
+        <QuizResult v-if="action === 'result'" :quizId="quiz.id" :resultQuizId="resultQuizId" :isLP="isLP" :lp="lp" />
     </div>
 </template>
 
@@ -171,6 +171,12 @@ function clickButtonAction(act) {
     setTimeout(async () => {
         const formData = new FormData(form.value)
         formData.append(token.value, 1)
+
+        const orderId = Joomla.getOptions('com_quiztools.orderId')
+        if (parseInt(orderId) > 0) {
+            formData.append('quiz[orderId]', orderId)
+        }
+
         try {
             const response = await axios.post('/index.php?option=com_quiztools&task=ajaxQuiz.getQuizData', formData)
             if (response.data.success === true) {

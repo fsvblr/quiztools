@@ -36,7 +36,7 @@ class SelectquestiontypeModel extends ListModel
 
         $lang = Factory::getApplication()->getLanguage();
 
-        $plugins = (array) PluginHelper::getPlugin('quiztools');
+        $plugins = (array) PluginHelper::getPlugin('quiztools');  // Loads the published plugins
 
         if (!empty($plugins)) {
             foreach ($plugins as $plugin) {

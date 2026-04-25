@@ -19,7 +19,7 @@ use Joomla\Database\DatabaseInterface;
 // phpcs:enable PSR1.Files.SideEffects
 
 /**
- * QuizTools HTML helper
+ * QuizTools HTML (Fields) helper
  *
  * @since  3.0
  */

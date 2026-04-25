@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <extension type="package" version="5.3" method="upgrade">
     <name>QuizTools Package</name>
-    <creationDate>November 2025</creationDate>
+    <creationDate>2026-04-25</creationDate>
     <packagename>quiztools</packagename>
     <author>QuizTools</author>
     <authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
     <copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
     <license>GPL v3</license>
-    <version>1.1.2</version>
+    <version>1.2.0</version>
     <scriptfile>pkg_quiztools_script.php</scriptfile>
     <files>
         <file type="component" id="com_quiztools" data-id="com_quiztools">com_quiztools.zip</file>
@@ -15,6 +15,7 @@
         <file type="plugin" id="boilerplate" group="quiztools" data-id="plg_quiztools_boilerplate">plg_quiztools_boilerplate.zip</file>
         <file type="plugin" id="mchoice" group="quiztools" data-id="plg_quiztools_mchoice">plg_quiztools_mchoice.zip</file>
         <file type="plugin" id="mresponse" group="quiztools" data-id="plg_quiztools_mresponse">plg_quiztools_mresponse.zip</file>
+        <file type="plugin" id="virtuemart" group="quiztoolspayment" data-id="plg_quiztoolspayment_virtuemart">plg_quiztoolspayment_virtuemart.zip</file>
     </files>
     <updateservers>
 		<server type="extension" name="QuizTools Updates">https://raw.githubusercontent.com/fsvblr/quiztools/master/quiztools.xml</server>

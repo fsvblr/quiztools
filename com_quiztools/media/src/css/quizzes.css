@@ -20,8 +20,11 @@
 .quiztools .quizzes-list__item {
     margin-bottom: 1.5rem;
 }
-.quiztools .quizzes-list__item-title a {
+.quiztools .quizzes-list__item-title {
     font-size: 1.25rem;
+}
+.quiztools .quizzes-list__item-title small {
+    font-size: 0.875rem;
 }
 .quiztools .quizzes-list__item-desc {
     margin-top: 0.5rem;

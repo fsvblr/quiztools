@@ -128,6 +128,7 @@ class ResultModel extends BaseDatabaseModel
                 }
 
                 if ($layout === 'result') {
+                    $query->select($db->qn('q.catid', 'quiz_catid'));
                     $query->select($db->qn([
                         'q.redirect_after_finish', 'q.redirect_after_finish_link', 'q.redirect_after_finish_delay',
                         'q.results_by_categories', 'q.results_pdf', 'q.results_certificate',
@@ -430,7 +431,7 @@ class ResultModel extends BaseDatabaseModel
             }
         }
 
-        if (!$this->deleteRelatedData()) {
+        if (!$this->deleteRelatedData($pks)) {
             throw new \Exception(Text::_('COM_QUIZTOOLS_RESULT_ERROR_DELETING_RELATED_DATA'));
         }
 
@@ -442,9 +443,11 @@ class ResultModel extends BaseDatabaseModel
     /**
      * Deleting data associated with deleted results in all results tables.
      *
+     * @param array  $pks An array of record primary keys.
+     *
      * @return  boolean  True on success, false on failure.
      */
-    private function deleteRelatedData()
+    private function deleteRelatedData($pks = [])
     {
         $app = Factory::getApplication();
 
@@ -478,6 +481,19 @@ class ResultModel extends BaseDatabaseModel
             $db->execute();
         } catch (\RuntimeException $e) {
             $app->enqueueMessage($e->getMessage(), 'error');
+        }
+
+        if (!empty($pks)) {
+            $query->clear();
+            $query->delete($db->qn('#__quiztools_lpaths_users'))
+                ->where($db->qn('result_quiz_id') . ' <> 0')
+                ->where($db->qn('result_quiz_id') . " IN ('" . implode("','", $pks) . "')");
+            $db->setQuery($query);
+            try {
+                $db->execute();
+            } catch (\RuntimeException $e) {
+                $app->enqueueMessage($e->getMessage(), 'error');
+            }
         }
 
         $query->clear();

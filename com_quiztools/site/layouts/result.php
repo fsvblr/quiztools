@@ -15,13 +15,22 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
+use Qt\Component\Quiztools\Site\Helper\RouteHelper;
 
 extract($displayData);
+
+$order_id = !empty($orderId) ? (int) $orderId : null;  // Must be null for RouteHelper
+
+$accessService = HTMLHelper::getServiceRegistry()->getService('quiztoolsaccess');
+
+if (!$isLP) {  // This is NOT a Learning Path
+    $isAccessQuiz = $accessService->isAccessQuiz((int) $result->quiz_id, $order_id);
+}
 
 if (!empty($result->results_pdf)
     || (!empty($result->passed) && !empty($result->results_certificate))
 ) {
-    $token = HTMLHelper::getServiceRegistry()->getService('quiztoolsaccess')->getResultTokenForDisplay($result);
+    $token = $accessService->getResultTokenForDisplay($result);
 }
 
 ?>
@@ -111,11 +120,11 @@ if (!empty($result->results_pdf)
             </div>
         <?php endif; ?>
 
-        <?php if (!$isLP):  // This is NOT a Learning Path ?>
+        <?php if (!$isLP && $isAccessQuiz):  // This is NOT a Learning Path ?>
             <div class="quiz-result-action">
                 <img src="/media/com_quiztools/images/icon-reload.svg" class="quiz-result-icon"
                      alt="<?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_QUIZ_AGAIN_ALT'); ?>" />
-                <a href="<?php echo Route::_('index.php?option=com_quiztools&view=quiz&id=' . (int) $result->quiz_id); ?>">
+                <a href="<?php echo Route::_(RouteHelper::getQuizRoute((int) $result->quiz_id, (int) $result->quiz_catid, $order_id), false); ?>">
                     <?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_QUIZ_AGAIN'); ?>
                 </a>
             </div>

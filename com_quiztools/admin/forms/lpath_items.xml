@@ -13,6 +13,7 @@
         name="quiz_id"
         type="quizzeslist"
         label="COM_QUIZTOOLS_LPATH_FIELD_ITEM_QUIZ_ID_LABEL"
+        description="COM_QUIZTOOLS_LPATH_FIELD_ITEM_QUIZ_ID_DESC"
         default="0"
         class="form-select"
         showon="type:q"

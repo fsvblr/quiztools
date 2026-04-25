@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form addfieldprefix="Qt\Component\Quiztools\Administrator\Field">
+	<fields name="filter">
+		<field
+			name="search"
+			type="text"
+			inputmode="search"
+			label="COM_QUIZTOOLS_ORDERS_FILTER_FIELD_SEARCH_LABEL"
+			description="COM_QUIZTOOLS_ORDERS_FILTER_FIELD_SEARCH_DESC"
+			hint="JSEARCH_FILTER"
+		/>
+
+		<field
+			name="subscription_id"
+			type="subscriptionslist"
+			label="COM_QUIZTOOLS_ORDERS_FILTER_FIELD_SUBSCRIPTION_ID_LABEL"
+			default=""
+			class="form-select js-select-submit-on-change"
+		>
+			<option value="">COM_QUIZTOOLS_ORDERS_FILTER_FIELD_SUBSCRIPTION_ID_OPTION_SELECT</option>
+		</field>
+
+		<field
+			name="user_id"
+			type="usersorderslist"
+			label="COM_QUIZTOOLS_ORDERS_FILTER_FIELD_USER_ID_LABEL"
+			default=""
+			class="form-select js-select-submit-on-change"
+		>
+			<option value="">COM_QUIZTOOLS_ORDERS_FILTER_FIELD_USER_ID_OPTION_SELECT</option>
+		</field>
+
+		<field
+			name="status"
+			type="list"
+			label="COM_QUIZTOOLS_ORDERS_FILTER_FIELD_STATUS_LABEL"
+			default=""
+			class="form-select js-select-submit-on-change"
+		>
+			<option value="">COM_QUIZTOOLS_ORDERS_FILTER_FIELD_STATUS_OPTION_SELECT</option>
+			<option value="P">COM_QUIZTOOLS_ORDERS_FILTER_FIELD_STATUS_OPTION_PENDING</option>
+			<option value="C">COM_QUIZTOOLS_ORDERS_FILTER_FIELD_STATUS_OPTION_CONFIRMED</option>
+		</field>
+
+		<field
+			name="store_type"
+			type="list"
+			label="COM_QUIZTOOLS_ORDERS_FILTER_FIELD_STORE_TYPE_LABEL"
+			default=""
+			class="form-select js-select-submit-on-change"
+		>
+			<option value="">COM_QUIZTOOLS_ORDERS_FILTER_FIELD_STORE_TYPE_OPTION_SELECT</option>
+			<option value="manual">COM_QUIZTOOLS_ORDERS_FILTER_FIELD_STORE_TYPE_OPTION_MANUAL</option>
+		</field>
+	</fields>
+	<fields name="list">
+		<field
+			name="fullordering"
+			type="list"
+			label="JGLOBAL_SORT_BY"
+			statuses="*,0,1"
+			class="js-select-submit-on-change"
+			default="a.id DESC"
+			validate="options"
+			>
+			<option value="">JGLOBAL_SORT_BY</option>
+			<option value="subscription_title ASC">COM_QUIZTOOLS_ORDERS_FILTER_ORDERING_SUBSCRIPTION_TITLE_ASC</option>
+			<option value="subscription_title DESC">COM_QUIZTOOLS_ORDERS_FILTER_ORDERING_SUBSCRIPTION_TITLE_DESC</option>
+			<option value="user_name ASC">COM_QUIZTOOLS_ORDERS_FILTER_ORDERING_USER_NAME_ASC</option>
+			<option value="user_name DESC">COM_QUIZTOOLS_ORDERS_FILTER_ORDERING_USER_NAME_DESC</option>
+			<option value="a.status ASC">COM_QUIZTOOLS_ORDERS_FILTER_ORDERING_STATUS_ASC</option>
+			<option value="a.status DESC">COM_QUIZTOOLS_ORDERS_FILTER_ORDERING_STATUS_DESC</option>
+			<option value="a.store_type ASC">COM_QUIZTOOLS_ORDERS_FILTER_ORDERING_STORE_TYPE_ASC</option>
+			<option value="a.store_type DESC">COM_QUIZTOOLS_ORDERS_FILTER_ORDERING_STORE_TYPE_DESC</option>
+			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
+			<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
+		</field>
+
+		<field
+			name="limit"
+			type="limitbox"
+			label="JGLOBAL_LIST_LIMIT"
+			default="25"
+			class="js-select-submit-on-change"
+		/>
+	</fields>
+</form>

@@ -1,3 +1,19 @@
+body.certificate-image-loaded {
+    position: relative;
+}
+body.certificate-image-loaded::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    pointer-events: all;
+    z-index: 999999;
+}
+
 /*
 Workaround: The 'showon' field attribute fires faster than the canvas background image loads.
 And it is possible to click the 'add field' button in the subform ahead of time.
@@ -22,6 +38,13 @@ And it is possible to click the 'add field' button in the subform ahead of time.
     width: 100px;
 }
 .certificate-canvas-wrap {
+    overflow: auto;
+}
+
+.preview-certificate-dialog .joomla-dialog-body {
     display: flex;
     justify-content: center;
+}
+.preview-certificate-dialog img {
+    max-width: 100%;
 }

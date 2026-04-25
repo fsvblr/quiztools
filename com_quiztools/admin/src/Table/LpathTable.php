@@ -254,4 +254,16 @@ class LpathTable extends Table
 
 		return 'com_quiztools.lpath.' . (int) $this->$k;
 	}
+
+    /**
+     * Get the type alias
+     *
+     * @return  string  The alias as described above
+     *
+     * @since   4.0.0
+     */
+    public function getTypeAlias()
+    {
+        return $this->typeAlias;
+    }
 }

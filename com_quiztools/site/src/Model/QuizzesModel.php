@@ -10,11 +10,13 @@
 namespace Qt\Component\Quiztools\Site\Model;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\ParameterType;
 use Joomla\Database\QueryInterface;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
+use Qt\Component\Quiztools\Administrator\Extension\QuiztoolsComponent;
 use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -142,6 +144,7 @@ class QuizzesModel extends ListModel
                     $db->qn('a.title'),
                     $db->qn('a.alias'),
 	                $db->qn('a.catid'),
+                    $db->qn('a.limit_attempts'),
                     $db->qn('a.description'),
                     $db->qn('a.ordering'),
 	                $db->qn('c.title', 'category_title'),
@@ -151,7 +154,7 @@ class QuizzesModel extends ListModel
         )
 	        ->from($db->qn('#__quiztools_quizzes', 'a'))
             ->join('LEFT', $db->qn('#__categories', 'c'), $db->qn('c.id') . ' = ' . $db->qn('a.catid'))
-            ->where($db->qn('type_access') . ' = ' . $db->q(0))
+            ->where($db->qn('type_access') . ' = ' . $db->q(QuiztoolsComponent::CONDITION_TYPE_ACCESS_FREE))
         ;
 
         // Filter by access level.
@@ -205,6 +208,8 @@ class QuizzesModel extends ListModel
         $items  = parent::getItems();
 
 		if (!empty($items)) {
+            $accessService = HTMLHelper::getServiceRegistry()->getService('quiztoolsaccess');
+
 			foreach ($items as $item) {
                 $registry = new Registry($item->params);
                 $item->params = $registry->toArray();
@@ -212,6 +217,13 @@ class QuizzesModel extends ListModel
 				// If the quiz description contains the "readmore" insert, the first part of the description
 				// will be shown in the category. Otherwise, there is no quiz description in the category.
                 $item->description = QuiztoolsHelper::getDescriptionInCategory($item->description);
+
+                // The attempt limit in a FREE quiz matters:
+                if ($item->limit_attempts) {
+                    $item->isAccessQuiz = $accessService->isAccessQuiz((int) $item->id);
+                } else {
+                    $item->isAccessQuiz = true;
+                }
 			}
 		}
 

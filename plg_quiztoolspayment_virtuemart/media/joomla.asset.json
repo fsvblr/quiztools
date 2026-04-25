@@ -1,0 +1,21 @@
+{
+    "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+    "name": "plg_quiztoolspayment_virtuemart",
+    "version": "1.2.0",
+    "description": "Quiztools Payment Plugin.",
+    "license": "GPL-3.0-or-later",
+    "assets": [
+        {
+            "name": "plg_quiztoolspayment_virtuemart.vmAdminOrders",
+            "type": "script",
+            "uri": "plg_quiztoolspayment_virtuemart/vmAdminOrders.js",
+            "dependencies": [
+                "core"
+            ],
+            "attributes": {
+                "defer": true
+            },
+            "version": "202604251830"
+        }
+    ]
+}

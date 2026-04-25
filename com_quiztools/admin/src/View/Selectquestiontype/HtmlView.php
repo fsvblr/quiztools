@@ -72,5 +72,9 @@ class HtmlView extends BaseHtmlView
 
         $toolbar->standardButton('cancel', 'JTOOLBAR_CANCEL')
             ->onclick("location.href='index.php?option=com_quiztools&amp;view=questions'");
+
+        $toolbar->help('COM_QUIZTOOLS_HELP_VIEW_CUSTOMERS', true)
+            ->text('COM_QUIZTOOLS_HELP_VIEW_CUSTOMERS_BTN_TITLE')
+            ->icon('fas fa-headset');
     }
 }

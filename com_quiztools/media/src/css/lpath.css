@@ -36,6 +36,10 @@
     justify-content: right;
 }
 /* step */
+.lpath-app .lpath-step-wrap {
+    width: 100%;
+    position: relative;
+}
 .lpath-app .lpath-step-wrap .btn-list {
     display: flex;
     align-items: center;
@@ -75,11 +79,11 @@
 }
 .lpath-app .lpath-step-wrap .animated-iframe {
     border: none;
+    display: block;
     height: 0;
     opacity: 0;
-    transition:
-        height 0.4s ease,
-        opacity 0.6s ease; /* smooth animation of height and transparency */
+    overflow: hidden;
+    transition: opacity 0.6s ease;
     min-height: 20rem;
     width: 100%;
 }

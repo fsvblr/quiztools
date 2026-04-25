@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form addfieldprefix="Qt\Component\Quiztools\Administrator\Field">
+    <fieldset name="subscription">
+        <field
+            name="id"
+            type="text"
+            label="JGLOBAL_FIELD_ID_LABEL"
+            default="0"
+            readonly="true"
+            class="readonly"
+        />
+
+        <field
+            name="title"
+            type="text"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_TITLE_LABEL"
+            class="subscription-title"
+            required="true"
+        />
+
+        <field
+            name="payment_method"
+            type="list"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_PAYMENT_METHOD_LABEL"
+            class="form-select"
+            default="manual"
+            required="true"
+        >
+            <option value="manual">COM_QUIZTOOLS_SUBSCRIPTION_FIELD_PAYMENT_METHOD_OPTION_MANUAL</option>
+        </field>
+
+        <field
+            name="payment_manual_note"
+            type="note"
+            description="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_PAYMENT_MANUAL_NOTE_DESC"
+        />
+
+        <field
+            name="select_product_id][manual"
+            type="hidden"
+            default="0"
+        />
+
+        <!-- Not used in the layout. Used for form validation in core methods. -->
+        <field
+            name="product_id"
+            type="hidden"
+            default="0"
+        />
+
+        <field
+            name="users_max"
+            type="hidden"
+            default="1"
+        />
+    </fieldset>
+
+    <fieldset name="items">
+        <field
+            name="type"
+            type="list"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_TYPE_LABEL"
+            default="quiz"
+            class="form-select"
+        >
+            <option value="quiz">COM_QUIZTOOLS_SUBSCRIPTION_FIELD_TYPE_OPTION_QUIZ</option>
+            <option value="lpath">COM_QUIZTOOLS_SUBSCRIPTION_FIELD_TYPE_OPTION_LPATH</option>
+        </field>
+
+        <field
+            name="quiz_id"
+            type="quizzeslist"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_QUIZ_ID_LABEL"
+            default="0"
+            class="form-select"
+            typeAccess="1"
+            showon="type:quiz"
+        >
+            <option value="0">COM_QUIZTOOLS_SUBSCRIPTION_FIELD_QUIZ_ID_OPTION_SELECT</option>
+        </field>
+
+        <field
+            name="lpath_id"
+            type="lpathslist"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_LPATH_ID_LABEL"
+            default="0"
+            class="form-select"
+            typeAccess="1"
+            showon="type:lpath"
+        >
+            <option value="0">COM_QUIZTOOLS_SUBSCRIPTION_FIELD_LPATH_ID_OPTION_SELECT</option>
+        </field>
+
+        <field
+            name="access_type"
+            type="list"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_ACCESS_TYPE_LABEL"
+            default="days"
+            class="form-select"
+        >
+            <option value="days">COM_QUIZTOOLS_SUBSCRIPTION_FIELD_ACCESS_TYPE_OPTION_DAYS</option>
+            <option value="period">COM_QUIZTOOLS_SUBSCRIPTION_FIELD_ACCESS_TYPE_OPTION_PERIOD</option>
+        </field>
+
+        <field
+            name="access_days"
+            type="number"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_ACCESS_DAYS_LABEL"
+            description="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_ACCESS_DAYS_DESC"
+            default="0"
+            min="0"
+            max="10000"
+            step="1"
+            showon="access_type:days"
+        />
+
+        <field
+            name="access_from"
+            type="calendar"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_ACCESS_FROM_LABEL"
+            class="input-small"
+            filter="none"
+            singleheader="false"
+            weeknumbers="false"
+            showon="access_type:period"
+        />
+
+        <field
+            name="access_to"
+            type="calendar"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_ACCESS_TO_LABEL"
+            class="input-small"
+            filter="none"
+            singleheader="false"
+            weeknumbers="false"
+            showon="access_type:period"
+        />
+
+        <field
+            name="attempts"
+            type="number"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_ATTEMPTS_LABEL"
+            description="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_ATTEMPTS_DESC"
+            default="0"
+            min="0"
+            max="10000"
+            step="1"
+        />
+    </fieldset>
+
+    <fieldset name="publish">
+        <field
+            name="state"
+            type="list"
+            label="JSTATUS"
+            class="form-select-color-state"
+            default="1"
+            validate="options"
+        >
+            <option value="1">JPUBLISHED</option>
+            <option value="0">JUNPUBLISHED</option>
+        </field>
+
+        <field
+            name="asset_id"
+            type="hidden"
+            filter="unset"
+        />
+
+        <field
+            name="ordering"
+            type="ordering"
+            label="JFIELD_ORDERING_LABEL"
+            table="#__quiztools_subscriptions"
+        />
+
+        <field
+            name="created"
+            type="calendar"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_CREATED_LABEL"
+            translateformat="true"
+            showtime="true"
+            filter="user_utc"
+        />
+
+        <field
+            name="created_by"
+            type="user"
+            label="COM_QUIZTOOLS_SUBSCRIPTION_FIELD_CREATED_BY_LABEL"
+            validate="UserId"
+        />
+
+        <field
+            name="modified"
+            type="calendar"
+            label="JGLOBAL_FIELD_MODIFIED_LABEL"
+            class="readonly"
+            readonly="true"
+            translateformat="true"
+            showtime="true"
+            filter="user_utc"
+        />
+
+        <field
+            name="modified_by"
+            type="user"
+            label="JGLOBAL_FIELD_MODIFIED_BY_LABEL"
+            class="readonly"
+            readonly="true"
+            filter="unset"
+            validate="UserId"
+        />
+
+        <field
+            name="checked_out"
+            type="hidden"
+            filter="unset"
+        />
+
+        <field
+            name="checked_out_time"
+            type="hidden"
+            filter="unset"
+        />
+    </fieldset>
+</form>

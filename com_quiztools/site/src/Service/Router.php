@@ -19,6 +19,7 @@ use Joomla\CMS\Component\Router\Rules\StandardRules;
 use Joomla\CMS\Menu\AbstractMenu;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Database\ParameterType;
+use Qt\Component\Quiztools\Site\Service\RouterRules\OrderIdSegmentRules;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -73,10 +74,15 @@ class Router extends RouterView
         $result->setKey('id')->setParent($results);
         $this->registerView($result);
 
+        $orders = (new RouterViewConfiguration('orders'));
+        $this->registerView($orders);
+
 		parent::__construct($app, $menu);
 
 		$this->attachRule(new MenuRules($this));
 		$this->attachRule(new StandardRules($this));
+        // rule AFTER StandardRules:
+        $this->attachRule(new OrderIdSegmentRules($this));
 		$this->attachRule(new NomenuRules($this));
 	}
 
@@ -154,7 +160,7 @@ class Router extends RouterView
 			return [];
 		}
 
-		return [$segment];
+        return [$segment];
 	}
 
 	/**
