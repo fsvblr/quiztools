@@ -18,6 +18,6 @@
         <file type="plugin" id="virtuemart" group="quiztoolspayment" data-id="plg_quiztoolspayment_virtuemart">plg_quiztoolspayment_virtuemart.zip</file>
     </files>
     <updateservers>
-		<server type="extension" name="QuizTools Updates">https://raw.githubusercontent.com/fsvblr/quiztools/master/quiztools.xml</server>
+		<server type="extension" name="QuizTools Updates">https://raw.githubusercontent.com/fsvblr/updateservers/master/quiztools/quiztools.xml</server>
     </updateservers>
 </extension>
