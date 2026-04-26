@@ -30,7 +30,7 @@
 					type="orderstatuseslist"
 					label="PLG_QUIZTOOLSPAYMENT_VIRTUEMART_FIELD_ACCESS_STATUSES_LABEL"
 					description="PLG_QUIZTOOLSPAYMENT_VIRTUEMART_FIELD_ACCESS_STATUSES_DESC"
-					default=""
+					default="C"
 					multiple="true"
 					layout="joomla.form.field.list-fancy-select" />
 			</fieldset>

@@ -99,6 +99,8 @@ return new class () implements ServiceProviderInterface {
                 {
                     $db = $this->db;
                     $query = $db->createQuery();
+
+                    /*
                     $query->select($db->qn('params'))
                         ->from($db->qn('#__extensions'))
                         ->where($db->qn('type') . ' = ' . $db->q('plugin'))
@@ -115,18 +117,19 @@ return new class () implements ServiceProviderInterface {
 
                     $registry = new Registry($params);
                     $params = $registry->toArray();
-                    $params['access_statuses'] = "['C']";  // Confirmed
+                    $params['access_statuses'] = '["C"]';  // Confirmed
                     $registry = new Registry($params);
                     $params = $registry->toString();
 
                     $query->clear();
+                    */
                     $query->update($db->qn('#__extensions'))
 
                         // Although the plugin is installed, VirtueMart may not be installed.
                         // Payment plugins must be activated by the admin, and only the required ones.
                         ->set($db->qn('enabled') . ' = ' . $db->q('0'))
 
-                        ->set($db->qn('params') . ' = ' . $db->q($params))
+                        //->set($db->qn('params') . ' = ' . $db->q($params))
                         ->where($db->qn('type') . ' = ' . $db->q('plugin'))
                         ->where($db->qn('folder') . ' = ' . $db->q('quiztoolspayment'))
                         ->where($db->qn('element') . ' = ' . $db->q('virtuemart'));
