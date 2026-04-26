@@ -15,6 +15,7 @@ use Joomla\CMS\Log\Log;
 use Joomla\Database\DatabaseInterface;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
+use Joomla\Filesystem\Exception\FilesystemException;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -52,6 +53,9 @@ return new class () implements ServiceProviderInterface {
 
                 public function uninstall(InstallerAdapter $adapter): bool
                 {
+                    $this->deleteDir(JPATH_ROOT . '/plugins/quiztools');
+                    $this->deleteDir(JPATH_ROOT . '/plugins/quiztoolspayment');
+
                     return true;
                 }
 
@@ -77,6 +81,32 @@ return new class () implements ServiceProviderInterface {
                 public function postflight(string $type, InstallerAdapter $adapter): bool
                 {
                     return true;
+                }
+
+                private function deleteDir($dir) {
+                    if (!is_dir($dir)) {
+                        return false;
+                    }
+
+                    foreach (scandir($dir) as $item) {
+                        if ($item == '.' || $item == '..') {
+                            continue;
+                        }
+
+                        $path = $dir . DIRECTORY_SEPARATOR . $item;
+
+                        if (is_dir($path)) {
+                            $this->deleteDir($path);
+                        } else {
+                            try {
+                                unlink($path);
+                            } catch (FilesystemException $e) {
+                                echo Text::sprintf('FILES_JOOMLA_ERROR_FILE_FOLDER', $file) . '<br>';
+                            }
+                        }
+                    }
+
+                    return rmdir($dir);
                 }
             }
         );

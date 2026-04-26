@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="plugin" group="system" method="upgrade">
+	<name>PLG_SYSTEM_QUIZTOOLS</name>
+	<creationDate>2026-04-25</creationDate>
+	<author>QuizTools</author>
+	<authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
+	<copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
+	<license>GPL v3</license>
+	<version>1.2.0</version>
+	<description>PLG_SYSTEM_QUIZTOOLS_XML_DESCRIPTION</description>
+	<namespace path="src">Qt\Plugin\System\Quiztools</namespace>
+	<scriptfile>script.php</scriptfile>
+	<files>
+		<folder plugin="quiztools">services</folder>
+		<folder>src</folder>
+	</files>
+	<languages>
+		<language tag="en-GB">language/en-GB/plg_system_quiztools.ini</language>
+		<language tag="en-GB">language/en-GB/plg_system_quiztools.sys.ini</language>
+	</languages>
+</extension>

@@ -15,6 +15,7 @@
         <file type="plugin" id="boilerplate" group="quiztools" data-id="plg_quiztools_boilerplate">plg_quiztools_boilerplate.zip</file>
         <file type="plugin" id="mchoice" group="quiztools" data-id="plg_quiztools_mchoice">plg_quiztools_mchoice.zip</file>
         <file type="plugin" id="mresponse" group="quiztools" data-id="plg_quiztools_mresponse">plg_quiztools_mresponse.zip</file>
+        <file type="plugin" id="quiztools" group="system" data-id="plg_system_quiztools">plg_system_quiztools.zip</file>
         <file type="plugin" id="virtuemart" group="quiztoolspayment" data-id="plg_quiztoolspayment_virtuemart">plg_quiztoolspayment_virtuemart.zip</file>
     </files>
     <updateservers>

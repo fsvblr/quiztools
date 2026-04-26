@@ -74,13 +74,12 @@ return new class () implements ServiceProviderInterface {
                         if (!empty($this->minimumStoreVersion) && version_compare($storeVersion, $this->minimumStoreVersion, '<')) {
                             Log::add(Text::sprintf('PLG_QUIZTOOLSPAYMENT_VIRTUEMART_INSTALLER_MINIMUM_STORE_VERSION', $this->minimumStoreVersion), Log::WARNING, 'jerror');
 
-                            //return false;
-                            return true;  // Let them try anyway :) .
+                            //return false;  // Let them try anyway :)
                         }
                     } else {
-                        Log::add(Text::_('PLG_QUIZTOOLSPAYMENT_VIRTUEMART_INSTALLER_NO_STORE'), Log::WARNING, 'jerror');
+                        //Log::add(Text::_('PLG_QUIZTOOLSPAYMENT_VIRTUEMART_INSTALLER_NO_STORE'), Log::WARNING, 'jerror');
 
-                        return false;
+                        //return false;  // Install the plugin anyway. It's not activated during the initial installation.
                     }
 
                     return true;
@@ -116,13 +115,17 @@ return new class () implements ServiceProviderInterface {
 
                     $registry = new Registry($params);
                     $params = $registry->toArray();
-                    $params['access_statuses'] = ["C"];  // Confirmed
+                    $params['access_statuses'] = '["C"]';  // Confirmed
                     $registry = new Registry($params);
                     $params = $registry->toString();
 
                     $query->clear();
                     $query->update($db->qn('#__extensions'))
-                        ->set($db->qn('enabled') . ' = ' . $db->q('1'))
+
+                        // Although the plugin is installed, VirtueMart may not be installed.
+                        // Payment plugins must be activated by the admin, and only the required ones.
+                        ->set($db->qn('enabled') . ' = ' . $db->q('0'))
+
                         ->set($db->qn('params') . ' = ' . $db->q($params))
                         ->where($db->qn('type') . ' = ' . $db->q('plugin'))
                         ->where($db->qn('folder') . ' = ' . $db->q('quiztoolspayment'))
