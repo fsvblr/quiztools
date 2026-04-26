@@ -115,7 +115,7 @@ return new class () implements ServiceProviderInterface {
 
                     $registry = new Registry($params);
                     $params = $registry->toArray();
-                    $params['access_statuses'] = '["C"]';  // Confirmed
+                    $params['access_statuses'] = "['C']";  // Confirmed
                     $registry = new Registry($params);
                     $params = $registry->toString();
 

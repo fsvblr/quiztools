@@ -23,27 +23,34 @@ use Joomla\CMS\Language\Text;
 class OrderstatuseslistField extends ListField
 {
 	protected $type = 'Orderstatuseslist';
+    protected $storeName = 'virtuemart';
 
 	protected function getOptions()
 	{
+        $options = [];
+
         $app = Factory::getApplication();
-
         $db = $this->getDatabase();
-        $query = $db->createQuery()
-            ->select('DISTINCT ' . $db->qn('order_status_code', 'value'))
-            ->select($db->qn('order_status_name', 'text'))
-            ->from($db->qn('#__virtuemart_orderstates'));
-        $db->setQuery($query);
 
-        try {
-            $options = $db->loadObjectList();
-        } catch (\Exception $e) {
-            $app->enqueueMessage(
-                Text::sprintf('JLIB_DATABASE_ERROR_FUNCTION_FAILED', $e->getCode(), $e->getMessage()),
-                'warning'
-            );
+        $storeManifest = JPATH_ROOT . '/administrator/components/com_' . $this->storeName . '/' . $this->storeName . '.xml';
 
-            $options = [];
+        if (file_exists($storeManifest)) {
+            $query = $db->createQuery()
+                ->select('DISTINCT ' . $db->qn('order_status_code', 'value'))
+                ->select($db->qn('order_status_name', 'text'))
+                ->from($db->qn('#__virtuemart_orderstates'));
+            $db->setQuery($query);
+
+            try {
+                $options = $db->loadObjectList();
+            } catch (\Exception $e) {
+                $app->enqueueMessage(
+                    Text::sprintf('JLIB_DATABASE_ERROR_FUNCTION_FAILED', $e->getCode(), $e->getMessage()),
+                    'warning'
+                );
+
+                $options = [];
+            }
         }
 
         if (!empty($options)) {
