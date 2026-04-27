@@ -108,7 +108,7 @@ if (!empty($result->results_pdf)
             </div>
         <?php endif; ?>
 
-        <?php if (!empty($result->passed) && !empty($result->results_certificate)): ?>
+        <?php if (!empty($result->passed) && !empty($result->results_certificate) && !empty($result->certificate_id)): ?>
             <div class="quiz-result-action">
                 <img src="/media/com_quiztools/images/icon-award.svg" class="quiz-result-icon"
                     alt="<?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_CERTIFICATE_ALT'); ?>" />

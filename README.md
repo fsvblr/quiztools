@@ -3,7 +3,7 @@
 **QuizTools** is a professional-grade quiz and e-learning ecosystem for Joomla! 5.4 and above.
 It provides a robust framework for creating interactive assessments, structured learning paths, and monetized educational content.
 
-## New Features in this Version
+## New Features in Version 1.2.0
 
 The latest release transforms QuizTools into a commercial e-learning solution:
 - **Paid Subscriptions**: Sell access to individual quizzes or comprehensive Learning Paths.

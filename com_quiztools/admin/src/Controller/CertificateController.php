@@ -15,6 +15,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 use Joomla\Filesystem\File;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -144,7 +145,7 @@ class CertificateController extends FormController
                 $this->setRedirect($data['urlList']);
             } else {
                 $this->setMessage(Text::_('COM_QUIZTOOLS_CERTIFICATE_GENERATE_WARNING'), 'warning');
-                $this->setRedirect('/');
+                $this->setRedirect(Uri::root());
             }
 
             return false;
@@ -163,7 +164,7 @@ class CertificateController extends FormController
                 $this->setRedirect($data['urlItem']);
             } else {
                 $this->setMessage(Text::_('COM_QUIZTOOLS_CERTIFICATE_GENERATE_WARNING'), 'warning');
-                $this->setRedirect('/');
+                $this->setRedirect(Uri::root());
             }
 
             return false;
@@ -181,8 +182,9 @@ class CertificateController extends FormController
                 $this->setRedirect($data['urlItem']);
             } else {
                 $this->setMessage(Text::_('COM_QUIZTOOLS_CERTIFICATE_GENERATE_WARNING'), 'warning');
-                $this->setRedirect('/');
+                $this->setRedirect(Uri::root());
             }
+
             return false;
         }
 

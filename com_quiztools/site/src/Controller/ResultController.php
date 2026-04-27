@@ -90,7 +90,7 @@ class ResultController extends BaseController
         $lang->load('com_quiztools', JPATH_ADMINISTRATOR);
 
         $adminResultController = $this->factory->createController('Result', 'Administrator', [], $this->app, $this->input);
-        $adminResultController->getCertificate($resultId);
+        $adminResultController->getCertificate($resultId, 'site');
 
         return true;
     }

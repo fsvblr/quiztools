@@ -65,10 +65,11 @@ class ResultController extends BaseController
      * Generating a certificate with the user's result.
      *
      * @param int|null $result_id
-     * @return true
+     * @param string $client
+     * @return bool
      * @throws \Exception
      */
-    public function getCertificate($result_id = null)
+    public function getCertificate($result_id = null, $client = 'administrator')
     {
         $this->checkToken('get');
 
@@ -95,7 +96,7 @@ class ResultController extends BaseController
         $data = [];
         $data['result_id'] = $result_id;
         $data['certificate_id'] = (int) $result->certificate_id;
-        $data['client'] = 'administrator';
+        $data['client'] = $client;
         $data['urlList'] = Route::_('index.php?option=com_quiztools&view=results', false);
         $data['urlItem'] = Route::_('index.php?option=com_quiztools&view=results', false);
         $data['shortcodes'] = [
@@ -110,6 +111,11 @@ class ResultController extends BaseController
 
         $controllerCertificate = $this->factory->createController('Certificate', 'Administrator', [], $this->app, $this->input);
         $controllerCertificate->generateCertificate($data);
+
+        if (!$controllerCertificate->generateCertificate($data)) {
+            $controllerCertificate->redirect();
+            return false;
+        }
 
         return true;
     }

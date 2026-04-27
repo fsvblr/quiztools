@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.1] - 2026-04-27
+
+### Fixed
+- Corrections to the certificate generation process from the front end.
+
 ## [1.2.0] - 2026-04-25
 
 ### Added
