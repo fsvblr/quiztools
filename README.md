@@ -3,19 +3,13 @@
 **QuizTools** is a professional-grade quiz and e-learning ecosystem for Joomla! 5.4 and above.
 It provides a robust framework for creating interactive assessments, structured learning paths, and monetized educational content.
 
-## New Features in Version 1.2.0
-
-The latest release transforms QuizTools into a commercial e-learning solution:
-- **Paid Subscriptions**: Sell access to individual quizzes or comprehensive Learning Paths.
-- **VirtueMart Integration**: Seamlessly connect with the VirtueMart e-commerce component for automatic order creation and payment processing.
-- **Order Management**: Create manual orders in the administrator panel for offline payments or custom access.
-- **Order Reactivation**: Easily reactivate or extend expired orders directly from the backend.
-
 ## Features
 
-**Monetization and Sales**
+**Monetization and Sales - Paid Subscriptions**
+- Creating subscriptions for quizzes and learning paths and sell them through integration with e-store components or offline sales with manual order creation in the admin panel.
 - Integration with VirtueMart for automated sales flows. Tested on version 4.4.10.
 - Support for manual order entry and administrative override of access rights.
+- Order Reactivation: Easily reactivate or extend expired orders directly from the backend.
 - Subscription-based access control for educational content.
 
 **Learning Path Integration**
@@ -72,8 +66,8 @@ the use of mathematical/chemical formulas, video/audio, and other content insert
 ## Usage
 
 - Create a certificate (if you plan to use it).
-- Create a new quiz.
 - Add questions by selecting from the available types.
+- Create a new quiz.
 - Configure scoring, feedback, and display options.
 - Publish quizzes in menu items.
 
@@ -87,7 +81,7 @@ Planned improvements include:
 
 ## Support & Contact
 
-Have questions or feature requests?
+Found an error? Have questions or feature requests?
 - Open an [issue](../../issues) on GitHub
 
 ## License

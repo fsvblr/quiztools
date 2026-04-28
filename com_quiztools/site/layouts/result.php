@@ -23,7 +23,7 @@ $order_id = !empty($orderId) ? (int) $orderId : null;  // Must be null for Route
 
 $accessService = HTMLHelper::getServiceRegistry()->getService('quiztoolsaccess');
 
-if (!$isLP) {  // This is NOT a Learning Path
+if (empty($isLP)) {  // This is NOT a Learning Path
     $isAccessQuiz = $accessService->isAccessQuiz((int) $result->quiz_id, $order_id);
 }
 
@@ -120,7 +120,7 @@ if (!empty($result->results_pdf)
             </div>
         <?php endif; ?>
 
-        <?php if (!$isLP && $isAccessQuiz):  // This is NOT a Learning Path ?>
+        <?php if (empty($isLP) && $isAccessQuiz):  // This is NOT a Learning Path ?>
             <div class="quiz-result-action">
                 <img src="/media/com_quiztools/images/icon-reload.svg" class="quiz-result-icon"
                      alt="<?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_QUIZ_AGAIN_ALT'); ?>" />
