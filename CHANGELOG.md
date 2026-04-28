@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2] - 2026-04-28
+
+### Added
+- Schema.org markup on pages: Quiz, Quizzes List, Learning Path, Learning Paths List.
+
+### Fixed
+- The check for 'this is a Learning Path' on the results page on the front end.
+
 ## [1.2.1] - 2026-04-27
 
 ### Fixed

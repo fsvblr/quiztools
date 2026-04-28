@@ -9,14 +9,54 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 use Qt\Component\Quiztools\Site\Helper\RouteHelper;
 
 /** @var \Qt\Component\Quiztools\Site\View\Lpaths\HtmlView $this */
 
+// schema.org : start
+// https://validator.schema.org/
+// https://search.google.com/test/rich-results
+$listElements = [];
+if (!empty($this->items)) {
+    $siteUrl = Uri::getInstance()->toString(array('scheme', 'host', 'port'));
+    $siteName = Factory::getApplication()->get('sitename');
+    foreach ($this->items as $index => $item) {
+        $lpUrl = Route::_(RouteHelper::getLpathRoute($item->id, $item->catid));
+
+        $listElements[] = [
+            "@type" => "ListItem",
+            "position" => $index + 1,
+            "item" => [
+                "@type" => "Course",
+                "name" => $this->escape($item->title),
+                "description" => !empty(trim(strip_tags($item->description))) ? $this->escape(trim(strip_tags($item->description))) : $this->escape($item->title),
+                "url" => $siteUrl . $lpUrl,
+                "provider" => [
+                    "@type" => "Organization",
+                    "name" => $siteName,
+                    "url" => Uri::base()
+                ],
+            ]
+        ];
+    }
+}
+
+$schema = [
+    "@context" => "https://schema.org",
+    "@type" => "ItemList",
+    "name" => $this->escape($this->params->get('page_heading')),
+    "itemListElement" => $listElements
+];
+$schema = json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+// schema.org : end
+
 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 $wa = $this->getDocument()->getWebAssetManager();
+$wa->addInlineScript($schema, [], ['type' => 'application/ld+json']);
 $wa->useStyle('com_quiztools.lpaths');
 
 ?>

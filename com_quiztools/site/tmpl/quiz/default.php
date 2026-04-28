@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
 
 /** @var \Qt\Component\Quiztools\Site\View\Quiz\HtmlView $this */
 
@@ -30,10 +31,48 @@ Text::script('COM_QUIZTOOLS_QUIZ_ERROR_VALIDATION');
 Text::script('COM_QUIZTOOLS_QUIZ_ERROR_QUIZ_TIME_UP');
 Text::script('COM_QUIZTOOLS_QUIZ_ERROR_QUESTION_NO_ATTEMPTS_LEFT');
 
+// schema.org : start
+// https://validator.schema.org/
+// https://search.google.com/test/rich-results
+$schema_timeRequired = !empty((int) $this->item->limit_time) ? '"timeRequired": "PT' . (int) $this->item->limit_time . 'M",' : '';
+$schema_comment = !empty((int) $this->item->passing_score) ?
+        '"comment": {
+            "@type": "Comment",
+            "text": "' . Text::_('COM_QUIZTOOLS_QUIZ_SCHEMA_PASSING_SCORE_IS') . ' '  . (int) $this->item->passing_score . '%"
+        }' : '';
+$schema_description = !empty(trim(strip_tags($this->item->description))) ?
+        $this->escape(trim(strip_tags($this->item->description))) :
+        $this->escape($this->item->title);
+
+$schema = '
+{
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "' . $this->escape($this->item->title) . '",
+    "description": "' . $schema_description . '",
+    "provider": {
+        "@type": "Organization",
+        "name": "' . Factory::getApplication()->get('sitename') . '",
+        "url": "' . Uri::base() . '"
+    },
+    "hasPart": {
+        "@type": "Quiz",
+        "name": "' . $this->escape($this->item->title) . '",
+        "learningResourceType": "Quiz",
+        "educationalUse": "assignment",
+        ' . $schema_timeRequired . '
+        ' . $schema_comment . '
+    }
+}
+';
+// schema.org : end
+
 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 $wa = $this->getDocument()->getWebAssetManager();
 $wa->useScript('keepalive')
-	->useScript('form.validate');
+	->useScript('form.validate')
+    ->addInlineScript($schema, [], ['type' => 'application/ld+json']);
+
 $wa->useStyle('com_quiztools.quiz')
     ->useStyle('com_quiztools.result')
     ->useScript('com_quiztools.quiz');
