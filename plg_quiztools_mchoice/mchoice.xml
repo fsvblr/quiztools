@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" group="quiztools" method="upgrade">
 	<name>PLG_QUIZTOOLS_MCHOICE</name>
-	<creationDate>2026-04-28</creationDate>
+	<creationDate>2026-05-10</creationDate>
 	<author>QuizTools</author>
+	<authorEmail>sf.webdev.box@gmail.com</authorEmail>
 	<authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
 	<copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
 	<license>GPL v3</license>
-	<version>1.2.2</version>
+	<version>1.2.3</version>
 	<description>PLG_QUIZTOOLS_MCHOICE_XML_DESCRIPTION</description>
 	<namespace path="src">Qt\Plugin\Quiztools\Mchoice</namespace>
 	<scriptfile>script.php</scriptfile>
@@ -21,7 +22,7 @@
 		<folder>sql</folder>
 		<folder>src</folder>
 	</files>
-	<languages client="administrator">
+	<languages>
 		<language tag="en-GB">language/en-GB/plg_quiztools_mchoice.ini</language>
 		<language tag="en-GB">language/en-GB/plg_quiztools_mchoice.sys.ini</language>
 	</languages>
@@ -43,7 +44,6 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
-
 			</fieldset>
 		</fields>
 	</config>
