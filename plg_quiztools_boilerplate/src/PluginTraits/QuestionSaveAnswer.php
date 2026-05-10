@@ -5,6 +5,7 @@
  * @subpackage  QuizTools.boilerplate
  *
  * @copyright   (C) 2025 https://github.com/fsvblr/quiztools
+ * @license     GNU General Public License version 3
  */
 
 namespace Qt\Plugin\Quiztools\Boilerplate\PluginTraits;

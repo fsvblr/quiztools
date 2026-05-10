@@ -5,6 +5,7 @@
  * @subpackage  QuizTools.mchoice
  *
  * @copyright   (C) 2025 https://github.com/fsvblr/quiztools
+ * @license     GNU General Public License version 3
  */
 
 use Joomla\CMS\Application\AdministratorApplication;
