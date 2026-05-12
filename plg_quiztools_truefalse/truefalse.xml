@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="quiztools" method="upgrade">
+	<name>PLG_QUIZTOOLS_TRUEFALSE</name>
+	<creationDate>2026-05-12</creationDate>
+	<author>QuizTools</author>
+	<authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
+	<copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
+	<license>GNU General Public License version 2 or later</license>
+	<version>1.3.0</version>
+	<description>PLG_QUIZTOOLS_TRUEFALSE_XML_DESCRIPTION</description>
+	<namespace path="src">Qt\Plugin\Quiztools\Truefalse</namespace>
+	<scriptfile>script.php</scriptfile>
+	<media folder="media" destination="plg_quiztools_truefalse">
+		<folder>css</folder>
+		<folder>js</folder>
+		<file>joomla.asset.json</file>
+	</media>
+	<files>
+		<folder plugin="truefalse">services</folder>
+		<folder>forms</folder>
+		<folder>sql</folder>
+		<folder>src</folder>
+	</files>
+	<languages client="administrator">
+		<language tag="en-GB">language/en-GB/plg_quiztools_truefalse.ini</language>
+		<language tag="en-GB">language/en-GB/plg_quiztools_truefalse.sys.ini</language>
+	</languages>
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+	<update>
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+		</schemas>
+	</update>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+
+			</fieldset>
+		</fields>
+	</config>
+</extension>

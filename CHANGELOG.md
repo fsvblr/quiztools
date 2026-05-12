@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0] - 2026-05-12
+
+### Added
+- New "True/False" question type
+
+### Changed
+- Preparing for the JED Checker.
+
+## [1.2.3] - 2026-05-10
+
+### Changed
+- Preparing for the JED Checker.
+
+### Fixed
+- Typo in language file.
+
 ## [1.2.2] - 2026-04-28
 
 ### Added

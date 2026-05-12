@@ -5,7 +5,7 @@
  * @subpackage  System.quiztools
  *
  * @copyright   (C) 2025 https://github.com/fsvblr/quiztools
- * @license     GNU General Public License version 3
+ * @license     GNU General Public License version 2 or later
  */
 
 \defined('_JEXEC') or die;

@@ -5,7 +5,7 @@
  * @subpackage  com_quiztools
  *
  * @copyright   (C) 2025 https://github.com/fsvblr/quiztools
- * @license     GNU General Public License version 3
+ * @license     GNU General Public License version 2 or later
  */
 
 namespace Qt\Component\Quiztools\Administrator\Model;
@@ -16,7 +16,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\ParameterType;
-use Joomla\Registry\Registry;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -137,14 +136,10 @@ class QuestionModel extends AdminModel
                 }
             }
 
-			// Convert the params field to an array. => in parent
-			//$registry = new Registry($item->params);
-			//$item->params = $registry->toArray();
-
 			if (!empty($item->type)) {
 				// Getting data from a question type plugin:
 				$dispatcher = $this->getDispatcher();
-				PluginHelper::importPlugin('quiztools', null, true, $dispatcher);
+				PluginHelper::importPlugin('quiztools', $item->type, true, $dispatcher);
 				$item = $dispatcher->dispatch(
 					'onQuestionOptionsGetAdminData',
 					new Model\PrepareDataEvent('onQuestionOptionsGetAdminData', [

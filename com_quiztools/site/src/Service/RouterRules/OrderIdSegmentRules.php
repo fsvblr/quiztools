@@ -5,7 +5,7 @@
  * @subpackage  com_quiztools
  *
  * @copyright   (C) 2025 https://github.com/fsvblr/quiztools
- * @license     GNU General Public License version 3
+ * @license     GNU General Public License version 2 or later
  */
 
 namespace Qt\Component\Quiztools\Site\Service\RouterRules;
@@ -35,7 +35,7 @@ final class OrderIdSegmentRules implements RulesInterface
         }
 
         // Define the view by segments, since the view has already been removed in StandardRules
-        //quiz and lpath always have an alias as the last segment
+        // quiz and lpath always have an alias as the last segment
         if (empty($segments)) {
             return;
         }

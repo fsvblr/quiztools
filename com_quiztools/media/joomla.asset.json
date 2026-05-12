@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
   "name": "com_quiztools",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "QuizTools component",
-  "license": "GPL-3.0-or-later",
+  "license": "GPL-2.0-or-later",
   "assets": [
     {
       "name": "com_quiztools.admin.certificate",
