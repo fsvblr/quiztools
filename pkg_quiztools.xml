@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <extension type="package" version="5.3" method="upgrade">
     <name>QuizTools Package</name>
-    <creationDate>2026-05-10</creationDate>
+    <creationDate>2026-05-12</creationDate>
     <packagename>quiztools</packagename>
     <author>QuizTools</author>
     <authorEmail>sf.webdev.box@gmail.com</authorEmail>
     <authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
     <copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
-    <license>GPL v3</license>
-    <version>1.2.3</version>
+    <license>GNU General Public License version 2 or later</license>
+    <version>1.3.0</version>
     <description>QuizTools is a professional-grade quiz and e-learning ecosystem for Joomla!.</description>
     <scriptfile>pkg_quiztools_script.php</scriptfile>
     <files>
@@ -17,6 +17,7 @@
         <file type="plugin" id="boilerplate" group="quiztools" data-id="plg_quiztools_boilerplate">plg_quiztools_boilerplate.zip</file>
         <file type="plugin" id="mchoice" group="quiztools" data-id="plg_quiztools_mchoice">plg_quiztools_mchoice.zip</file>
         <file type="plugin" id="mresponse" group="quiztools" data-id="plg_quiztools_mresponse">plg_quiztools_mresponse.zip</file>
+        <file type="plugin" id="truefalse" group="quiztools" data-id="plg_quiztools_truefalse">plg_quiztools_truefalse.zip</file>
         <file type="plugin" id="quiztools" group="system" data-id="plg_system_quiztools">plg_system_quiztools.zip</file>
         <file type="plugin" id="virtuemart" group="quiztoolspayment" data-id="plg_quiztoolspayment_virtuemart">plg_quiztoolspayment_virtuemart.zip</file>
     </files>

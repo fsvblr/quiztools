@@ -7,7 +7,7 @@ It provides a robust framework for creating interactive assessments, structured 
 
 **Monetization and Sales - Paid Subscriptions**
 - Creating subscriptions for quizzes and learning paths and sell them through integration with e-store components or offline sales with manual order creation in the admin panel.
-- Integration with VirtueMart for automated sales flows. Tested on version 4.4.10.
+- Integration with **VirtueMart** for automated sales flows. Tested on version 4.4.10.
 - Support for manual order entry and administrative override of access rights.
 - Order Reactivation: Easily reactivate or extend expired orders directly from the backend.
 - Subscription-based access control for educational content.
@@ -28,6 +28,7 @@ It provides a robust framework for creating interactive assessments, structured 
 - **Fill in the Blank** – Text input with support for distractors
 - **Multiple Choice** – Single correct answer selection
 - **Multiple Response** – Selection of multiple correct answers
+- **True/false** - Presents a statement that the user must judge as true or false.
 
 **Feedback and results**
 - Instant feedback on each question during the quiz
@@ -51,7 +52,9 @@ the use of mathematical/chemical formulas, video/audio, and other content insert
 - Built with the latest Joomla framework standards in mind.
 
 **Extensible architecture**  
-- Core component + modular plugins for question types.
+- core component
+- modular plugins for question types
+- payment plugins
 
 **Customizable**  
 - Numerous built-in custom events allow you to extend functionality without hacks.
@@ -86,7 +89,7 @@ Found an error? Have questions or feature requests?
 
 ## License
 
-This project is released under the [GPL v3](LICENSE).  
+This project is released under the [GPL v2](LICENSE).  
 
 ## Custom Development
 

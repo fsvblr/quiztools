@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form addfieldprefix="Qt\Component\Quiztools\Administrator\Field">
+    <fieldset name="basic">
+        <field
+            name="correct_answer"
+            type="radio"
+            label="PLG_QUIZTOOLS_TRUEFALSE_FIELD_CORRECT_ANSWER_LABEL"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+    </fieldset>
+</form>
