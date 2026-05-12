@@ -113,7 +113,6 @@
         <files folder="admin">
             <filename>access.xml</filename>
             <filename>composer.json</filename>
-            <filename>composer.lock</filename>
             <filename>config.xml</filename>
             <folder>forms</folder>
             <folder>help</folder>
