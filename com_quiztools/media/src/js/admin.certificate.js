@@ -1,5 +1,7 @@
 (function () {
 
+    const siteRoot = Joomla.getOptions('com_quiztools.certificate').siteRoot || '/'
+
     let canvas = null
 
     // Upload image
@@ -97,7 +99,7 @@
             }
         }
 
-        image.src = '/images/quiztools/certificates/' + imageName
+        image.src = siteRoot + 'images/quiztools/certificates/' + imageName
     }
 
     // Adding a subform row.

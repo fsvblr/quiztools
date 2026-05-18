@@ -14,6 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 
 /** @var \Qt\Component\Quiztools\Administrator\View\Certificate\HtmlView $this */
 
@@ -34,7 +35,12 @@ $wa->useStyle('com_quiztools.admin.certificate')
 Text::script('COM_QUIZTOOLS_CERTIFICATE_CONFIRM_PREVIEW_TITLE');
 Text::script('COM_QUIZTOOLS_CERTIFICATE_CONFIRM_PREVIEW_BODY');
 
-$document->addScriptOptions('com_quiztools.certificate', ['id' => $input->getInt('id', 0), 'title' => $this->item->title]);
+$document->addScriptOptions('com_quiztools.certificate', [
+        'id' => $input->getInt('id', 0),
+        'title' => $this->item->title,
+        'siteRoot' => URI::root(true) . '/',
+    ]
+);
 
 ?>
 <form action="<?php echo Route::_('index.php?option=com_quiztools&view=certificate&layout=edit&id=' . (int) $this->item->id); ?>"

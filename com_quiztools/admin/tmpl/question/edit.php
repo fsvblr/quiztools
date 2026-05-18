@@ -59,6 +59,11 @@ $wa->useScript('keepalive')
             <div class="col-md-6">
                 <fieldset id="fieldset-descriptiondata" class="options-form">
                     <legend><?php echo Text::_('COM_QUIZTOOLS_QUESTION_FIELDSET_DESCRIPTIONDATA'); ?></legend>
+		            <?php if ($this->item && $this->item->id > 0) : ?>
+		                <div class="alert alert-info">
+		                    <?php echo Text::sprintf('COM_QUIZTOOLS_QUESTION_TIP_IMAGEPATH', $this->item->id); ?>
+		                </div>
+		            <?php endif; ?>
 		            <?php echo $this->form->getInput('text'); ?>
                 </fieldset>
             </div>

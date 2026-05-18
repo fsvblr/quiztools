@@ -88,14 +88,28 @@ return new class () implements ServiceProviderInterface {
                         mkdir($destinationDir, 0755, true);
                     }
 
-                    if ($type == 'install') {
-                        $imageFiles = glob($sourceDir . '/*.{jpg,jpeg,png}', GLOB_BRACE);
+                    if (in_array($type, ['install', 'update'])) {
+                        $extensions = ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'];
 
-                        foreach ($imageFiles as $file) {
-                            $destinationFile = $destinationDir . '/' . basename($file);
-                            if (!file_exists($destinationFile)) {
-                                copy($file, $destinationFile);
+                        foreach ($extensions as $ext) {
+                            $imageFiles = glob($sourceDir . '/*.' . $ext);
+
+                            if (!is_array($imageFiles)) {
+                                continue;
                             }
+
+                            foreach ($imageFiles as $file) {
+                                $destinationFile = $destinationDir . '/' . basename($file);
+                                if (!file_exists($destinationFile)) {
+                                    copy($file, $destinationFile);
+                                }
+                            }
+                        }
+
+                        // Creating a folder for question assets
+                        $questionsDir = JPATH_ROOT . '/images/quiztools/questions';
+                        if (!file_exists($questionsDir)) {
+                            mkdir($questionsDir, 0755, true);
                         }
                     }
                 }
@@ -125,7 +139,7 @@ return new class () implements ServiceProviderInterface {
                             try {
                                 unlink($path);
                             } catch (FilesystemException $e) {
-                                echo Text::sprintf('FILES_JOOMLA_ERROR_FILE_FOLDER', $file) . '<br>';
+                                echo Text::sprintf('FILES_JOOMLA_ERROR_FILE_FOLDER', $item) . '<br>';
                             }
                         }
                     }

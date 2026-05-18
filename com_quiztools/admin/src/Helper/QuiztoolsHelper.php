@@ -11,6 +11,8 @@
 namespace Qt\Component\Quiztools\Administrator\Helper;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\Filesystem\Exception\FilesystemException;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -127,5 +129,38 @@ class QuiztoolsHelper
         }
 
         return $description;
+    }
+
+    /**
+     * Recursively delete a directory.
+     *
+     * @param string $dir
+     * @return bool
+     */
+    public static function deleteDirRecursive(string $dir)
+    {
+        if (!is_dir($dir)) {
+            return false;
+        }
+
+        foreach (scandir($dir) as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $path = $dir . DIRECTORY_SEPARATOR . $item;
+
+            if (is_dir($path)) {
+                self::deleteDirRecursive($path);
+            } else {
+                try {
+                    unlink($path);
+                } catch (FilesystemException $e) {
+                    echo Text::sprintf('FILES_JOOMLA_ERROR_FILE_FOLDER', $item) . '<br>';
+                }
+            }
+        }
+
+        return rmdir($dir);
     }
 }
