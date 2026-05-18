@@ -16,6 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\ParameterType;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -261,6 +262,9 @@ class QuestionModel extends AdminModel
 			$question_id = (int)$db->loadResult();
 		}
 
+		// Create a dedicated images folder for this question
+		$this->createQuestionImageDir($question_id);
+
 		$affected_quizzes_ids_after = $this->getQuizzesIdsByQuestionsIds([$question_id]);
         $affected_quizzes_ids = array_values(array_unique(array_merge($affected_quizzes_ids_before, $affected_quizzes_ids_after)));
 
@@ -292,6 +296,11 @@ class QuestionModel extends AdminModel
 
 		if (!parent::delete($pks)) {
 			return false;
+		}
+
+		// Remove dedicated image folders for each deleted question
+		foreach ($pks as $pk) {
+			$this->deleteQuestionImageDir((int) $pk);
 		}
 
 		if (!empty($affected_quizzes_ids)) {
@@ -441,6 +450,39 @@ class QuestionModel extends AdminModel
 		// array_filter : Remove zero values ($quiz_id == 0 => Question Pool)
 		$quizzes = array_values(array_filter(array_unique($quizzes)));
 
-		return $quizzes;
+        return $quizzes;
+    }
+
+	/**
+	 * Create a dedicated folder for question images
+     * (e.g., /images/quiztools/questions/ID/).
+	 *
+	 * @param int $id
+	 *
+	 * @return void
+	 */
+	private function createQuestionImageDir(int $id): void
+	{
+		$dir = JPATH_ROOT . '/images/quiztools/questions/' . $id;
+
+		if (!is_dir($dir)) {
+			mkdir($dir, 0755, true);
+		}
 	}
+
+    /**
+     * Remove the dedicated image folder for a specific question.
+     *
+     * @param int $id
+     *
+     * @return void
+     */
+    private function deleteQuestionImageDir(int $id): void
+    {
+        $dir = JPATH_ROOT . '/images/quiztools/questions/' . $id;
+
+        if (is_dir($dir)) {
+            QuiztoolsHelper::deleteDirRecursive($dir);
+        }
+    }
 }

@@ -10,12 +10,14 @@
 
 namespace Qt\Component\Quiztools\Administrator\View\Question;
 
+use Joomla\CMS\Event\Model;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Helper\ContentHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\GenericDataException;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Qt\Component\Quiztools\Administrator\Model\QuestionModel;
 
@@ -101,6 +103,19 @@ class HtmlView extends BaseHtmlView
 				$this->is_boilerplate = true;
 			}
 		}
+
+        $dispatcher = $this->getDispatcher();
+        PluginHelper::importPlugin('quiztools', null, true, $dispatcher);
+
+        // Loading question's JS and CSS into the document.
+        $dispatcher->dispatch(
+            'onQuestionGetAssets',
+            new Model\PrepareDataEvent('onQuestionGetAssets', [
+                'context' => 'com_quiztools.question.getAssets',
+                'data'    => $this->item,
+                'subject' => new \stdClass(),
+            ])
+        );
 
 		// Check for errors.
         if (\count($errors = $model->getErrors())) {

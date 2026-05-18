@@ -40,7 +40,8 @@ async function fetchResultData(id) {
             formData.append('quiz[orderId]', orderId)
         }
 
-        const response = await axios.post('/index.php?option=com_quiztools&task=ajaxQuiz.getQuizData', formData)
+        const rootFull = Joomla.getOptions('system.paths').rootFull || '/'
+        const response = await axios.post(rootFull + 'index.php?option=com_quiztools&task=ajaxQuiz.getQuizData', formData)
 
         if (response.data.success === true) {
             const rd = response.data.data.redirect

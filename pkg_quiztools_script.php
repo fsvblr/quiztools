@@ -102,7 +102,7 @@ return new class () implements ServiceProviderInterface {
                             try {
                                 unlink($path);
                             } catch (FilesystemException $e) {
-                                echo Text::sprintf('FILES_JOOMLA_ERROR_FILE_FOLDER', $file) . '<br>';
+                                echo Text::sprintf('FILES_JOOMLA_ERROR_FILE_FOLDER', $item) . '<br>';
                             }
                         }
                     }

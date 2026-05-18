@@ -55,8 +55,9 @@ const sendRequest = async (actionType, stepData = step.value, stepStage = null) 
     }
 
     try {
+        const rootFull = Joomla.getOptions('system.paths').rootFull || '/'
         const response = await axios.post(
-            '/index.php?option=com_quiztools&task=ajaxLpath.getLpathData',
+            rootFull + 'index.php?option=com_quiztools&task=ajaxLpath.getLpathData',
             formData
         )
         return response.data

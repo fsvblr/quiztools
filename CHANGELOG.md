@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.1] - 2026-05-18
+
+### Added
+- An event for loading assets from question plugins has been added to the question editing in admin panel
+- Creating a folder for questions assets in the component's installation script.
+- Creating a separate folder for question images when saving a question in the admin panel.
+- Deleting the separate folder for question images when deleting a question in the admin panel.
+
+### Changed
+- Change in the component installation script: the method for copying certificates during installation/update has become more universal and does not depend on the GLOB_BRACE flag.
+
+### Fixed
+- In the admin panel: paths to certificate images if the site is located in a website folder.
+- On the front end: Ajax request URLs if the site is located in a website folder.
+
 ## [1.3.0] - 2026-05-12
 
 ### Added
