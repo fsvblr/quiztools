@@ -16,6 +16,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
 use Qt\Component\Quiztools\Site\Helper\RouteHelper;
 
 extract($displayData);
@@ -99,7 +100,7 @@ if (!empty($result->results_pdf)
     <div class="quiz-result-block quiz-result-actions">
         <?php if (!empty($result->results_pdf)): ?>
             <div class="quiz-result-action">
-                <img src="/media/com_quiztools/images/icon-pdf.svg" class="quiz-result-icon"
+                <img src="<?php echo URI::root(true) . '/'; ?>media/com_quiztools/images/icon-pdf.svg" class="quiz-result-icon"
                     alt="<?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_PDF_ALT'); ?>" />
                 <a href="<?php echo Route::_('index.php?option=com_quiztools&task=result.getPdf&id=' . (int) $result->id .
                     '&token=' . $token . '&' . Session::getFormToken() . '=1'); ?>"
@@ -111,7 +112,7 @@ if (!empty($result->results_pdf)
 
         <?php if (!empty($result->passed) && !empty($result->results_certificate) && !empty($result->certificate_id)): ?>
             <div class="quiz-result-action">
-                <img src="/media/com_quiztools/images/icon-award.svg" class="quiz-result-icon"
+                <img src="<?php echo URI::root(true) . '/'; ?>media/com_quiztools/images/icon-award.svg" class="quiz-result-icon"
                     alt="<?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_CERTIFICATE_ALT'); ?>" />
                 <a href="<?php echo Route::_('index.php?option=com_quiztools&task=result.getCertificate&id=' . (int) $result->id .
                     '&token=' . $token . '&' . Session::getFormToken() . '=1'); ?>"
@@ -123,7 +124,7 @@ if (!empty($result->results_pdf)
 
         <?php if (empty($isLP) && $isAccessQuiz):  // This is NOT a Learning Path ?>
             <div class="quiz-result-action">
-                <img src="/media/com_quiztools/images/icon-reload.svg" class="quiz-result-icon"
+                <img src="<?php echo URI::root(true) . '/'; ?>media/com_quiztools/images/icon-reload.svg" class="quiz-result-icon"
                      alt="<?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_QUIZ_AGAIN_ALT'); ?>" />
                 <a href="<?php echo Route::_(RouteHelper::getQuizRoute((int) $result->quiz_id, (int) $result->quiz_catid, $order_id), false); ?>">
                     <?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_QUIZ_AGAIN'); ?>

@@ -15,6 +15,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
 use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 use Qt\Component\Quiztools\Site\Helper\RouteHelper;
 
@@ -99,7 +100,7 @@ $searchToolsOptions = [
                                 <?php echo number_format($item->sum_points_received, 2, '.', ''); ?>
                             </div>
                             <div class="cell w-10 text-center">
-                                <img src="/media/com_quiztools/images/icon-<?php echo $item->passed ? 'check' : 'close'; ?>.svg"
+                                <img src="<?php echo URI::root(true); ?>/media/com_quiztools/images/icon-<?php echo $item->passed ? 'check' : 'close'; ?>.svg"
                                      class="results-list__icon-passed"
                                      alt="<?php echo $item->passed
                                          ? Text::_('COM_QUIZTOOLS_RESULTS_PASSED_ALT')
@@ -114,7 +115,7 @@ $searchToolsOptions = [
                                     <a href="<?php echo Route::_('index.php?option=com_quiztools&task=result.getCertificate&id=' . (int) $item->id .
                                         '&token=' . $token . '&' . Session::getFormToken() . '=1'); ?>"
                                     >
-                                        <img src="/media/com_quiztools/images/icon-award.svg" class="results-list__icon-award"
+                                        <img src="<?php echo URI::root(true); ?>/media/com_quiztools/images/icon-award.svg" class="results-list__icon-award"
                                              alt="<?php echo Text::_('COM_QUIZTOOLS_RESULTS_CERTIFICATE_ALT'); ?>" />
                                     </a>
                                 <?php endif; ?>

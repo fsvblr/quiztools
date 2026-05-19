@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.2] - 2026-05-19
+
+### Fixed
+- Correct loading of an article in the selected language in the Learning Path on a multilingual site.
+- Paths to images on the front end and in the admin panel, if the site is located in the site folder.
+
 ## [1.3.1] - 2026-05-18
 
 ### Added
