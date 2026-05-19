@@ -17,6 +17,7 @@ namespace Qt\Plugin\Quiztools\Truefalse\PluginTraits;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri;
 use Joomla\Event\Event;
 
 /**
@@ -80,13 +81,13 @@ trait QuestionOptionsGetFinalPageHtml
                     <div class="w-65">' . $option->option . '</div>
                     <div class="w-15 text-center">';
             if ($option->is_correct) {
-                $html .= '<img src="/media/com_quiztools/images/icon-check.svg"  class="quiz-result-choice-icon" 
+                $html .= '<img src="' . URI::root(true) . '/media/com_quiztools/images/icon-check.svg"  class="quiz-result-choice-icon" 
                         alt="' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_FINAL_RESULT_OPTION_ALT_RIGHT_ANSWER') . '" />';
             }
             $html .= '</div>
                     <div class="w-15 text-center">';
             if ($option->user_answer) {
-                $html .= '<img src="/media/com_quiztools/images/icon-' . ($option->is_correct ? 'check' : 'close') . '.svg" 
+                $html .= '<img src="' . URI::root(true) . '/media/com_quiztools/images/icon-' . ($option->is_correct ? 'check' : 'close') . '.svg" 
                         class="quiz-result-choice-icon" 
                         alt="' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_FINAL_RESULT_OPTION_ALT_USER_ANSWER') . '" />';
             }

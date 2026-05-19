@@ -15,6 +15,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
 
 /** @var \Qt\Component\Quiztools\Administrator\View\Certificates\HtmlView $this */
 
@@ -109,7 +110,7 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                                     </div>
                                 </th>
                                 <td class="text-center d-none d-md-table-cell">
-                                    <img src="/images/quiztools/certificates/<?php echo $item->file; ?>"
+                                    <img src="<?php echo URI::root(true) . '/'; ?>images/quiztools/certificates/<?php echo $item->file; ?>"
                                          alt="<?php echo $this->escape($item->title); ?>"
                                          style="width: 80%; max-width: 50px; cursor: pointer;"
                                          data-joomla-dialog='{"popupType": "image", "width":"80vw", "height": "80vh",

@@ -280,7 +280,7 @@ class LpathModel extends ItemModel
         $articles = [];
         if (!empty($articles_ids)) {
             $query->clear();
-            $query->select($db->qn(['id', 'title', 'catid']))
+            $query->select($db->qn(['id', 'title', 'catid', 'language']))
                 ->select($db->qn('introtext', 'desc'))
                 ->from($db->qn('#__content'))
                 ->where($db->qn('state') . '=' . $db->q(1))
@@ -323,6 +323,7 @@ class LpathModel extends ItemModel
                     $steps[$i]->title = $articles[$steps[$i]->type_id]->title;
                     $steps[$i]->catid = $articles[$steps[$i]->type_id]->catid;
                     $steps[$i]->desc = $articles[$steps[$i]->type_id]->desc;
+                    $steps[$i]->language = $articles[$steps[$i]->type_id]->language;
                 } else {
                     unset($steps[$i]);
                 }
@@ -362,7 +363,7 @@ class LpathModel extends ItemModel
             $step->canStart = false;
             if ($step->passed || !$first_not_passed) {
                 if ($step->type === 'a') {
-                    $step->link = Route::_(ArticleRouteHelper::getArticleRoute($step->type_id, $step->catid) . '&tmpl=component', false);
+                    $step->link = Route::_(ArticleRouteHelper::getArticleRoute($step->type_id, $step->catid, $step->language) . '&tmpl=component', false);
                 } else if ($step->type === 'q') {
                     $step->link = Route::_(QuizRouteHelper::getQuizRoute($step->type_id, $step->catid, $order_id)
                         . '&lp[id]=' . $id .  '&lp[uniqueId]=' . urlencode($step->uniqueId) . '&tmpl=component', false);
