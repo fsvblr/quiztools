@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.3] - 2026-05-25
+
+### Added
+- Events processed by plugins of the "quiztools" group.
+
+### Fixed
+- Comparison of fields in different encodings in core Joomla database tables and component tables.
+
 ## [1.3.2] - 2026-05-19
 
 ### Fixed
