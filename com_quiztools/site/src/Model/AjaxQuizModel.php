@@ -586,6 +586,11 @@ class AjaxQuizModel extends BaseDatabaseModel
 	private function getQuizQuestions($quiz_id = 0, $catid = null, $order = ['q.ordering', 'q.id'], $limit = null, $only_ids = true)
 	{
 		$db = $this->getDatabase();
+
+        $collation = $db->getCollation();
+        $parts   = explode('_', $collation);
+        $charset = $parts[0];
+
 		$query = $db->createQuery();
 
 		if ($only_ids) {
@@ -598,7 +603,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 			->join(
 				'INNER',
 				$db->qn('#__extensions', 'e'),
-				$db->qn('e.element') . ' = ' . $db->qn('q.type')
+                $db->qn('e.element') . ' = CONVERT(' . $db->qn('q.type') . ' USING ' . $charset . ') COLLATE ' . $collation
 			)
 			->where($db->qn('q.quiz_id') . ' = :quizId')
 			->where($db->qn('q.state') . ' = ' . $db->q(1))

@@ -13,9 +13,12 @@ namespace Qt\Component\Quiztools\Administrator\Model;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Event\Model;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Form;
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\ParameterType;
+use Joomla\Event\DispatcherAwareInterface;
+use Joomla\Event\DispatcherInterface;
 use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -223,6 +226,32 @@ class QuestionModel extends AdminModel
 
 		return $data;
 	}
+
+    /**
+     * Method to allow derived classes to preprocess the form.
+     *
+     * @param   Form    $form   A Form object.
+     * @param   mixed   $data   The data expected for the form.
+     * @param   string  $group  The name of the plugin group to import (defaults to "content").
+     *
+     * @return  void
+     *
+     * @see     FormField
+     * @since   4.0.0
+     * @throws  \Exception if there is an error in the form event.
+     */
+    protected function preprocessForm(Form $form, $data, $group = 'content')
+    {
+        $dispatcher = $this->getDispatcher();
+
+        PluginHelper::importPlugin($group, null, true, $dispatcher);
+        PluginHelper::importPlugin('quiztools', null, true, $dispatcher);  // custom
+
+        $dispatcher->dispatch(
+            'onContentPrepareForm',
+            new Model\PrepareFormEvent('onContentPrepareForm', ['subject' => $form, 'data' => $data])
+        );
+    }
 
 	/**
 	 * Method to save the form data.
