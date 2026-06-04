@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <extension type="package" version="5.3" method="upgrade">
     <name>QuizTools Package</name>
-    <creationDate>2026-05-25</creationDate>
+    <creationDate>2026-06-04</creationDate>
     <packagename>quiztools</packagename>
     <author>QuizTools</author>
     <authorEmail>sf.webdev.box@gmail.com</authorEmail>
     <authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
     <copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
     <license>GNU General Public License version 2 or later</license>
-    <version>1.3.3</version>
+    <version>1.4.0</version>
     <description>QuizTools is a professional-grade quiz and e-learning ecosystem for Joomla!.</description>
     <scriptfile>pkg_quiztools_script.php</scriptfile>
+    <blockChildUninstall>true</blockChildUninstall>
     <files>
         <file type="component" id="com_quiztools" data-id="com_quiztools">com_quiztools.zip</file>
         <file type="plugin" id="blank" group="quiztools" data-id="plg_quiztools_blank">plg_quiztools_blank.zip</file>
         <file type="plugin" id="boilerplate" group="quiztools" data-id="plg_quiztools_boilerplate">plg_quiztools_boilerplate.zip</file>
+        <file type="plugin" id="hotspotsmultiple" group="quiztools" data-id="plg_quiztools_hotspotsmultiple">plg_quiztools_hotspotsmultiple.zip</file>
         <file type="plugin" id="mchoice" group="quiztools" data-id="plg_quiztools_mchoice">plg_quiztools_mchoice.zip</file>
         <file type="plugin" id="mresponse" group="quiztools" data-id="plg_quiztools_mresponse">plg_quiztools_mresponse.zip</file>
         <file type="plugin" id="truefalse" group="quiztools" data-id="plg_quiztools_truefalse">plg_quiztools_truefalse.zip</file>

@@ -1,0 +1,64 @@
+<changelogs>
+    <changelog>
+        <element>pkg_quiztools</element>
+        <type>package</type>
+        <version>1.4.0</version>
+        <addition>
+            <item>New question type - "Hotspots Multiple".</item>
+            <item>Possibility to generate PDF reports with SVG images in questions.</item>
+            <item>The Changelog File for the update server. On the package update admin page, it displays a "ChangeLog" button.</item>
+        </addition>
+        <change>
+            <item>Minor styling improvements on the front.</item>
+        </change>
+    </changelog>
+    <changelog>
+        <element>pkg_quiztools</element>
+        <type>package</type>
+        <version>1.3.3</version>
+        <fix>
+            <item>Comparison of fields in different encodings in core Joomla database tables and component tables.</item>
+        </fix>
+        <addition>
+            <item>Events processed by plugins of the "quiztools" group.</item>
+        </addition>
+    </changelog>
+    <changelog>
+        <element>pkg_quiztools</element>
+        <type>package</type>
+        <version>1.3.2</version>
+        <fix>
+            <item>Correct loading of an article in the selected language in the Learning Path on a multilingual site.</item>
+            <item>Paths to images on the front end and in the admin panel, if the site is located in the site folder.</item>
+        </fix>
+    </changelog>
+    <changelog>
+        <element>pkg_quiztools</element>
+        <type>package</type>
+        <version>1.3.1</version>
+        <fix>
+            <item>In the admin panel: paths to certificate images if the site is located in a website folder.</item>
+            <item>On the front end: Ajax request URLs if the site is located in a website folder.</item>
+        </fix>
+        <addition>
+            <item>An event for loading assets from question plugins has been added to the question editing in admin panel.</item>
+            <item>Creating a folder for questions assets in the component's installation script.</item>
+            <item>Creating a separate folder for question images when saving a question in the admin panel.</item>
+            <item>Deleting the separate folder for question images when deleting a question in the admin panel.</item>
+        </addition>
+        <change>
+            <item>Change in the component installation script: the method for copying certificates during installation/update has become more universal and does not depend on the GLOB_BRACE flag.</item>
+        </change>
+    </changelog>
+    <changelog>
+        <element>pkg_quiztools</element>
+        <type>package</type>
+        <version>1.3.0</version>
+        <addition>
+            <item>New "True/False" question type.</item>
+        </addition>
+        <change>
+            <item>Preparing for the JED Checker.</item>
+        </change>
+    </changelog>
+</changelogs>

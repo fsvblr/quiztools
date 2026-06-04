@@ -26,6 +26,7 @@ It provides a robust framework for creating interactive assessments, structured 
 **Question types**
 - **Boilerplate** – Static text and media blocks for context or instructions
 - **Fill in the Blank** – Text input with support for distractors
+- **Hotspots Multiple** - Place markers in hotspots; optional order check
 - **Multiple Choice** – Single correct answer selection
 - **Multiple Response** – Selection of multiple correct answers
 - **True/false** - Presents a statement that the user must judge as true or false.
@@ -90,6 +91,11 @@ Found an error? Have questions or feature requests?
 ## License
 
 This project is released under the [GPL v2](LICENSE).  
+
+## Code Documentation (AI Generated)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/fsvblr/quiztools)
+
+Disclaimer: This code documentation is AI-generated and may not fully or accurately reflect existing dependencies. However, it may be useful to someone.
 
 ## Custom Development
 

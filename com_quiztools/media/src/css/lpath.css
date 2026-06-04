@@ -124,5 +124,6 @@
     height: 50%;
     max-height: 17.5rem;
     width: auto;
+    z-index: 2;
 }
 

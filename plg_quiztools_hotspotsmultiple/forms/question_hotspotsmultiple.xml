@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form addfieldprefix="Qt\Component\Quiztools\Administrator\Field">
+    <fieldset name="options">
+        <field
+            name="notice_save"
+            type="note"
+            description="PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FIELD_NOTICE_SAVE_DESC"
+            class="alert alert-warning"
+            showon="id:0"
+        />
+
+        <field
+            name="check_order"
+            type="radio"
+            label="PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FIELD_CHECK_ORDER_LABEL"
+            description="PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FIELD_CHECK_ORDER_DESC"
+            layout="joomla.form.field.radio.switcher"
+            default="0"
+            showon="id!:0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="image"
+            type="media"
+            label="PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FIELD_IMAGE_LABEL"
+            description="PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FIELD_IMAGE_DESC"
+            directory="quiztools/questions/"
+            preview="false"
+            types="images"
+            showon="id!:0"
+        />
+
+        <field
+            name="hotspots"
+            type="subform"
+            label="PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FIELD_HOTSPOTS_LABEL"
+            multiple="true"
+            min="0"
+            max="100"
+            layout="joomla.form.field.subform.repeatable-table"
+            showon="id!:0"
+        >
+            <form>
+                <field
+                    name="coordinates"
+                    type="text"
+                    label="PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FIELD_HOTSPOTS_COORDINATES_LABEL"
+                    class="input-big text"
+                    readonly="true"
+                />
+
+                <field
+                    name="color"
+                    type="color"
+                    default="rgb(166,34,33)"
+                    label="PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FIELD_HOTSPOTS_COLOR_LABEL"
+                    class="input-medium color"
+                    format="rgb"
+                />
+
+                <field
+                    name="points"
+                    type="number"
+                    label="PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FIELD_HOTSPOTS_POINTS_LABEL"
+                    default="0"
+                    min="0"
+                    step="0.01"
+                />
+            </form>
+        </field>
+    </fieldset>
+</form>
