@@ -355,6 +355,50 @@ class ResultController extends BaseController
                         $html .= $question->pdfOptions;
                     }
 
+                    if (!empty($question->pdfSvg['svg'])) {
+                        $pdf->writeHTML($html);
+                        $html = '';
+
+                        $svgWidth = 100;
+                        $svgHeight = $svgWidth / $question->pdfSvg['imageRatio'];
+                        $svgCodeForPdf = $question->pdfSvg['svg'];
+
+                        // We check whether the SVG fits on the current page, including the margin.
+                        // If there's not enough space, we force the page to wrap BEFORE fixing the coordinates.
+                        if (($pdf->GetY() + $svgHeight + 10) > ($pdf->getPageHeight() - $pdf->getBreakMargin())) {
+                            $pdf->AddPage();
+                        }
+
+                        // And only now we fix the exact and final coordinates.
+                        $currentX = $pdf->GetX();
+                        $currentY = $pdf->GetY();
+
+                        $hasEmbeddedImage = preg_match('/<image[^>]*+>/i', $svgCodeForPdf);
+                        if ($hasEmbeddedImage) {
+                            $svgCodeForPdf = preg_replace('/<image[^>]*+>/i', '', $svgCodeForPdf);
+
+                            // Temporarily disable auto-break so that Image() doesn't jump to a new page.
+                            $autoPageBreak = $pdf->getAutoPageBreak();
+                            $bMargin = $pdf->getBreakMargin();
+                            $pdf->SetAutoPageBreak(false, $bMargin);
+
+                            // Drawing a raster
+                            $pdf->Image(
+                                $question->pdfSvg['imagePath'], $currentX, $currentY, $svgWidth, $svgHeight,
+                                '', '', '', false, 300, '', false, false, 0, false, false, false
+                            );
+
+                            // Reverting the auto-break settings back.
+                            $pdf->SetAutoPageBreak($autoPageBreak, $bMargin);
+                        }
+
+                        // Draw the SVG strictly on top at the same coordinates.
+                        $pdf->ImageSVG('@' . $svgCodeForPdf, $currentX, $currentY, $svgWidth, $svgHeight);
+
+                        // We reset the pointer down and return X to the beginning of the row.
+                        $pdf->SetXY($currentX, $currentY + $svgHeight + 10);
+                    }
+
                     if (!empty($question->pdfResume)) {
                         $html .= $question->pdfResume;
                     }

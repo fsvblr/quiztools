@@ -1,0 +1,46 @@
+{
+    "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+    "name": "plg_quiztools_hotspotsmultiple",
+    "version": "1.4.0",
+    "description": "A plugin that implements the functionality of the 'Hotspots Multiple' question type of the QuizTools component.",
+    "license": "GPL-2.0-or-later",
+    "assets": [
+        {
+            "name": "plg_quiztools_hotspotsmultiple.admin.hotspotsmultiple",
+            "type": "style",
+            "uri": "plg_quiztools_hotspotsmultiple/plg_quiztools_hotspotsmultiple.admin.css",
+            "version": "202605191830"
+        },
+        {
+            "name": "plg_quiztools_hotspotsmultiple.hotspotsmultiple",
+            "type": "style",
+            "uri": "plg_quiztools_hotspotsmultiple/plg_quiztools_hotspotsmultiple.css",
+            "version": "202605191830"
+        },
+        {
+            "name": "plg_quiztools_hotspotsmultiple.admin.hotspotsmultiple",
+            "type": "script",
+            "uri": "plg_quiztools_hotspotsmultiple/plg_quiztools_hotspotsmultiple.admin.js",
+            "dependencies": [
+                "core",
+                "joomla.dialog"
+            ],
+            "attributes": {
+                "type": "module"
+            },
+            "version": "202605191830"
+        },
+        {
+            "name": "plg_quiztools_hotspotsmultiple.hotspotsmultiple",
+            "type": "script",
+            "uri": "plg_quiztools_hotspotsmultiple/plg_quiztools_hotspotsmultiple.js",
+            "dependencies": [
+                "core"
+            ],
+            "attributes": {
+                "defer": true
+            },
+            "version": "202605191830"
+        }
+    ]
+}

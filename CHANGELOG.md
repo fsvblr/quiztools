@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.0] - 2026-06-03
+
+### Added
+- New question type - "Hotspots Multiple".
+- Possibility to generate PDF reports with SVG images in questions.
+- The Changelog File for the update server. On the package update admin page, it displays a "ChangeLog" button.
+
+### Changed
+- Minor styling improvements on the front.
+
 ## [1.3.3] - 2026-05-25
 
 ### Added
@@ -17,7 +27,7 @@
 ## [1.3.1] - 2026-05-18
 
 ### Added
-- An event for loading assets from question plugins has been added to the question editing in admin panel
+- An event for loading assets from question plugins has been added to the question editing in admin panel.
 - Creating a folder for questions assets in the component's installation script.
 - Creating a separate folder for question images when saving a question in the admin panel.
 - Deleting the separate folder for question images when deleting a question in the admin panel.
@@ -32,7 +42,7 @@
 ## [1.3.0] - 2026-05-12
 
 ### Added
-- New "True/False" question type
+- New "True/False" question type.
 
 ### Changed
 - Preparing for the JED Checker.

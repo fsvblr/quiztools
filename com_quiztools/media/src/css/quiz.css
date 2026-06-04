@@ -26,6 +26,7 @@
     height: 50%;
     max-height: 17.5rem;
     width: auto;
+    z-index: 2;
 }
 .quiz-app .quiz-question__text {
     min-height: 3.5rem;
