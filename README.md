@@ -1,3 +1,5 @@
+[![Static Badge](https://img.shields.io/badge/Joomla!%20Extensions%20Directory%E2%84%A2-QuizTools-blue)](https://extensions.joomla.org/extension/living/education-a-culture/quiztools/)
+
 # QuizTools for Joomla! 5.4+
 
 **QuizTools** is a professional-grade quiz and e-learning ecosystem for Joomla! 5.4 and above.
@@ -59,6 +61,12 @@ the use of mathematical/chemical formulas, video/audio, and other content insert
 
 **Customizable**  
 - Numerous built-in custom events allow you to extend functionality without hacks.
+
+## Localization
+
+The base version includes the English language only.<br>
+You can download other available languages from the ["QuizTools Language Packs"](https://fsvblr.github.io/quiztools-languages/) page and install them as a separate extension. All language packs use the Joomla! Update System.<br>
+You can take part in translating the pack into your language on the [Crowdin](https://crowdin.com/project/quiztools) platform. If your language is not listed, please submit a request to add a new language through the Crowdin interface.
 
 ## Installation
 
