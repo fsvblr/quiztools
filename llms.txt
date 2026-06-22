@@ -1,0 +1,50 @@
+# QuizTools for Joomla!
+
+> Professional-grade E-learning ecosystem built natively for Joomla! 5.4 and above.
+
+## Cores & Architecture
+- Built with **the latest Joomla framework** standards in mind.
+- **Extensible modular architecture**: core component, modular plugins for question types, payment plugins.
+- **Content Plugin Support**: Automatically processes quiz descriptions, questions, and feedback through third-party Joomla content plugins (enabling formulas, audio, and video rendering).
+- **Custom Event System**: Built-in hooks for developer-driven functionality overrides.
+
+## Key Features
+
+### Quizzes & Learning Paths
+- **Structured Journeys**: Group quizzes and standard Joomla articles into guided learning paths.
+- **Progression & Rules**: Define strict progression rules and track learner advancements across multi-step courses.
+- **Target Use Cases**: Corporate onboarding, academic certification, and digital course delivery.
+
+### Quiz Configuration & Question Types
+- **Management**: Global question pool, hierarchical categorization, attempt limits, time constraints, pass thresholds, and resumable user sessions.
+- **Question Types (Plugins)**:
+  - `Boilerplate`: Static text/media context blocks.
+  - `Fill in the Blank`: Text input with distractor support.
+  - `Hotspots Multiple`: Multi-marker placement with optional sequence verification.
+  - `Multiple Choice` / `Multiple Response`: Single and multi-correct answer options.
+  - `True/False`: Binary judgment statement.
+
+### Monetization & E-Commerce
+- **Paid Subscriptions**: Access control rules mapped to subscription models.
+- **VirtueMart Integration**: Automated payment and sales workflow processing (Tested on VirtueMart 4.4.10).
+- **Administrative Controls**: Manual order entry, manual access overrides, and expired order reactivation/extension.
+
+### Results & Recognition
+- **User Feedback**: Instant question-level feedback and detailed post-quiz summaries with explanations.
+- **Certificates**: Native backend drag-and-drop certificate designer with PDF export for successful learners.
+- **Analytics**: Excel data exports and dual-interface (Frontend/Backend) filtered result reporting.
+
+## Installation & Setup
+1. Install the composite package extension via standard Joomla! Extension Manager.
+2. Ensure mandatory system, question, and payment plugins are enabled via Joomla Plugin Manager.
+3. Configure the component, populate the question pool, map quizzes to menu items, and deploy.
+
+## Technical Specifications
+- **Requirements**: Joomla! 5.4+, PHP 8.2+ (recommended).
+- **Core Technology Stack**: PHP (90.5%), JavaScript (4.6%), Vue.js (3.4%), CSS/HTML.
+- **Localization**: Base package in English (en-GB). Multi-language update stream supported via Crowdin translation hub.
+- **License**: GPL v2.
+
+## Support & Contributions
+- **Issues & Contributions**: Managed entirely via the GitHub repository tracker.
+- **Custom Development**: Tailored extensions, custom workflows, or core modifications via sf.webdev.box@gmail.com.
