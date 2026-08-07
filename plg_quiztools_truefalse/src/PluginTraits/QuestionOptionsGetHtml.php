@@ -21,7 +21,7 @@ use Joomla\Event\Event;
 /**
  * Get question options html (site).
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsGetHtml
 {
@@ -29,8 +29,8 @@ trait QuestionOptionsGetHtml
      * Get question options html (site).
      *
      * @param   Event  $event
-     *
      * @return bool
+     * @since  1.0.0
      */
     public function QuestionOptionsGetHtml($event): bool
     {
@@ -79,39 +79,42 @@ trait QuestionOptionsGetHtml
      *
      * @param $data
      * @param $questionOptionsData
-     *
      * @return string
+     * @since  1.3.0
      */
     private function truefalseGetHtmlOptions($data, $questionOptionsData)
     {
+        $data->id = (int) $data->id;
+        $data->type = htmlspecialchars($data->type, ENT_QUOTES, 'UTF-8');
+
         $html = '';
 
         $checked = (isset($questionOptionsData['typeData']['user_answer']) && (int) $questionOptionsData['typeData']['user_answer'] === 1) ?
             " checked" : "";
-        $html .= '<div class="question-option question-option-'.$data->type.'">
+        $html .= '<div class="question-option question-option-' . $data->type . '">
                     <input 
                         type="radio" 
-                        id="'.$data->type.'_yes" 
-                        name="quiz[question]['.$data->id.'][options]" 
+                        id="' . $data->type . '_yes" 
+                        name="quiz[question][' . $data->id . '][options]" 
                         value="1" 
                         required 
-                        '.$checked.'
+                        ' . $checked . '
                     />
-                    <label for="'.$data->type.'_yes"><p>' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_SITE_HTML_OPTION_YES') . '</p></label>
+                    <label for="' . $data->type . '_yes"><p>' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_SITE_HTML_OPTION_YES') . '</p></label>
                   </div>';
 
         $checked = (isset($questionOptionsData['typeData']['user_answer']) && (int) $questionOptionsData['typeData']['user_answer'] === 0) ?
             " checked" : "";
-        $html .= '<div class="question-option question-option-'.$data->type.'">
+        $html .= '<div class="question-option question-option-' . $data->type . '">
                     <input 
                         type="radio" 
-                        id="'.$data->type.'_no" 
-                        name="quiz[question]['.$data->id.'][options]" 
+                        id="' . $data->type . '_no" 
+                        name="quiz[question][' . $data->id . '][options]" 
                         value="0" 
                         required 
-                        '.$checked.'
+                        ' . $checked . '
                     />
-                    <label for="'.$data->type.'_no"><p>' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_SITE_HTML_OPTION_NO') . '</p></label>
+                    <label for="' . $data->type . '_no"><p>' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_SITE_HTML_OPTION_NO') . '</p></label>
                   </div>';
 
         return $html;

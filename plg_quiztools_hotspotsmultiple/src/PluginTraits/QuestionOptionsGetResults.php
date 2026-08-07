@@ -15,9 +15,11 @@ namespace Qt\Plugin\Quiztools\Hotspotsmultiple\PluginTraits;
 // phpcs:enable PSR1.Files.SideEffects
 
 use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\ParameterType;
 use Joomla\Event\Event;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 /**
  * Get the results of the answer to the question.
@@ -112,7 +114,7 @@ trait QuestionOptionsGetResults
             $answers = array_map('json_decode', $answers);
         }
 
-        $answersResults = $this->hotspotsCheckAnswers($options, $answers, $questionData->check_order);
+        $answersResults = $this->hotspotsCheckAnswers($options, $answers, (bool) $questionData->check_order);
         $resultImage = $this->hotspotsGeneratingResultImage($questionData->image, $options, $answers, $questionData->check_order);
 
         $originalImage = JPATH_SITE . '/' . $questionData->image;
@@ -268,7 +270,12 @@ trait QuestionOptionsGetResults
         $task = $this->getApplication()->getInput()->get('task', '');
         $isPdf = in_array($task, ['result.getPdf', 'getPdf']);
 
-        $image = JPATH_SITE . '/' . $image;
+        $image = InputFilter::getInstance()->clean($image, 'path');
+        $imagePath = JPATH_SITE . '/' . $image;
+
+        if (!file_exists($imagePath)) {
+            return '';
+        }
 
         $polygons = [];
         foreach ($options as $option) {
@@ -284,10 +291,20 @@ trait QuestionOptionsGetResults
             return '';
         }
 
-        list($width, $height, $type) = getimagesize($image);
-        $imageData = base64_encode(file_get_contents($image));
+        list($width, $height, $type) = getimagesize($imagePath);
         $mimeType = image_type_to_mime_type($type);
+
+        $imageData = QuiztoolsHelper::getCleanImageData($imagePath);
+
+        if (empty($imageData)) {
+            return '';
+        }
+
+        $imageData = base64_encode($imageData);
         $base64Image = "data:{$mimeType};base64,{$imageData}";
+
+        $width = (int) $width;
+        $height = (int) $height;
 
         // Coefficients for converting percentages to actual viewBox pixels
         $scaleX = $width / 100;
@@ -312,9 +329,12 @@ trait QuestionOptionsGetResults
         $polyFontSize = 16 * $compensationScale;
         $polyTextStroke = 2 * $compensationScale;
 
+        $widthAttr  = $width  > 0 ? ' width="' . $width . '"' : '';
+        $heightAttr = $height > 0 ? ' height="' . $height . '"' : '';
+
         $svg = '';
         $svg .= '<svg viewBox="0 0 ' . $width . ' ' . $height . '" xmlns="http://w3.org">
-            <image href="' . $base64Image . '" width="' . $width . '" height="' . $height . '" x="0" y="0" />';
+            <image href="' . $base64Image . '"' . $widthAttr . $heightAttr . ' x="0" y="0" />';
 
         foreach ($polygons as $i => $poly) {
             // Convert the percentage of each point to viewBox pixels
@@ -372,6 +392,8 @@ trait QuestionOptionsGetResults
         }
 
         $svg .= '</svg>';
+
+        $svg = QuiztoolsHelper::cleanHtml($svg);
 
         return $svg;
     }

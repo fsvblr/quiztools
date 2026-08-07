@@ -22,7 +22,7 @@ use Joomla\Database\ParameterType;
 /**
  * Get question options data.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsGetData
 {
@@ -31,8 +31,8 @@ trait QuestionOptionsGetData
 	 *
 	 * @param object $data
 	 * @param string $client
-	 *
 	 * @return array|false
+     * @since  1.0.0
 	 */
     public function QuestionOptionsGetData($data, $client = 'administrator')
     {
@@ -76,7 +76,7 @@ trait QuestionOptionsGetData
                     ('(' .
                         $db->qn('rqo.option_id') . ' = ' . $db->qn('qo.id') .
                         ' AND ' .
-                        $db->qn('rqo.results_question_id') . ' = ' . $db->q($data->resultQuestionId) .
+                        $db->qn('rqo.results_question_id') . ' = ' . $db->q((int) $data->resultQuestionId) .
                     ')')
                 );
 		    }

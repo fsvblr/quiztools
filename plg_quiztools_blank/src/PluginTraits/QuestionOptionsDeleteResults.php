@@ -17,11 +17,12 @@ namespace Qt\Plugin\Quiztools\Blank\PluginTraits;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Event\Event;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Removing results from the question table.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsDeleteResults
 {
@@ -29,8 +30,8 @@ trait QuestionOptionsDeleteResults
 	 * Removing results from the question table.
 	 *
 	 * @param   Event  $event
-	 *
 	 * @return bool
+     * @since  1.0.0
 	 */
     public function QuestionOptionsDeleteResults($event): bool
     {
@@ -55,6 +56,13 @@ trait QuestionOptionsDeleteResults
 	    if (!\is_array($data) || empty($data)) {
             return false;
 	    }
+
+        $data = ArrayHelper::toInteger((array) $data);
+        $data = array_filter((array) $data);
+
+        if (empty($data)) {
+            return false;
+        }
 
 	    $db = $this->getDatabase();
 	    $query = $db->createQuery();

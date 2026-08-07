@@ -27,7 +27,7 @@ use Qt\Plugin\Quiztools\Blank\Table\QuestionBlankTable;
 /**
  * Saving question options in the admin panel.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsSave
 {
@@ -35,8 +35,8 @@ trait QuestionOptionsSave
 	 * Saving question options in the admin panel.
 	 *
 	 * @param   AfterStoreEvent  $event
-	 *
 	 * @return bool
+     * @since  1.0.0
 	 */
     public function QuestionOptionsSave($event): bool
     {
@@ -100,14 +100,22 @@ trait QuestionOptionsSave
 	    );
 
         $typeFields = [];
-	    $typeFields['id'] = !empty($question_type_id) ? $question_type_id : 0;
-		$typeFields['question_id'] = $question_id;
-        $typeFields['shuffle_answers'] = !empty($formData['shuffle_answers']) ? $formData['shuffle_answers'] : 0;
+	    $typeFields['id'] = !empty($question_type_id) ? (int) $question_type_id : 0;
+		$typeFields['question_id'] = (int) $question_id;
+        $typeFields['shuffle_answers'] = !empty($formData['shuffle_answers']) ? (int) $formData['shuffle_answers'] : 0;
 
         $typeFields['distractors'] = [];
         if (!empty($formData['distractors'])) {  // => '[{"value":"tag1"},{"value":"tag2"},{"value":"tag3"}]'
             $distractors = json_decode($formData['distractors'], true);
             $typeFields['distractors'] = array_column($distractors, 'value');
+
+            $typeFields['distractors'] = array_map(function($distractor) {
+                $distractor = preg_replace('/[^\p{L}\p{N}_\. -]/u', '', $distractor);
+                $distractor = preg_replace('/\s+/u', ' ', $distractor);
+                $distractor = ltrim(trim($distractor), '.');
+                return $distractor;
+            }, $typeFields['distractors']);
+            $typeFields['distractors'] = array_filter($typeFields['distractors']);
         }
 
 		if (!$questionTable->save($typeFields)) {
@@ -138,11 +146,19 @@ trait QuestionOptionsSave
 
 		foreach ($questionOptions as $questionOption) {
 			$questionOption['id'] = 0;
-			$questionOption['question_id'] = $question_id;
+			$questionOption['question_id'] = (int) $question_id;
 
             if (!empty($questionOption['answers'][0])) {  // => '[{"value":"tag1"},{"value":"tag2"},{"value":"tag3"}]'
                 $answers = json_decode($questionOption['answers'][0], true);
                 $questionOption['answers'] = array_column($answers, 'value');
+
+                $questionOption['answers'] = array_map(function($answer) {
+                    $answer = preg_replace('/[^\p{L}\p{N}_\. -]/u', '', $answer);
+                    $answer = preg_replace('/\s+/u', ' ', $answer);
+                    $answer = ltrim(trim($answer), '.');
+                    return $answer;
+                }, $questionOption['answers']);
+                $questionOption['answers'] = array_filter($questionOption['answers']);
             } else {
                 $questionOption['answers'] = [];
             }

@@ -89,9 +89,9 @@ trait QuestionSaveAnswer
         // Example answer: {"type":"hotspotsmultiple","answer":[{"x":20,"y":63.74},{"x":53,"y":24},{"x":65,"y":68.75}]}
         // $data->answer: [{"x":20,"y":63.74},{"x":53,"y":24},{"x":65,"y":68.75}]
 
-        $answers = array_map(fn($item) => [$item->x, $item->y], $data->answer); // =>  [[20,63.74],[53,24],[65,68.75]]
+        $answers = array_map(fn($item) => [(float) $item->x, (float) $item->y], $data->answer); // =>  [[20,63.74],[53,24],[65,68.75]]
 
-        $answersResults = $this->hotspotsCheckAnswers($tbl_options, $answers, $data->check_order);
+        $answersResults = $this->hotspotsCheckAnswers($tbl_options, $answers, (bool) $data->check_order);
 
         $answerIsCorrect = (int) $answersResults['is_correct'];
         $questionPoints = !empty($data->points) ? (float) $data->points : 0;
@@ -119,7 +119,7 @@ trait QuestionSaveAnswer
         // If there are restrictions on attempts and if there is more than one attempt,
         // we apply a penalty to the points received for the answer:
         if ((int) $data->attempts > 0 && $attemptsMade > 1 && $data->penalty) {  // penalty in %%
-            $penaltyCoefficient = (100 - $data->penalty * ($attemptsMade - 1)) / 100;
+            $penaltyCoefficient = (100 - (int) $data->penalty * ($attemptsMade - 1)) / 100;
 
             if ($penaltyCoefficient < 0) {
                 $answerPointsReceived = 0;
@@ -145,19 +145,19 @@ trait QuestionSaveAnswer
 
         // And save the answer:
         $resultQuestion = new \stdClass();
-        $resultQuestion->result_quiz_id = $data->resultQuizId;
-        $resultQuestion->question_id = $data->id;
-        $resultQuestion->total_points = $totalPoints;
-        $resultQuestion->points_received = $answerPointsReceived;
+        $resultQuestion->result_quiz_id = (int) $data->resultQuizId;
+        $resultQuestion->question_id = (int) $data->id;
+        $resultQuestion->total_points = (float) $totalPoints;
+        $resultQuestion->points_received = (float) $answerPointsReceived;
         $resultQuestion->attempts = $attemptsMade + 1;
-        $resultQuestion->is_correct = $data->savedAnswerResult['is_correct'];
+        $resultQuestion->is_correct = (int) $data->savedAnswerResult['is_correct'];
         $resultQuestion->response_at = Factory::getDate()->toSql(); // in UTC
         $db->insertObject('#__quiztools_results_questions', $resultQuestion);
         $resultQuestion->id = $db->insertid();
 
         for ($i=0; $i<count($answers); $i++) {
             $resultTypeQuestion = new \stdClass();
-            $resultTypeQuestion->results_question_id = $resultQuestion->id;
+            $resultTypeQuestion->results_question_id = (int) $resultQuestion->id;
             $resultTypeQuestion->answer_coordinates = json_encode($answers[$i]);
             $resultTypeQuestion->answer_ordering = $i;
             $db->insertObject('#__quiztools_results_questions_' . $this->name, $resultTypeQuestion);

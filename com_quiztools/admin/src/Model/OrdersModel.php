@@ -236,6 +236,4 @@ class OrdersModel extends ListModel
             new Model\PrepareFormEvent('onContentPrepareForm', ['subject' => $form, 'data' => $data])
         );
     }
-
-
 }

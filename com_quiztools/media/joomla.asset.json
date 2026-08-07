@@ -1,75 +1,81 @@
 {
   "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
   "name": "com_quiztools",
-  "version": "1.3.0",
+  "version": "1.4.1",
   "description": "QuizTools component",
   "license": "GPL-2.0-or-later",
   "assets": [
     {
+      "name": "com_quiztools.admin.certificates",
+      "type": "style",
+      "uri": "com_quiztools/dist/admin.certificates.min.css",
+      "version": "202607281830"
+    },
+    {
       "name": "com_quiztools.admin.certificate",
       "type": "style",
       "uri": "com_quiztools/dist/admin.certificate.min.css",
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.admin.results",
       "type": "style",
       "uri": "com_quiztools/dist/admin.results.min.css",
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.admin.orders",
       "type": "style",
       "uri": "com_quiztools/dist/admin.orders.min.css",
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.admin.order",
       "type": "style",
       "uri": "com_quiztools/dist/admin.order.min.css",
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.lpaths",
       "type": "style",
       "uri": "com_quiztools/dist/lpaths.min.css",
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.lpath",
       "type": "style",
       "uri": "com_quiztools/dist/lpath.min.css",
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.quizzes",
       "type": "style",
       "uri": "com_quiztools/dist/quizzes.min.css",
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.quiz",
       "type": "style",
       "uri": "com_quiztools/dist/quiz.min.css",
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.results",
       "type": "style",
       "uri": "com_quiztools/dist/results.min.css",
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.result",
       "type": "style",
       "uri": "com_quiztools/dist/result.min.css",
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.orders",
       "type": "style",
       "uri": "com_quiztools/dist/orders.min.css",
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.tagify",
@@ -87,7 +93,7 @@
       "attributes": {
         "defer": true
       },
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.admin.subscription",
@@ -99,7 +105,7 @@
       "attributes": {
         "defer": true
       },
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.lpath",
@@ -112,7 +118,7 @@
         "defer": true,
         "type": "module"
       },
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.quiz",
@@ -125,7 +131,7 @@
         "defer": true,
         "type": "module"
       },
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.results",
@@ -137,7 +143,19 @@
       "attributes": {
         "defer": true
       },
-      "version": "202604251830"
+      "version": "202607281830"
+    },
+    {
+      "name": "com_quiztools.admin.certificates",
+      "type": "script",
+      "uri": "com_quiztools/dist/admin.certificates.min.js",
+      "dependencies": [
+        "core"
+      ],
+      "attributes": {
+        "defer": true
+      },
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.admin.certificate",
@@ -149,7 +167,7 @@
       "attributes": {
         "defer": true
       },
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.admin.certificate.dialog",
@@ -162,7 +180,7 @@
       "attributes": {
         "type": "module"
       },
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.admin.order.dialog.reactivate",
@@ -175,7 +193,7 @@
       "attributes": {
         "type": "module"
       },
-      "version": "202604251830"
+      "version": "202607281830"
     },
     {
       "name": "com_quiztools.fabric",

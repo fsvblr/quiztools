@@ -61,7 +61,7 @@ final class OrderIdSegmentRules implements RulesInterface
         // Extract the potential order_id from the end (only if it is a number)
         $last = end($segments);
 
-        if (!\is_string($last) || !ctype_digit($last)) {
+        if (!\is_string($last) || !\ctype_digit($last)) {
             return;
         }
 

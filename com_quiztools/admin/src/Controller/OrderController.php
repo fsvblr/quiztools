@@ -45,9 +45,16 @@ class OrderController extends FormController
     {
         $this->checkToken();
 
-        $app = Factory::getApplication();
-        $now = Factory::getDate()->toSql();
+        $app = $this->app;
         $user = $app->getIdentity();
+
+        if (!$user->authorise('core.create', 'com_quiztools')
+            && !$user->authorise('core.edit', 'com_quiztools')
+        ) {
+            throw new \Exception(Text::_('JGLOBAL_AUTH_ACCESS_DENIED'), 403);
+        }
+
+        $now = Factory::getDate()->toSql();
 
         $id = $this->input->getInt('id', 0);
         $reactivate = $this->input->get('reactivate', [], 'ARRAY');

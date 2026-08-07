@@ -72,26 +72,26 @@ $canEdit = $user->authorise('core.edit', 'com_quiztools');
                             <div class="break-word">
                                 <?php if ($canEdit) : ?>
                                     <a href="<?php echo Route::_('index.php?option=com_quiztools&view=result&layout=question&qid=' . (int) $question->id . '&id=' . (int) $this->item->id); ?>">
-                                        <?php echo strip_tags($question->text); ?>
+                                        <?php echo $this->escape(strip_tags($question->text)); ?>
                                     </a>
                                 <?php else : ?>
-                                    <?php echo strip_tags($question->text); ?>
+                                    <?php echo $this->escape(strip_tags($question->text)); ?>
                                 <?php endif; ?>
                             </div>
                         </th>
                         <td class="text-center">
-                            <?php echo $question->typeName; ?>
+                            <?php echo $this->escape($question->typeName); ?>
                         </td>
                         <td class="text-center">
                             <?php if ($question->type !== 'boilerplate'): ?>
-                                <?php echo number_format($question->total_points, 2, '.', ''); ?>
+                                <?php echo number_format((float) $question->total_points, 2, '.', ''); ?>
                             <?php else: ?>
                                 <?php echo '-'; ?>
                             <?php endif; ?>
                         </td>
                         <td class="text-center">
                             <?php if ($question->type !== 'boilerplate'): ?>
-                                <?php echo number_format($question->points_received, 2, '.', ''); ?>
+                                <?php echo number_format((float) $question->points_received, 2, '.', ''); ?>
                             <?php else: ?>
                                 <?php echo '-'; ?>
                             <?php endif; ?>

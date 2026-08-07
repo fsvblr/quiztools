@@ -43,7 +43,7 @@ class SelectquestiontypeModel extends ListModel
             foreach ($plugins as $plugin) {
                 $lang->load('plg_quiztools_' . $plugin->name, JPATH_ADMINISTRATOR);
 
-                $items[] = (object)[
+                $items[] = (object) [
                     'type' => $plugin->name,
                     'name' => Text::_('PLG_QUIZTOOLS_QUESTION_TYPE_' . strtoupper($plugin->name) . '_NAME'),
                     'desc' => Text::_('PLG_QUIZTOOLS_' . strtoupper($plugin->name) . '_SELECTQUESTIONTYPE_DESC'),

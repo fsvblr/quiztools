@@ -37,6 +37,7 @@ final class Boilerplate extends CMSPlugin implements SubscriberInterface, Dispat
 	 * Used in dynamic language variables.
 	 *
 	 * @var string
+     * @since  1.0.0
 	 */
 	public $name = 'boilerplate';
 
@@ -81,7 +82,7 @@ final class Boilerplate extends CMSPlugin implements SubscriberInterface, Dispat
 	 * @return  void
 	 *
 	 * @throws  \Exception
-	 * @since   4.0.0
+	 * @since  1.0.0
 	 */
 	public function onQuestionGetAssets(Event $event)
 	{
@@ -96,7 +97,7 @@ final class Boilerplate extends CMSPlugin implements SubscriberInterface, Dispat
 	 * @return  void
 	 *
 	 * @throws  \Exception
-	 * @since   4.0.0
+	 * @since  1.0.0
 	 */
 	public function onQuestionSaveAnswer(Event $event)
 	{

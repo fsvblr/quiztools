@@ -29,6 +29,7 @@ class FieldsService
     /**
      * Render the list of categories
      *
+     * @param string $extension
      * @param   integer  $catid  The category item id
      *
      * @return  string  The HTML

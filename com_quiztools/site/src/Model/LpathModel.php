@@ -13,6 +13,7 @@ namespace Qt\Component\Quiztools\Site\Model;
 use Joomla\CMS\Event\Content;
 use Joomla\CMS\Event\Model;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\ItemModel;
@@ -56,14 +57,15 @@ class LpathModel extends ItemModel
     protected function populateState()
     {
         $app = Factory::getApplication();
+        $input = $app->getInput();
 
-        $pk = $app->getInput()->getInt('id');
+        $pk = $input->getInt('id');
         $this->setState('lpath.id', $pk);
 
         $params = $app->getParams();
         $this->setState('params', $params);
 
-        $order_id = $app->getInput()->getInt('order_id');
+        $order_id = $input->getInt('order_id');
         if (!empty($order_id)) {
             $this->setState('lpath.orderId', $order_id);
         }
@@ -222,6 +224,8 @@ class LpathModel extends ItemModel
             return $stepsData;
         }
 
+        $filter = InputFilter::getInstance();
+
         $db = $this->getDatabase();
         $query = $db->createQuery()
             ->select($db->qn('lpath_items'))
@@ -248,20 +252,20 @@ class LpathModel extends ItemModel
 
         foreach ($items as $item) {
             $step = new \stdClass;
-            $step->type = $item['type'];
+            $step->type = htmlspecialchars($item['type'], ENT_QUOTES, 'UTF-8');
 
             if ($item['type'] === 'a') {
-                $step->type_id = $item['article_id'];
+                $step->type_id = (int) $item['article_id'];
                 $articles_ids[] = (int) $item['article_id'];
                 if (isset($item['min_time_article'])) {
-                    $step->minTime = $item['min_time_article'];
+                    $step->minTime = (int) $item['min_time_article'];
                 }
             } else if ($item['type'] === 'q') {
-                $step->type_id = $item['quiz_id'];
+                $step->type_id = (int) $item['quiz_id'];
                 $quizzes_ids[] = (int) $item['quiz_id'];
             }
 
-            $step->uniqueId = $item['unique_id'];
+            $step->uniqueId = $filter->clean($item['unique_id'], 'CMD');
             $step->passed = false;
             $step->title = '';
             $step->desc = '';
@@ -320,18 +324,18 @@ class LpathModel extends ItemModel
         for ($i = 0; $i < count($steps); $i++) {
             if ($steps[$i]->type === 'a') {
                 if (isset($articles[$steps[$i]->type_id])) {
-                    $steps[$i]->title = $articles[$steps[$i]->type_id]->title;
-                    $steps[$i]->catid = $articles[$steps[$i]->type_id]->catid;
-                    $steps[$i]->desc = $articles[$steps[$i]->type_id]->desc;
-                    $steps[$i]->language = $articles[$steps[$i]->type_id]->language;
+                    $steps[$i]->title = htmlspecialchars($articles[$steps[$i]->type_id]->title, ENT_QUOTES, 'UTF-8');
+                    $steps[$i]->catid = (int) $articles[$steps[$i]->type_id]->catid;
+                    $steps[$i]->desc = QuiztoolsHelper::cleanHtml($articles[$steps[$i]->type_id]->desc);
+                    $steps[$i]->language = htmlspecialchars($articles[$steps[$i]->type_id]->language, ENT_QUOTES, 'UTF-8');
                 } else {
                     unset($steps[$i]);
                 }
             } else if ($steps[$i]->type === 'q') {
                 if (isset($quizzes[$steps[$i]->type_id])) {
-                    $steps[$i]->title = $quizzes[$steps[$i]->type_id]->title;
-                    $steps[$i]->catid = $quizzes[$steps[$i]->type_id]->catid;
-                    $steps[$i]->desc = $quizzes[$steps[$i]->type_id]->desc;
+                    $steps[$i]->title = htmlspecialchars($quizzes[$steps[$i]->type_id]->title, ENT_QUOTES, 'UTF-8');
+                    $steps[$i]->catid = (int) $quizzes[$steps[$i]->type_id]->catid;
+                    $steps[$i]->desc = QuiztoolsHelper::cleanHtml($quizzes[$steps[$i]->type_id]->desc);
                     $steps[$i]->type_access = (int) $quizzes[$steps[$i]->type_id]->type_access;
                 } else {
                     unset($steps[$i]);
@@ -383,7 +387,7 @@ class LpathModel extends ItemModel
 
         $accessService = HTMLHelper::getServiceRegistry()->getService('quiztoolsaccess');
 
-        if (!empty((int) $order_id)) {
+        if (!empty($order_id)) {
             /** @var OrderModel $modelOrder */
             $modelOrder = Factory::getApplication()->bootComponent('com_quiztools')->getMVCFactory()
                 ->createModel('Order', 'Administrator', ['ignore_request' => true]);

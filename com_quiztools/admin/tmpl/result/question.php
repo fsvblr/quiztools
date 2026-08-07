@@ -15,6 +15,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 /** @var \Qt\Component\Quiztools\Administrator\View\Result\HtmlView $this */
 
@@ -51,10 +52,10 @@ $wa->useStyle('com_quiztools.admin.results');
         <?php else: ?>
             <div class="col-md-12 p-4 ps-3">
                 <div>
-                    <?php echo !empty($question->type) ? '[' . $question->typeName . ']:' : ''; ?>
+                    <?php echo !empty($question->type) ? '[' . $this->escape($question->typeName) . ']:' : ''; ?>
                 </div>
                 <div class="mt-2">
-                    <?php echo !empty($question->text) ? $question->text : ''; ?>
+                    <?php echo !empty($question->text) ? QuiztoolsHelper::cleanHtml($question->text) : ''; ?>
                 </div>
             </div>
 
@@ -90,7 +91,7 @@ $wa->useStyle('com_quiztools.admin.results');
                                 <?php echo $i + 1; ?>
                             </td>
                             <td>
-                                <?php echo $result->option; ?>
+                                <?php echo QuiztoolsHelper::cleanHtml($result->option); ?>
                             </td>
                             <td class="text-center">
                                 <?php if ((int) $result->is_correct): ?>

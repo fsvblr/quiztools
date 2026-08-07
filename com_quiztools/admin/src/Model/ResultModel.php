@@ -111,7 +111,7 @@ class ResultModel extends BaseDatabaseModel
                                  CONCAT(" . $db->qn('ru.user_name') . ", ' '," . $db->qn('ru.user_surname') . ")
                              ), 
                             ' ', 
-                            ' (" . Text::_('COM_QUIZTOOLS_RESULTS_USER_GUEST') . ")'
+                            '(" . Text::_('COM_QUIZTOOLS_RESULTS_USER_GUEST') . ")'
                         )
                       ) as 'user_name'")
 
@@ -277,7 +277,7 @@ class ResultModel extends BaseDatabaseModel
                 ->join('INNER', $db->qn('#__quiztools_questions', 'q'), $db->qn('q.id') . ' = ' . $db->qn('a.question_id'))
                 ->join('LEFT', $db->qn('#__categories', 'c'), $db->qn('c.id') . ' = ' . $db->qn('q.catid'))
                 ->where($db->qn('a.result_quiz_id') . ' = :resultQuizId')
-                ->bind(':resultQuizId', $resultQuizId)
+                ->bind(':resultQuizId', $resultQuizId, ParameterType::INTEGER)
                 ->order($db->qn('a.id'));
             $db->setQuery($query);
             $data = $db->loadObjectList('id');
@@ -340,11 +340,11 @@ class ResultModel extends BaseDatabaseModel
         }
         // final message end
 
-        // questions result page's html
+        // questions result page's HTML
         if (!empty($data->results_with_questions)) {
             if (!empty($data->feedback_question_final)) {
                 $quizDataForFeedback = new \stdClass();
-                $quizDataForFeedback->id = $data->quiz_id;
+                $quizDataForFeedback->id = (int) $data->quiz_id;
                 $quizDataForFeedback->feedback_msg_right = $data->feedback_msg_right;
                 $quizDataForFeedback->feedback_msg_wrong = $data->feedback_msg_wrong;
             }
@@ -459,6 +459,11 @@ class ResultModel extends BaseDatabaseModel
         $db->setQuery($query);
         $ids = $db->loadColumn();
 
+        if (!empty($ids)) {
+            $ids = ArrayHelper::toInteger((array) $ids);
+            $ids = array_filter((array) $ids);
+        }
+
         if (empty($ids)) {
             return true;
         }
@@ -482,6 +487,11 @@ class ResultModel extends BaseDatabaseModel
             $db->execute();
         } catch (\RuntimeException $e) {
             $app->enqueueMessage($e->getMessage(), 'error');
+        }
+
+        if (!empty($pks)) {
+            $pks = ArrayHelper::toInteger((array) $pks);
+            $pks = array_filter((array) $pks);
         }
 
         if (!empty($pks)) {

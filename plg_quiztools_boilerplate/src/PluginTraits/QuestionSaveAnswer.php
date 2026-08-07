@@ -22,7 +22,7 @@ use Joomla\Event\Event;
 /**
  * Saving the answer to the question on the site.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionSaveAnswer
 {
@@ -30,8 +30,8 @@ trait QuestionSaveAnswer
 	 * Saving the answer to the question on the site.
 	 *
 	 * @param   Event  $event
-	 *
 	 * @return bool
+     * @since  1.0.0
 	 */
     public function QuestionSaveAnswer($event): bool
     {
@@ -99,8 +99,8 @@ trait QuestionSaveAnswer
 
         // And save the answer:
         $resultQuestion = new \stdClass();
-        $resultQuestion->result_quiz_id = $data->resultQuizId;
-        $resultQuestion->question_id = $data->id;
+        $resultQuestion->result_quiz_id = (int) $data->resultQuizId;
+        $resultQuestion->question_id = (int) $data->id;
         $resultQuestion->total_points = 0;
         $resultQuestion->points_received = 0;
         $resultQuestion->attempts = $attemptsMade + 1;

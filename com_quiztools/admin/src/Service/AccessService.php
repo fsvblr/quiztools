@@ -20,6 +20,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Database\ParameterType;
 use Joomla\Filter\InputFilter;
+use Joomla\Utilities\ArrayHelper;
 use Qt\Component\Quiztools\Administrator\Extension\QuiztoolsComponent;
 use Qt\Component\Quiztools\Site\Helper\RouteHelper;
 use Qt\Component\Quiztools\Site\Model\OrdersModel;
@@ -41,8 +42,8 @@ class AccessService
 	/**
 	 *  Check access
 	 *
-	 * @param string $view View/Entity
-	 * @param int $pk Primary key
+	 * @param string|null $view View/Entity
+	 * @param int|null $pk Primary key
 	 * @return bool
      * @since 1.0.0
 	 */
@@ -64,7 +65,7 @@ class AccessService
 	/**
 	 * Checking access to the quiz
 	 *
-	 * @param int  $pk  Primary key
+	 * @param int|null  $pk  Primary key
      * @param int  $order_id  Order Id
 	 * @return bool
      * @since 1.0.0
@@ -87,11 +88,11 @@ class AccessService
 
 			if (empty($pk) && ($input->get('task') == 'ajaxQuiz.getQuizData')) {
 				$ajaxData = $input->get('quiz', [], 'ARRAY');
-				$pk = !empty((int) $ajaxData['id']) ? (int) $ajaxData['id'] : 0;
+				$pk = !empty($ajaxData['id']) ? (int) $ajaxData['id'] : 0;
                 $order_id = isset($ajaxData['orderId']) ? (int) $ajaxData['orderId'] : 0;
                 $lp = !empty($ajaxData['lp']) ? json_decode($ajaxData['lp'], true) : [];
 
-                $this->ajaxQuizAction = !empty($ajaxData['action']) ? $ajaxData['action'] : null;
+                $this->ajaxQuizAction = !empty($ajaxData['action']) ? (string) $ajaxData['action'] : null;
 			}
 		}
 
@@ -141,7 +142,7 @@ class AccessService
         }
 		// Check paid access
 		else if ($quiz->type_access == QuiztoolsComponent::CONDITION_TYPE_ACCESS_PAID) {
-            $quiz->order_id = $order_id;
+            $quiz->order_id = (int) $order_id;
 
             // A quiz included in the Learning Path loaded in an iframe
             if (!empty($lp['id'])) {  // Ajax request
@@ -169,11 +170,12 @@ class AccessService
 	 */
 	private function checkQuizAttempts($quiz)
 	{
-		$user = Factory::getApplication()->getIdentity();
+        $app = Factory::getApplication();
+		$user = $app->getIdentity();
 		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		$query = $db->createQuery();
 
-		$cookie_quizupi = Factory::getApplication()->getInput()->cookie->get('quizupi');
+		$cookie_quizupi = $app->getInput()->cookie->get('quizupi');
         $where = [];
         $where[] = $db->q(1) . '=' . $db->q(1);
 		if ($user->guest && !empty($cookie_quizupi[$quiz->id])) {
@@ -208,7 +210,7 @@ class AccessService
 
             $last_user_tries = $user_tries[count($user_tries)-1];  // in UTC
 
-            $userTimezone = $user->getParam('timezone', Factory::getApplication()->getConfig()->get('offset', 'UTC'));
+            $userTimezone = $user->getParam('timezone', $app->getConfig()->get('offset', 'UTC'));
             $userTimezone = new \DateTimeZone($userTimezone);
 
             $dt = new \DateTime($last_user_tries, new \DateTimeZone('UTC'));
@@ -262,7 +264,7 @@ class AccessService
         // After completing the quiz, the results page loads.
         // At this point, the current attempt is already recorded in the database.
         // To pass the access check for the quiz results page, we'll reduce the total number of attempts by one.
-        if (!empty((int) $number_times_passed) && $this->ajaxQuizAction === 'result') {
+        if (!empty($number_times_passed) && $this->ajaxQuizAction === 'result') {
             $number_times_passed = (int) $number_times_passed - 1;
             // After using the results page request flag, we'll remove it.
             // This is because when generating the results page, there's a check to see if this quiz can be taken again.
@@ -306,7 +308,8 @@ class AccessService
     private function isAccessResult($pk)
     {
         $pk = (int) $pk;
-        $input = Factory::getApplication()->getInput();
+        $app = Factory::getApplication();
+        $input = $app->getInput();
 
         if (empty($pk)) {
             $pk = $input->getInt('id');
@@ -316,7 +319,7 @@ class AccessService
             return false;
         }
 
-        $user = Factory::getApplication()->getIdentity();
+        $user = $app->getIdentity();
 
         if ($user->guest) {
             return false;
@@ -355,7 +358,7 @@ class AccessService
 
         $rawToken  = $result->unique_id . $result->start_datetime;
         $tokenHash = hash_hmac($algorithm, $rawToken, $siteSecret);
-        $resultId  = $result->id;
+        $resultId  = (int) $result->id;
         $message   = base64_encode("$algorithm:$resultId:$tokenHash");
 
         return $message;
@@ -465,7 +468,7 @@ class AccessService
 
             if (empty($pk) && ($input->get('task') == 'ajaxLpath.getLpathData')) {
                 $ajaxData = $input->get('lpath', [], 'ARRAY');
-                $pk = (int) $ajaxData['id'] ?: 0;
+                $pk = !empty($ajaxData['id']) ? (int) $ajaxData['id'] : 0;
                 $order_id = isset($ajaxData['orderId']) ? (int) $ajaxData['orderId'] : 0;
             }
         }
@@ -533,7 +536,7 @@ class AccessService
         $user = Factory::getApplication()->getIdentity();
 
         // Orders are available only to authorized users
-        if ((int) $user->id === 0) {
+        if ($user->guest) {
             return false;
         }
 
@@ -644,10 +647,10 @@ class AccessService
             ->from($db->qn('#__quiztools_order_users'))
             ->where(
                 [
-                    $db->qn('order_id') . '=' . $db->q($order->id),
-                    $db->qn('parent_user_id') . '=' . $db->q($order->user_id),
-                    $db->qn('parent_user_id') . '!=' . $db->q($user->id),
-                    $db->qn('user_id') . '=' . $db->q($user->id),
+                    $db->qn('order_id') . '=' . $db->q((int) $order->id),
+                    $db->qn('parent_user_id') . '=' . $db->q((int) $order->user_id),
+                    $db->qn('parent_user_id') . '!=' . $db->q((int) $user->id),
+                    $db->qn('user_id') . '=' . $db->q((int) $user->id),
                 ]
             );
 
@@ -764,7 +767,12 @@ class AccessService
      */
     private function getQuizzesInOrderData($quizzesIds = [])
     {
-        if (empty($quizzesIds)) {
+        if (!empty($quizzesIds) && \is_array($quizzesIds)) {
+            $quizzesIds = ArrayHelper::toInteger((array) $quizzesIds);
+            $quizzesIds = array_filter((array) $quizzesIds);
+        }
+
+        if (empty($quizzesIds) || !\is_array($quizzesIds)) {
             return [];
         }
 
@@ -791,7 +799,7 @@ class AccessService
     {
         $app = Factory::getApplication();
         $user = $app->getIdentity();
-        $orderId = !empty($item->order_id) ? $item->order_id : 0;
+        $orderId = !empty($item->order_id) ? (int) $item->order_id : 0;
 
         if (empty($item->id) || empty($user->id) || empty($orderId)) {
             return false;
@@ -922,7 +930,7 @@ class AccessService
     {
         $app = Factory::getApplication();
         $user = $app->getIdentity();
-        $orderId = !empty($lpath->order_id) ? $lpath->order_id : 0;
+        $orderId = !empty($lpath->order_id) ? (int) $lpath->order_id : 0;
 
         if (empty($lpath->id) || empty($user->id) || empty($orderId)) {
             return true;  // $isAccess will not change and will remain false

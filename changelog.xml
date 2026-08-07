@@ -2,6 +2,28 @@
     <changelog>
         <element>pkg_quiztools</element>
         <type>package</type>
+        <version>1.4.1</version>
+        <security>
+            <item>Improving security. Multiple minor code refactoring.</item>
+        </security>
+        <fix>
+            <item>Continuing using filters on the results page in the admin panel after clicking the "Export to Excel" button.</item>
+            <item>When clicking on the certificate preview in the admin panel, a row (checkbox in the first column) was selected in the list of certificates.</item>
+            <item>Uploading a certificate image with spaces in the file name.</item>
+            <item>Using language variables from the front when generating a PDF report with the result in the admin panel.</item>
+            <item>If the user answered False to a "True/false" question and then returned to it (button "Prev"), the user's previously given answer was be lost.</item>
+            <item>Calculating the "total" points at the start of a quiz consisting of a pool of questions.</item>
+        </fix>
+        <addition>
+            <item>To clean up HTML, blacklists of tags and attributes with default values have been added to the component settings.</item>
+        </addition>
+        <change>
+            <item>When the number of attempts for a specific question in a quiz is exceeded, this question is now blocked instead of ending the quiz.</item>
+        </change>
+    </changelog>
+    <changelog>
+        <element>pkg_quiztools</element>
+        <type>package</type>
         <version>1.4.0</version>
         <addition>
             <item>New question type - "Hotspots Multiple".</item>

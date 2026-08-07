@@ -52,9 +52,6 @@ class ResultController extends BaseController
             return false;
         }
 
-        $lang = $this->app->getLanguage();
-        $lang->load('com_quiztools', JPATH_ADMINISTRATOR);
-
         $adminResultController = $this->factory->createController('Result', 'Administrator', [], $this->app, $this->input);
         $adminResultController->getPdf($resultId);
 

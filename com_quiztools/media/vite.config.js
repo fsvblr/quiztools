@@ -8,6 +8,7 @@ export default defineConfig({
         rollupOptions: {
             // https://rollupjs.org/configuration-options/
             input: {
+                'css/admin.certificates.css': 'src/css/admin.certificates.css',
                 'css/admin.certificate.css': 'src/css/admin.certificate.css',
                 'css/admin.results.css': 'src/css/admin.results.css',
                 'css/admin.orders.css': 'src/css/admin.orders.css',
@@ -20,6 +21,7 @@ export default defineConfig({
                 'css/result.css': 'src/css/result.css',
                 'css/orders.css': 'src/css/orders.css',
 
+                'js/admin.certificates.min.js': 'src/js/admin.certificates.js',
                 'js/admin.certificate.min.js': 'src/js/admin.certificate.js',
                 'js/admin.results.min.js': 'src/js/admin.results.js',
                 'js/admin.subscription.min.js': 'src/js/admin.subscription.js',

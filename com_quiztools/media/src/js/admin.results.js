@@ -33,5 +33,17 @@
                 }
             }
         }
+
+        const exportExcel = document.querySelector('#toolbar-export-excel')
+        if (exportExcel) {
+            exportExcel.addEventListener('click', () => {
+                setTimeout(() => {
+                    const taskField = document.querySelector('#results-task')
+                    if (taskField) {
+                        taskField.value = ''
+                    }
+                }, 5000)
+            })
+        }
     })
 })()

@@ -22,18 +22,18 @@ use Joomla\Event\Event;
 /**
  * Loading styles and scripts.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait AddCssAndJs
 {
     /**
-     * Injects CSS and Javascript
+     * Injects CSS and JavaScript
      *
      * @param   Event  $event
      *
      * @return  void
      *
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function addCSSAndJs($event): void
     {

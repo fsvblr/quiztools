@@ -38,9 +38,9 @@ class LpathslistField extends ListField
             $model_lpaths->setState('filter.type_access', (int) $this->element['typeAccess']);
         }
 
-        $quizzes = $model_lpaths->getLearningPathsList();
+        $lpaths = $model_lpaths->getLearningPathsList();
 
-        return $quizzes;
+        return $lpaths;
     }
 
 	protected function getInput()

@@ -1,0 +1,7 @@
+.preview-certificate-dialog .joomla-dialog-body {
+    display: flex;
+    justify-content: center;
+}
+.preview-certificate-dialog img {
+    max-width: 100%;
+}

@@ -23,6 +23,8 @@ use Qt\Component\Quiztools\Administrator\Model\SubscriptionModel;
 
 /**
  * List of products.
+ *
+ * @since  1.2.0
  */
 class ProductslistField extends ListField
 {
@@ -63,7 +65,7 @@ class ProductslistField extends ListField
             $used_product_ids = [];
         }
 
-        $langTag = Factory::getApplication()->getLanguage()->getTag();
+        $langTag = $app->getLanguage()->getTag();
         if (!file_exists(JPATH_SITE . '/components/com_virtuemart/language/' . $langTag . '/' . $langTag . '.com_virtuemart.ini')) {
             $langTag = 'en-GB';
         }

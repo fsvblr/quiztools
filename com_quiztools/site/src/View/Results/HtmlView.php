@@ -119,7 +119,7 @@ class HtmlView extends BaseHtmlView
 		// Flag indicates to not add limitstart=0 to URL
 		$this->pagination->hideEmptyLimitstart = true;
 
-		$this->pageclass_sfx = htmlspecialchars(trim($this->params->get('pageclass_sfx', '')));
+		$this->pageclass_sfx = htmlspecialchars(trim($this->params->get('pageclass_sfx', '')), ENT_QUOTES, 'UTF-8');
 
 		$this->_prepareDocument();
 

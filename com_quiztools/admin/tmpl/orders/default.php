@@ -104,7 +104,7 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                                     <?php echo $this->escape($item->store_type); ?>
                                 </td>
                                 <td class="text-center d-none d-md-table-cell">
-									<?php echo $item->id; ?>
+									<?php echo (int) $item->id; ?>
                                 </td>
                             </tr>
 						<?php endforeach; ?>

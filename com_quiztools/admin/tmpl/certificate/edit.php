@@ -20,6 +20,7 @@ use Joomla\CMS\Uri\Uri;
 
 $document = $this->getDocument();
 $app = Factory::getApplication();
+$user = $app->getIdentity();
 $input = $app->getInput();
 
 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
@@ -37,7 +38,7 @@ Text::script('COM_QUIZTOOLS_CERTIFICATE_CONFIRM_PREVIEW_BODY');
 
 $document->addScriptOptions('com_quiztools.certificate', [
         'id' => $input->getInt('id', 0),
-        'title' => $this->item->title,
+        'title' => $this->escape($this->item->title),
         'siteRoot' => URI::root(true) . '/',
     ]
 );
@@ -59,7 +60,19 @@ $document->addScriptOptions('com_quiztools.certificate', [
                 <?php echo $this->form->renderField('title'); ?>
                 <?php echo $this->form->renderField('state'); ?>
                 <?php echo $this->form->renderField('file'); ?>
-                <?php echo $this->form->renderField('upload_image'); ?>
+
+                <?php if ($user->authorise('core.manage', 'com_quiztools')): ?>
+                    <?php echo $this->form->renderField('upload_image'); ?>
+                <?php else: ?>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <label><?php echo $this->form->getLabel('upload_image'); ?></label>
+                        </div>
+                        <div class="controls">
+                            <small><?php echo Text::_('COM_QUIZTOOLS_CERTIFICATE_NO_PERMISSIONS_TO_UPLOAD_IMAGES'); ?></small>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
         <div class="row">

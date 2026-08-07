@@ -26,7 +26,7 @@ use Qt\Plugin\Quiztools\Truefalse\Table\QuestionTruefalseTable;
 /**
  * Saving question options in the admin panel.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsSave
 {
@@ -34,8 +34,8 @@ trait QuestionOptionsSave
      * Saving question options in the admin panel.
      *
      * @param   AfterStoreEvent  $event
-     *
      * @return bool
+     * @since  1.0.0
      */
     public function QuestionOptionsSave($event): bool
     {
@@ -99,8 +99,8 @@ trait QuestionOptionsSave
         );
 
         $typeFields = [];
-        $typeFields['id'] = !empty($question_type_id) ? $question_type_id : 0;
-        $typeFields['question_id'] = $question_id;
+        $typeFields['id'] = !empty($question_type_id) ? (int) $question_type_id : 0;
+        $typeFields['question_id'] = (int) $question_id;
         $typeFields['correct_answer'] = !empty($formData['correct_answer']) ? (int) $formData['correct_answer'] : 0;
 
         if (!$questionTable->save($typeFields)) {

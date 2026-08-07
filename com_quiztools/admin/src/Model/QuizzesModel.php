@@ -152,7 +152,6 @@ class QuizzesModel extends ListModel
 
 		// Filter by category
 		$category_id = $this->getState('filter.category_id');
-
 		if (is_numeric($category_id)) {
 			$category_id = (int) $category_id;
 			$query->where($db->qn('a.catid') . ' = :categoryId')
@@ -214,6 +213,7 @@ class QuizzesModel extends ListModel
 			->from($db->qn('#__quiztools_quizzes'))
             ->order($db->qn('title') . ' ASC');
 
+        // Filter by state
         $state = (string) $this->getState('filter.state');
         if (is_numeric($state)) {
             $state = (int) $state;

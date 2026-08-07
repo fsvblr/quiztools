@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" method="upgrade">
     <name>COM_QUIZTOOLS</name>
-    <creationDate>2026-06-04</creationDate>
+    <creationDate>2026-08-07</creationDate>
     <author>QuizTools</author>
     <authorEmail>sf.webdev.box@gmail.com</authorEmail>
     <authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
     <copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
     <license>GNU General Public License version 2 or later</license>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <description>COM_QUIZTOOLS_XML_DESC</description>
     <namespace path="src">Qt\Component\Quiztools</namespace>
     <scriptfile>script.php</scriptfile>

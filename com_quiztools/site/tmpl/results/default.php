@@ -87,7 +87,7 @@ $searchToolsOptions = [
                             <div class="cell w-3"><?php echo ($this->pagination->limitstart + 1 + $i); ?></div>
                             <div class="cell w-15">
                                 <a href="<?php echo Route::_(RouteHelper::getResultRoute((int) $item->id)); ?>">
-                                    <?php echo $item->start_datetime_for_display; ?>
+                                    <?php echo $this->escape($item->start_datetime_for_display); ?>
                                 </a>
                             </div>
                             <?php if ($this->state->get('admin.mode')) : ?>

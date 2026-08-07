@@ -245,7 +245,11 @@ function processingResponse(data) {
             // Does this question(s) have any attempts left?
             if (question.noAttemptsLeft && parseInt(question.noAttemptsLeft) === 1) {
                 Joomla.renderMessages({ warning: [Joomla.Text._('COM_QUIZTOOLS_QUIZ_ERROR_QUESTION_NO_ATTEMPTS_LEFT')] })
-                action.value = 'result'
+                //action.value = 'result'
+                // The number of attempts to answer a question within a single quiz run has been exceeded.
+                // This can happen if you return to the question ('Prev' button).
+                // Do NOT end the quiz (action.value = 'result'); instead, lock the question, as it already has an answer.
+                question.isBlocked = true;
             }
         })
         pointsCurrentQuestion.value = points

@@ -66,6 +66,10 @@ class ResultsController extends AdminController
     {
         $this->checkToken();
 
+        if (!$this->app->getIdentity()->authorise('core.manage', 'com_quiztools')) {
+            throw new \Exception(Text::_('JGLOBAL_AUTH_ACCESS_DENIED'), 403);
+        }
+
         $items = $this->prepareExport();
 
         if (empty($items)) {

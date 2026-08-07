@@ -13,12 +13,15 @@ namespace Qt\Component\Quiztools\Site\Model;
 use Joomla\CMS\Event\Content;
 use Joomla\CMS\Event\Model;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\ParameterType;
 use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 use Qt\Component\Quiztools\Administrator\Model\ResultModel;
 use Qt\Component\Quiztools\Administrator\Model\QuestionModel;
 
@@ -43,9 +46,10 @@ class AjaxQuizModel extends BaseDatabaseModel
 	{
 		$app = Factory::getApplication();
 		$input = $app->getInput();
+        $filter = InputFilter::getInstance();
 
 		$data = $input->get('quiz', [], 'ARRAY');
-		$quiz_id = (int) $data['id'] ?: 0;
+		$quiz_id = !empty($data['id']) ? (int) $data['id'] : 0;
         $order_id = isset($data['orderId']) ? (int) $data['orderId'] : 0;
 
 		/** @var QuizModel $model_quiz */
@@ -69,6 +73,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 
             if (!empty($cookie_quizupi[$quiz->id])) {
                 $unique_id = $cookie_quizupi[$quiz->id];
+                $unique_id = $filter->clean($unique_id, 'ALNUM');
             }
 
             $query->clear();
@@ -95,12 +100,12 @@ class AjaxQuizModel extends BaseDatabaseModel
             }
 
             if (!empty($resultQuiz->unique_id)) {
-                $unique_id = $resultQuiz->unique_id;
+                $unique_id = $filter->clean($resultQuiz->unique_id, 'ALNUM');
             }
         }
 
-		if (empty($unique_id) || empty($resultQuiz->id)) {
-			$unique_id = md5(uniqid(rand(), true));
+		if (empty($unique_id) || empty((int) $resultQuiz->id)) {
+			$unique_id = md5(uniqid(rand(), true));  // =>  may consist of symbols 0123456789abcdef
 		}
 
 		$input->cookie->set("quizupi[$quiz->id]", $unique_id, [
@@ -112,7 +117,7 @@ class AjaxQuizModel extends BaseDatabaseModel
         ]);
         // end set unique_id
 
-		$resultQuizId = !empty($resultQuiz->id) ? $resultQuiz->id : null;
+		$resultQuizId = !empty($resultQuiz->id) ? (int) $resultQuiz->id : null;
 		$new_quiz = empty($resultQuizId) ? true : false;
 		$result = [];
 
@@ -152,10 +157,10 @@ class AjaxQuizModel extends BaseDatabaseModel
 
 			// create a new "result":
 			$resultQuiz = new \stdClass();
-			$resultQuiz->quiz_id = $quiz->id;
-			$resultQuiz->user_id = $user->id;
-			$resultQuiz->total_score = $quiz->total_score;
-			$resultQuiz->passing_score = $quiz->passing_score;
+			$resultQuiz->quiz_id = (int) $quiz->id;
+			$resultQuiz->user_id = (int) $user->id;
+			$resultQuiz->total_score = (float) $quiz->total_score;
+			$resultQuiz->passing_score = (float) $quiz->passing_score;
 			$resultQuiz->sum_points_received = 0;
 			$resultQuiz->passed = 0;
 			$resultQuiz->finished = 0;
@@ -170,11 +175,11 @@ class AjaxQuizModel extends BaseDatabaseModel
 
 			// save user data for new "result":
 			$userData_tbl = new \stdClass();
-			$userData_tbl->result_quiz_id = $resultQuizId;
-			$userData_tbl->user_id = $user->id;
-			$userData_tbl->user_name = $userData->name;
-			$userData_tbl->user_surname = $userData->surname;
-			$userData_tbl->user_email = $userData->email;
+			$userData_tbl->result_quiz_id = (int) $resultQuizId;
+			$userData_tbl->user_id = (int) $user->id;
+			$userData_tbl->user_name = htmlspecialchars($userData->name, ENT_QUOTES, 'UTF-8');
+			$userData_tbl->user_surname = htmlspecialchars($userData->surname, ENT_QUOTES, 'UTF-8');
+			$userData_tbl->user_email = htmlspecialchars($userData->email, ENT_QUOTES, 'UTF-8');
 			if (isset($userData->name)) {
                 unset($userData->name);
             }
@@ -187,9 +192,12 @@ class AjaxQuizModel extends BaseDatabaseModel
 			$userData_tbl->user_data = [];   //data for custom jobs?
 			$userData = (array) $userData;
 			if (!empty($userData)) {
-				foreach ($userData as $key => $value) {
-					$userData_tbl->user_data[$key] = $value;
-				}
+                $userData = QuiztoolsHelper::sanitizeDataForJson($userData);
+                if (!empty($userData)) {
+                    foreach ($userData as $key => $value) {
+                        $userData_tbl->user_data[$key] = $value;
+                    }
+                }
 			}
 			$userData_tbl->user_data = new Registry($userData_tbl->user_data);
 			$userData_tbl->user_data = (string) $userData_tbl->user_data;
@@ -198,7 +206,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 			// get questions ids for new quiz:
 			if ($quiz->question_pool == 'random') {
 				$questionsIdsObjs = $this->getQuizQuestions(0, null, 'rand()', $quiz->question_pool_randon_qty, false);
-			} elseif ($quiz->question_pool == 'by_categories') {
+			} else if ($quiz->question_pool == 'by_categories') {
 				$questionsIdsObjs = [];
 				foreach ($quiz->question_pool_categories as $pool_category) {
 					$questions_by_category = $this->getQuizQuestions(0, $pool_category['category_id'], 'rand()', $pool_category['questions_qty'], false);
@@ -219,21 +227,21 @@ class AjaxQuizModel extends BaseDatabaseModel
 			// Creating and recording a chain of quiz questions:
 			$chain = '';
 			foreach ($questionsIdsObjs as $question) {
-				$chain .= $question->id . '*';
+				$chain .= (int) $question->id . '*';
 			}
 			$chain = rtrim($chain,'*');
 
 			$chain_tbl = new \stdClass();
-			$chain_tbl->quiz_id = $quiz->id;
-			$chain_tbl->user_id = $user->id;
+			$chain_tbl->quiz_id = (int) $quiz->id;
+			$chain_tbl->user_id = (int) $user->id;
 			$chain_tbl->chain = $chain;
 			$chain_tbl->unique_id = $unique_id;
-            $chain_tbl->result_quiz_id = $resultQuizId;
+            $chain_tbl->result_quiz_id = (int) $resultQuizId;
 			$db->insertObject('#__quiztools_results_chains', $chain_tbl);
 
 			if ($quiz->questions_on_page == 0) { //One question per page (default)
 				$questionsIdsSet = [$questionsIdsObjs[0]->id];
-			} elseif ($quiz->questions_on_page == 1) {  //All questions on one page
+			} else if ($quiz->questions_on_page == 1) {  //All questions on one page
 				$questionsIdsSet = [];
 				foreach ($questionsIdsObjs as $question) {
 					$questionsIdsSet[] = $question->id;
@@ -259,8 +267,8 @@ class AjaxQuizModel extends BaseDatabaseModel
                 if (!empty($total_score)) {
                     // update a new "result":
                     $resultQuizUpd = new \stdClass();
-                    $resultQuizUpd->id = $resultQuizId;
-                    $resultQuizUpd->total_score = $total_score;
+                    $resultQuizUpd->id = (int) $resultQuizId;
+                    $resultQuizUpd->total_score = (float) $total_score;
                     $db->updateObject('#__quiztools_results_quizzes', $resultQuizUpd, 'id');
                 }
             }
@@ -315,7 +323,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 
 			if ($quiz->questions_on_page == 0) {        //One question per page (default)
 				$questionsIdsSet = [$next_question_id];
-			} elseif ($quiz->questions_on_page == 1) {  //All questions on one page
+			} else if ($quiz->questions_on_page == 1) {  //All questions on one page
 				$questionsIdsSet = $chain_ids;
 				for ($i = 0; $i < count($questionsIdsSet); $i++) {
 					if ($questionsIdsSet[$i] != $next_question_id) {
@@ -340,7 +348,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 		$result['task'] = 'start';
 		$result['questions'] = $this->prepareQuestionsData($resultQuizId, $questionsIdsSet);
 
-        // If the quiz is within a learning path, mark the step as completed:
+        // If the quiz is within a learning path, mark the step as started:
         $lp = !empty($data['lp']) ? json_decode($data['lp'], true) : [];
         if (!empty($lp['id'])) {
             /** @var AjaxLpathModel $AjaxLpathModel */
@@ -368,6 +376,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 	{
 		$app = Factory::getApplication();
 		$input = $app->getInput();
+        $filter = InputFilter::getInstance();
 		$user = $this->getCurrentUser();
 
 		$data = $input->get('quiz', [], 'ARRAY');
@@ -376,10 +385,12 @@ class AjaxQuizModel extends BaseDatabaseModel
             unset($data['question']['options']);
         }
 
-		$quiz_id = (int) $data['id'] ?: 0;
-		$resultQuizId = (int) $data['resultQuizId'] ?: 0;
-		$unique_id = $data['uniqueId'] ? htmlspecialchars($data['uniqueId'], ENT_QUOTES, 'UTF-8') : null;
-		$questions = $data['question'] ?: [];
+        $quiz_id = !empty($data['id']) ? (int) $data['id'] : 0;
+		$resultQuizId = !empty($data['resultQuizId']) ? (int) $data['resultQuizId'] : 0;
+		$unique_id = $data['uniqueId']
+            ? $filter->clean($data['uniqueId'], 'ALNUM')
+            : null;
+		$questions = !empty($data['question']) ? $data['question'] : [];
 
 		if (empty($quiz_id) || empty($resultQuizId) || empty($unique_id) || empty($questions)) {
 			throw new \Exception(Text::_('COM_QUIZTOOLS_QUIZ_ERROR_QUIZ_NOT_FOUND'));
@@ -486,7 +497,7 @@ class AjaxQuizModel extends BaseDatabaseModel
         $result['unansweredQuestionsIds'] = $notAnsweredQuestionsIDs;
 
         if ($action === 'finish') {
-            if (empty($notAnsweredQuestionsIDs) || $quiz->skip_questions === 2) {  // Enable skip questions: Yes, and allow submit quiz with not answered questions
+            if (empty($notAnsweredQuestionsIDs) || $quiz->skip_questions === 2) {  // Enable skip questions: "Yes", and allow to submit quiz with not answered questions
                 $this->setQuizFinished($quizResult, $quiz);
                 $result['task'] = 'result';
 
@@ -594,9 +605,9 @@ class AjaxQuizModel extends BaseDatabaseModel
 		$query = $db->createQuery();
 
 		if ($only_ids) {
-			$query->select($db->qn('id'));
+			$query->select($db->qn('q.id'));
 		} else {
-			$query->select('*');
+			$query->select('q.*');
 		}
 
 		$query->from($db->qn('#__quiztools_questions', 'q'))
@@ -648,6 +659,11 @@ class AjaxQuizModel extends BaseDatabaseModel
      */
 	private function prepareQuestionsData($resultQuizId = 0, $questions_ids = [])
 	{
+        if (!empty($questions_ids)) {
+            $questions_ids = ArrayHelper::toInteger((array) $questions_ids);
+            $questions_ids = array_filter((array) $questions_ids);
+        }
+
 		if (empty($resultQuizId) || empty($questions_ids)) {
 			return [];
 		}
@@ -660,7 +676,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 			->select($db->qn(['type', 'text', 'attempts']))
 			->select($db->qn('points', 'pointsQuestion'))
 			->from($db->qn('#__quiztools_questions', 'q'))
-			->where($db->qn('q.id') . " IN ('".implode("','", $questions_ids)."')");
+			->where($db->qn('q.id') . " IN ('" . implode("','", $questions_ids) . "')");
 		$db->setQuery($query);
 		$questions = $db->loadObjectList();
 
@@ -683,12 +699,12 @@ class AjaxQuizModel extends BaseDatabaseModel
 			$db->setQuery($query);
 			$result_question = $db->loadObject();
 
-			$question->resultQuestionId = !empty($result_question->id) ? $result_question->id : null;
+			$question->resultQuestionId = !empty($result_question->id) ? (int) $result_question->id : null;
 
             // Does this question have any attempts left?
             $question->noAttemptsLeft = 0;  // Yes
             if (!empty($question->attempts)) {
-                $attemptsMade = !empty($result_question->attempts) ?: 0;
+                $attemptsMade = !empty($result_question->attempts) ? (int) $result_question->attempts : 0;
                 $question->noAttemptsLeft = ((int) $attemptsMade >= (int) $question->attempts) ? 1 : 0;
             }
 
@@ -754,7 +770,7 @@ class AjaxQuizModel extends BaseDatabaseModel
      */
 	private function saveAnswer($resultQuizId, $answerToQuestion)
 	{
-		$question_id = (int) $answerToQuestion['id'] ?: 0;
+		$question_id = !empty($answerToQuestion['id']) ? (int) $answerToQuestion['id'] : 0;
 		$questionData = !empty($answerToQuestion['answer'])
 			? json_decode($answerToQuestion['answer'], false)  //example: {"type":"mchoice","answer":"2"}
 			: [];
@@ -775,7 +791,7 @@ class AjaxQuizModel extends BaseDatabaseModel
             $query->select('qt.*');
             $query->join(
                 'INNER',
-                $db->qn('#__quiztools_questions_' . htmlspecialchars($questionData->type), 'qt'),
+                $db->qn('#__quiztools_questions_' . htmlspecialchars($questionData->type, ENT_QUOTES, 'UTF-8'), 'qt'),
                 $db->qn('qt.question_id') . '=' . $db->qn('q.id')
             );
         }
@@ -789,7 +805,7 @@ class AjaxQuizModel extends BaseDatabaseModel
 
         // The 'id' field is present in both tables in the query above and will be overridden.
         if ($questionData->type !== 'boilerplate') {
-            $question->id = !empty((int) $question->question_id) ? (int) $question->question_id : $question->id;
+            $question->id = !empty($question->question_id) ? (int) $question->question_id : $question->id;
         }
 
 		$question->resultQuizId = $resultQuizId;
@@ -845,9 +861,9 @@ class AjaxQuizModel extends BaseDatabaseModel
 
         $query->clear()
             ->update($db->qn('#__quiztools_results_quizzes'))
-            ->set($db->qn('sum_points_received') . '=' . (float) $receivedPointsForAnsweredQuestions)
-            ->set($db->qn('sum_time_spent') . '=' . $userTimeSpent)
-            ->set($db->qn('passed') . '=' . $db->q($is_passed))
+            ->set($db->qn('sum_points_received') . '=' . $db->q((float) $receivedPointsForAnsweredQuestions))
+            ->set($db->qn('sum_time_spent') . '=' . $db->q((int) $userTimeSpent))
+            ->set($db->qn('passed') . '=' . $db->q((int) $is_passed))
             ->set($db->qn('finished') . '=' . $db->q(1))
             ->where($db->qn('id') . ' = :id')
             ->bind(':id', $quizResult->id, ParameterType::INTEGER);
@@ -900,25 +916,25 @@ class AjaxQuizModel extends BaseDatabaseModel
 
 		// Feedback from the quiz settings overrides language constants:
         if (!empty($quiz->feedback_msg_right)) {
-            $feedback['correct']['text'] = $quiz->feedback_msg_right;
+            $feedback['correct']['text'] = QuiztoolsHelper::cleanHtml($quiz->feedback_msg_right);
         }
         if (!empty($quiz->feedback_msg_wrong)) {
-            $feedback['incorrect']['text'] = $quiz->feedback_msg_wrong;
+            $feedback['incorrect']['text'] = QuiztoolsHelper::cleanHtml($quiz->feedback_msg_wrong);
         }
 
 		// Feedback from the question settings overrides feedback from the quiz settings:
         if (!empty($savedQuestion->feedback_msg_right)) {
-            $feedback['correct']['text'] = $savedQuestion->feedback_msg_right;
+            $feedback['correct']['text'] = QuiztoolsHelper::cleanHtml($savedQuestion->feedback_msg_right);
         }
         if (!empty($savedQuestion->feedback_msg_wrong)) {
-            $feedback['incorrect']['text'] = $savedQuestion->feedback_msg_wrong;
+            $feedback['incorrect']['text'] = QuiztoolsHelper::cleanHtml($savedQuestion->feedback_msg_wrong);
         }
 
 		if (isset($savedQuestion->partial_score)) {
             if ($savedQuestion->partial_score) {
                 $feedback['partially_correct']['text'] = Text::_('COM_QUIZTOOLS_QUIZ_FEEDBACK_PARTIALLY_CORRECT');
                 if (isset($savedQuestion->feedback_partial_score) && trim($savedQuestion->feedback_partial_score)) {
-                    $feedback['partially_correct']['text'] = $savedQuestion->feedback_partial_score;
+                    $feedback['partially_correct']['text'] = QuiztoolsHelper::cleanHtml($savedQuestion->feedback_partial_score);
                 }
                 $feedback['partially_correct']['class'] = 'feedback-partially-correct';
             } else {
@@ -979,7 +995,7 @@ class AjaxQuizModel extends BaseDatabaseModel
         $input = $app->getInput();
 
         $data = $input->get('quiz', [], 'ARRAY');
-        $resultQuizId = (int) $data['resultQuizId'] ?: 0;
+        $resultQuizId = !empty($data['resultQuizId']) ? (int) $data['resultQuizId'] : 0;
         $isLP = isset($data['isLP']) ? filter_var($data['isLP'], FILTER_VALIDATE_BOOLEAN) : false;  // Learning Path
         $orderId = isset($data['orderId']) ? (int) $data['orderId'] : null;
 

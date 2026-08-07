@@ -109,9 +109,9 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 										<?php if ($canEdit) : ?>
                                             <a href="<?php echo Route::_('index.php?option=com_quiztools&view=result&id=' . (int) $item->id); ?>"
                                                title="<?php echo Text::_('JACTION_EDIT'); ?> <?php echo $item->start_datetime_for_display; ?>">
-												<?php echo $item->start_datetime_for_display; ?></a>
+												<?php echo $this->escape($item->start_datetime_for_display); ?></a>
 										<?php else : ?>
-											<?php echo $item->start_datetime_for_display; ?>
+											<?php echo $this->escape($item->start_datetime_for_display); ?>
 										<?php endif; ?>
                                     </div>
                                 </th>
@@ -122,17 +122,17 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                                     <?php echo $this->escape($item->title); ?>
                                 </td>
                                 <td class="text-center">
-                                    <?php echo number_format($item->total_score, 2, '.', ''); ?>
+                                    <?php echo number_format((float) $item->total_score, 2, '.', ''); ?>
                                 </td>
                                 <td class="text-center">
                                     <?php
                                     $passingScore = (float) $item->total_score * ((float) $item->passing_score / 100 );
                                     $passingScore = round($passingScore, 2);
-                                    echo number_format($passingScore, 2, '.', '') . ' (' . $item->passing_score . '%)';
+                                    echo number_format($passingScore, 2, '.', '') . ' (' . (float) $item->passing_score . '%)';
                                     ?>
                                 </td>
                                 <td class="text-center">
-                                    <?php echo number_format($item->sum_points_received, 2, '.', ''); ?>
+                                    <?php echo number_format((float) $item->sum_points_received, 2, '.', ''); ?>
                                 </td>
                                 <td class="text-center">
                                     <span class="icon-<?php echo (int) $item->passed ? 'check passed' :
@@ -162,7 +162,7 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-center">
-									<?php echo $item->id; ?>
+									<?php echo (int) $item->id; ?>
                                 </td>
                             </tr>
 						<?php endforeach; ?>
@@ -172,7 +172,7 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 					<?php echo $this->pagination->getListFooter(); ?>
 				<?php endif; ?>
 
-                <input type="hidden" name="task" value="">
+                <input type="hidden" name="task" value="" id="results-task">
                 <input type="hidden" name="boxchecked" value="0">
 				<?php echo HTMLHelper::_('form.token'); ?>
             </div>

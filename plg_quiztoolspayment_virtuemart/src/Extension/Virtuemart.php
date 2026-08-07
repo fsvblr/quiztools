@@ -134,7 +134,7 @@ final class Virtuemart extends CMSPlugin implements SubscriberInterface, Dispatc
      *
      * @param   Event  $event  The event we are handling
      * @return  void
-     * @since   3.9.0
+     * @since  1.2.0
      */
     public function onAdminSubscriptionGetData(Event $event): void
     {
@@ -146,7 +146,7 @@ final class Virtuemart extends CMSPlugin implements SubscriberInterface, Dispatc
      *
      * @param   Event  $event  The event we are handling
      * @return  void
-     * @since   3.9.0
+     * @since  1.2.0
      */
     public function onAdminSubscriptionsGetData(Event $event): void
     {
@@ -174,7 +174,7 @@ final class Virtuemart extends CMSPlugin implements SubscriberInterface, Dispatc
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.2.0
      */
     public function onAjaxVirtuemart(AjaxEvent $event): void
     {
@@ -191,6 +191,7 @@ final class Virtuemart extends CMSPlugin implements SubscriberInterface, Dispatc
      * @param   BeforeRenderEvent  $event
      *
      * @return void
+     * @since  5.3.0
      */
     public function onBeforeRender(BeforeRenderEvent $event)
     {
@@ -240,6 +241,7 @@ final class Virtuemart extends CMSPlugin implements SubscriberInterface, Dispatc
      * Getting the version of a store component.
      *
      * @return string|null
+     * @since  1.2.0
      */
     private function getStoreVersion()
     {

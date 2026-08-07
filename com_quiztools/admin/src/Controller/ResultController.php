@@ -16,6 +16,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 use Qt\Component\Quiztools\Administrator\Model\ResultModel;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -74,6 +75,12 @@ class ResultController extends BaseController
     {
         $this->checkToken('get');
 
+        $user = $this->app->getIdentity();
+
+        if (empty((int) $user->id) && ($client === 'site' && !$user->guest)) {
+            throw new \Exception(Text::_('JGLOBAL_AUTH_ACCESS_DENIED'), 403);
+        }
+
         $input = $this->input;
 
         if (empty($result_id)) {
@@ -111,10 +118,10 @@ class ResultController extends BaseController
         ];
 
         $controllerCertificate = $this->factory->createController('Certificate', 'Administrator', [], $this->app, $this->input);
-        $controllerCertificate->generateCertificate($data);
 
         if (!$controllerCertificate->generateCertificate($data)) {
-            $controllerCertificate->redirect();
+            $referer = $_SERVER['HTTP_REFERER'] ?: '/';
+            $this->setRedirect($referer);
             return false;
         }
 
@@ -132,11 +139,21 @@ class ResultController extends BaseController
     {
         $this->checkToken('get');
 
+        $user = $this->app->getIdentity();
+
+        if (!($user instanceof \Joomla\CMS\User\User)) {
+            throw new \Exception(Text::_('JGLOBAL_AUTH_ACCESS_DENIED'), 403);
+        }
+
         $input = $this->input;
 
         if (empty($result_id)) {
             $result_id = $input->getInt('id', 0);
         }
+
+        $lang = $this->app->getLanguage();
+        $lang->load('com_quiztools', JPATH_ADMINISTRATOR);
+        $lang->load('com_quiztools', JPATH_SITE);
 
         $pdfData = $this->generationPdf($result_id);
 
@@ -162,7 +179,7 @@ class ResultController extends BaseController
      * @return array|null
      * @throws \Exception
      */
-    public function generationPdf($result_id = null)
+    private function generationPdf($result_id = null)
     {
         $input = $this->input;
 
@@ -356,6 +373,7 @@ class ResultController extends BaseController
                     }
 
                     if (!empty($question->pdfSvg['svg'])) {
+                        $html = QuiztoolsHelper::cleanHtml($html);
                         $pdf->writeHTML($html);
                         $html = '';
 
@@ -412,6 +430,7 @@ class ResultController extends BaseController
             }
         }
 
+        $html = QuiztoolsHelper::cleanHtml($html);
         $pdf->writeHTML($html);
 
         $pdf->lastPage();
@@ -438,6 +457,8 @@ class ResultController extends BaseController
             unset($result->text);
         }
         // end
+
+        $pdfFileName = htmlspecialchars($pdfFileName, ENT_QUOTES, 'UTF-8');
 
         return ['pdf' => $pdf, 'pdfFileName' => $pdfFileName];
     }

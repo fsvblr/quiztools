@@ -14,6 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -170,6 +171,15 @@ class CertificateModel extends AdminModel
 		if (!is_array($certificates_ids)) {
 			return [];
 		}
+
+        if (!empty($certificates_ids)) {
+            $certificates_ids = ArrayHelper::toInteger((array) $certificates_ids);
+            $certificates_ids = array_filter((array) $certificates_ids);
+        }
+
+        if (empty($certificates_ids)) {
+            return [];
+        }
 
 		$db = $this->getDatabase();
 		$query = $db->createQuery()

@@ -22,7 +22,7 @@ use Qt\Component\Quiztools\Administrator\Field\TagifyField;
  * A field with multiple string values,
  * with the ability to add new ones.
  *
- * @since  5.3
+ * @since  1.0.0
  */
 class AnswersField extends TagifyField
 {

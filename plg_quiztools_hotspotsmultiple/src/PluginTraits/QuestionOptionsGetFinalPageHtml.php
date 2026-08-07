@@ -18,6 +18,7 @@ use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Event\Event;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 /**
  * Get question options HTML for the final page
@@ -67,7 +68,7 @@ trait QuestionOptionsGetFinalPageHtml
         $html = '';
         $html .= '<div class="result-options ' . $this->name . '">';
             $html .= '<div class="result-options-row">
-                        <div style="width:' . $data->results['questionData']->imageSize['width'] . 'px;max-width:100%;">
+                        <div style="width:' . (int) $data->results['questionData']->imageSize['width'] . 'px;max-width:100%;">
                         ' . $data->results['resultImage'] . ' 
                         </div>
                     </div>';
@@ -75,7 +76,7 @@ trait QuestionOptionsGetFinalPageHtml
 
         $html .= '<div class="result-options-score">';
             $html .= Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FINAL_RESULT_USER_SCORE') . ': ';
-            $html .= $data->points_received . '/' . $data->total_points;
+            $html .= (float) $data->points_received . '/' . (float) $data->total_points;
         $html .= '</div>';
 
         if ($data->withFeedback) {
@@ -96,7 +97,7 @@ trait QuestionOptionsGetFinalPageHtml
 
             if (!empty($feedback['text'])) {
                 $html .= '<div class="result-options-feedback"><span>' .
-                    Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FINAL_RESULT_FEEDBACK') . ': </span>' . $feedback['text'] . '</div>';
+                    Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_FINAL_RESULT_FEEDBACK') . ': </span>' . QuiztoolsHelper::cleanHtml($feedback['text']) . '</div>';
             }
         }
 

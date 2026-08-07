@@ -20,7 +20,7 @@ use Joomla\Database\ParameterType;
 /**
  * Get question options data.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsGetData
 {
@@ -29,8 +29,8 @@ trait QuestionOptionsGetData
      *
      * @param object $data
      * @param string $client
-     *
      * @return array|false
+     * @since  1.0.0
      */
     public function QuestionOptionsGetData($data, $client = 'administrator')
     {
@@ -59,7 +59,7 @@ trait QuestionOptionsGetData
                 $query->clear();
                 $query->select($db->qn('rqo.user_answer'))
                     ->from($db->qn('#__quiztools_results_questions_' . $this->name, 'rqo'))
-                    ->where($db->qn('rqo.results_question_id') . ' = ' . $db->q($data->resultQuestionId));
+                    ->where($db->qn('rqo.results_question_id') . ' = ' . $db->q((int) $data->resultQuestionId));
 
                 try {
                     $user_answer = $db->setQuery($query)->loadResult();
@@ -67,7 +67,7 @@ trait QuestionOptionsGetData
                     return false;
                 }
 
-                if (!empty($user_answer)) {
+                if (isset($user_answer)) {  // $user_answer may be zero
                     $questionData['typeData']['user_answer'] = $user_answer;
                 }
             }

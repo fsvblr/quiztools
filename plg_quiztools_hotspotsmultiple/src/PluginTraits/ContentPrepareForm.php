@@ -52,7 +52,7 @@ trait ContentPrepareForm
             $data = (object) $data;
         }
 
-        if ($name === 'question_hotspotsmultiple' && !empty((int) $data->id)) {
+        if ($name === 'question_hotspotsmultiple' && !empty($data->id)) {
             $form->setFieldAttribute('image', 'directory', 'quiztools/questions/' . (int) $data->id . '/');
         }
     }

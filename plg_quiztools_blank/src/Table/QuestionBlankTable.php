@@ -22,7 +22,7 @@ use Joomla\Registry\Registry;
 /**
  * Question Table
  *
- * @since  1.6
+ * @since  4.0.0
  */
 class QuestionBlankTable extends Table
 {
@@ -32,7 +32,7 @@ class QuestionBlankTable extends Table
      * @param   DatabaseDriver        $db          Database connector object
      * @param   ?DispatcherInterface  $dispatcher  Event dispatcher for this table
      *
-     * @since   1.5
+     * @since   4.0.0
      */
     public function __construct(DatabaseDriver $db, DispatcherInterface $dispatcher = null)
     {
@@ -47,7 +47,7 @@ class QuestionBlankTable extends Table
      *
      * @return  boolean  True on success
      *
-     * @since   1.5
+     * @since   4.0.0
      */
     public function bind($src, $ignore = [])
     {

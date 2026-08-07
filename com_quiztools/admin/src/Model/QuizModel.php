@@ -17,6 +17,7 @@ use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Component\Categories\Administrator\Helper\CategoriesHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -226,7 +227,12 @@ class QuizModel extends AdminModel
 	{
 		$return = parent::delete($pks);
 
-		if ($return) {
+        if (!empty($pks)) {
+            $pks = ArrayHelper::toInteger((array) $pks);
+            $pks = array_filter((array) $pks);  // ! After casting to a number, it can be 0. And then the Pool's questions will be deleted.
+        }
+
+		if ($return && !empty($pks)) {
 			// Deleting all quiz(zes) questions.
 			// Question options will be deleted on the 'onTableAfterDelete' event when deleting a question.
 			$db = $this->getDatabase();
