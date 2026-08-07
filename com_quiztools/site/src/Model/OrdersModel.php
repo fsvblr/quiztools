@@ -18,6 +18,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\Database\ParameterType;
 use Joomla\Database\QueryInterface;
 use Joomla\String\StringHelper;
+use Joomla\Utilities\ArrayHelper;
 use Qt\Component\Quiztools\Site\Helper\RouteHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -182,8 +183,12 @@ class OrdersModel extends ListModel
 
         // Filter by orders Ids
         if ($ordersIds = $this->getState('filter.ordersIds')) {
-            if (is_array($ordersIds) && !empty($ordersIds)) {
-                $query->where($db->qn('a.id') . " IN ('" . implode("','", $ordersIds) . "')");
+            if (is_array($ordersIds) && !empty($ordersIds) ) {
+                $ordersIds = ArrayHelper::toInteger((array) $ordersIds);
+                $ordersIds = array_filter((array) $ordersIds);
+                if (!empty($ordersIds)) {
+                    $query->where($db->qn('a.id') . " IN ('" . implode("','", $ordersIds) . "')");
+                }
             }
         }
 

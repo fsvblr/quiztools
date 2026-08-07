@@ -19,12 +19,13 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Event\Event;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 /**
  * Get question options HTML for the final page
  * of the quiz with the results of its completion.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsGetFinalPageHtml
 {
@@ -33,8 +34,8 @@ trait QuestionOptionsGetFinalPageHtml
      * of the quiz with the results of its completion.
 	 *
 	 * @param   Event  $event
-	 *
 	 * @return bool
+     * @since  1.0.0
 	 */
     public function QuestionOptionsGetFinalPageHtml($event): bool
     {
@@ -83,7 +84,7 @@ trait QuestionOptionsGetFinalPageHtml
 
             $html .= '<div class="result-options-row row' . $i % 2 . '">
                     <div class="w-5 text-center">' . $j . '</div>
-                    <div class="w-65">'. $option->option . '</div>
+                    <div class="w-65">'. QuiztoolsHelper::cleanHtml($option->option) . '</div>
                     <div class="w-15 text-center">';
                         if ($option->is_correct) {
                             $html .= '<img src="' . URI::root(true) . '/media/com_quiztools/images/icon-check.svg" class="quiz-result-choice-icon" 
@@ -105,7 +106,7 @@ trait QuestionOptionsGetFinalPageHtml
 
         $html .= '<div class="result-options-score">';
         $html .= Text::_('PLG_QUIZTOOLS_MRESPONSE_FINAL_RESULT_USER_SCORE') . ': ';
-        $html .= $data->points_received . '/' . $data->total_points;
+        $html .= (float) $data->points_received . '/' . (float) $data->total_points;
         $html .= '</div>';
 
         if ($data->withFeedback) {
@@ -157,7 +158,7 @@ trait QuestionOptionsGetFinalPageHtml
 
             if (!empty($feedback['text'])) {
                 $html .= '<div class="result-options-feedback"><span>' .
-                    Text::_('PLG_QUIZTOOLS_MRESPONSE_FINAL_RESULT_FEEDBACK') . ': </span>' . $feedback['text'] . '</div>';
+                    Text::_('PLG_QUIZTOOLS_MRESPONSE_FINAL_RESULT_FEEDBACK') . ': </span>' . QuiztoolsHelper::cleanHtml($feedback['text']) . '</div>';
             }
         }
 

@@ -5,11 +5,13 @@
     let canvas = null
 
     // Upload image
-    document.querySelector('#jform_upload_image').addEventListener('change', () => {
-        document.querySelector('#certificate-form-task').value = 'certificate.uploadImage'
-        document.querySelector('body').classList.add('certificate-image-loaded')
-        document.querySelector('#certificate-form').submit()
-    })
+    if (document.querySelector('#jform_upload_image')) {
+        document.querySelector('#jform_upload_image').addEventListener('change', () => {
+            document.querySelector('#certificate-form-task').value = 'certificate.uploadImage'
+            document.querySelector('body').classList.add('certificate-image-loaded')
+            document.querySelector('#certificate-form').submit()
+        })
+    }
 
     // Select Image
     document.querySelector('#jform_file').addEventListener('change', (event) => {

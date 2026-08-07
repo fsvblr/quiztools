@@ -30,7 +30,7 @@ use Joomla\Event\SubscriberInterface;
 /**
  * Service plugin of the QuizTools component.
  *
- * @since  3.9.0
+ * @since  1.2.0
  */
 final class Quiztools extends CMSPlugin implements SubscriberInterface, DispatcherAwareInterface
 {

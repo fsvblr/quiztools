@@ -47,7 +47,7 @@ class Dispatcher extends ComponentDispatcher
             $view = 'lpath';
 
             $lpathData = $this->input->get('lpath', [], 'ARRAY');
-            $ajaxLpathAction = !empty($lpathData['action']) ? $lpathData['action'] : '';
+            $ajaxLpathAction = !empty($lpathData['action']) ? htmlspecialchars($lpathData['action'], ENT_QUOTES, 'UTF-8') : '';
             $isLpathPaid = !empty($lpathData['orderId']) ? true : false;
         }
 

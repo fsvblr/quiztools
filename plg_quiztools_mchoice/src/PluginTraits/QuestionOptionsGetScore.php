@@ -22,7 +22,7 @@ use Joomla\Event\Event;
 /**
  * Get sum scores of question's options.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsGetScore
 {
@@ -30,8 +30,8 @@ trait QuestionOptionsGetScore
 	 * Get sum scores of question's options.
 	 *
 	 * @param   Event  $event
-	 *
 	 * @return bool
+     * @since  1.0.0
 	 */
     public function QuestionOptionsGetScore($event): bool
     {

@@ -20,6 +20,8 @@ use Joomla\CMS\Language\Text;
 
 /**
  * List of order statuses.
+ *
+ * @since  1.2.0
  */
 class OrderstatuseslistField extends ListField
 {
@@ -55,7 +57,7 @@ class OrderstatuseslistField extends ListField
         }
 
         if (!empty($options)) {
-            $lang = Factory::getApplication()->getLanguage();
+            $lang = $app->getLanguage();
             $langTag = $lang->getTag();
             if (!file_exists(JPATH_SITE . '/components/com_virtuemart/language/' . $langTag . '/' . $langTag . '.com_virtuemart_orders.ini')) {
                 $langTag = 'en-GB';

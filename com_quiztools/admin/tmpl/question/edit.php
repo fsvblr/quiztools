@@ -70,7 +70,7 @@ $wa->useScript('keepalive')
         </div>
 		<?php echo HTMLHelper::_('uitab.endTab'); ?>
 
-	    <?php if(!$this->is_boilerplate): ?>
+	    <?php if (!$this->is_boilerplate): ?>
             <?php echo HTMLHelper::_('uitab.addTab', 'myTab', 'feedback', Text::_('COM_QUIZTOOLS_QUESTION_TAB_FEEDBACK')); ?>
             <div class="row">
                 <div class="col-md-12">
@@ -89,7 +89,7 @@ $wa->useScript('keepalive')
                 </div>
             </div>
 
-            <?php if(!empty($this->question_type_form) && !empty($this->question_type_form->getFieldset('feedback'))): ?>
+            <?php if (!empty($this->question_type_form) && !empty($this->question_type_form->getFieldset('feedback'))): ?>
             <div class="row">
                 <div class="col-md-8">
                     <fieldset id="fieldset-question-feedbackdata" class="options-form">
@@ -104,7 +104,7 @@ $wa->useScript('keepalive')
             <?php echo HTMLHelper::_('uitab.endTab'); ?>
 	    <?php endif; ?>
 
-	    <?php if(!empty($this->question_type_form) && !empty($this->question_type_form->getFieldset('options'))): ?>
+	    <?php if (!empty($this->question_type_form) && !empty($this->question_type_form->getFieldset('options'))): ?>
 		    <?php echo HTMLHelper::_('uitab.addTab', 'myTab', 'options', Text::_('COM_QUIZTOOLS_QUESTION_TAB_OPTIONS')); ?>
             <div class="row">
                 <div class="col-md-12">

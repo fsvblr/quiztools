@@ -16,11 +16,12 @@ namespace Qt\Plugin\Quiztools\Mchoice\PluginTraits;
 
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\Event\Event;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 /**
  * Get question options html (site).
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsGetHtml
 {
@@ -28,8 +29,8 @@ trait QuestionOptionsGetHtml
 	 * Get question options html (site).
 	 *
 	 * @param   Event  $event
-	 *
 	 * @return bool
+     * @since  1.0.0
 	 */
     public function QuestionOptionsGetHtml($event): bool
     {
@@ -78,8 +79,8 @@ trait QuestionOptionsGetHtml
 	 *
 	 * @param $data
 	 * @param $questionOptionsData
-	 *
 	 * @return string
+     * @since  1.0.0
 	 */
 	private function mchoiceGetHtmlOptions($data, $questionOptionsData)
 	{
@@ -89,19 +90,24 @@ trait QuestionOptionsGetHtml
 			return $html;
 		}
 
+        $data->id = (int) $data->id;
+        $data->type = htmlspecialchars($data->type, ENT_QUOTES, 'UTF-8');
+
 		foreach ($questionOptionsData['options'] as $option) {
 			$checked = !empty($option['user_answer']) ? " checked" : "";
+            $option['id'] = (int) $option['id'];
+
 			$html .=
-			'<div class="question-option question-option-'.$data->type.'">
+			'<div class="question-option question-option-' . $data->type.'">
 			    <input 
 				    type="radio" 
-				    id="'.$data->type.'_'.$option['id'].'" 
-				    name="quiz[question]['.$data->id.'][options]" 
-				    value="'.$option['id'].'" 
+				    id="' . $data->type . '_' . $option['id'] . '" 
+				    name="quiz[question][' . $data->id . '][options]" 
+				    value="' . $option['id'] . '" 
 				    required 
-				    '.$checked.'
+				    ' . $checked . '
 				    />
-                <label for="'.$data->type.'_'.$option['id'].'">'.$option['option'].'</label>
+                <label for="' . $data->type . '_' . $option['id'] . '">' . QuiztoolsHelper::cleanHtml($option['option']) . '</label>
             </div>';
 		}
 

@@ -10,6 +10,26 @@
 
 	</fieldset>
 	<fieldset
+		name="textfilters"
+		label="COM_QUIZTOOLS_FIELDSET_CONFIG_TEXT_FILTERS_LABEL"
+		description="COM_QUIZTOOLS_FIELDSET_CONFIG_TEXT_FILTERS_DESC"
+	>
+		<field
+			name="html_blocked_tags"
+			type="text"
+			label="COM_QUIZTOOLS_CONFIG_FIELD_HTML_BLOCKED_TAGS_LABEL"
+			description="COM_QUIZTOOLS_CONFIG_FIELD_HTML_BLOCKED_TAGS_DESC"
+			default="script,applet,object,embed,style,base,link,meta,form,button,input"
+		/>
+		<field
+			name="html_blocked_attributes"
+			type="text"
+			label="COM_QUIZTOOLS_CONFIG_FIELD_HTML_BLOCKED_ATTRIBUTES_LABEL"
+			description="COM_QUIZTOOLS_CONFIG_FIELD_HTML_BLOCKED_ATTRIBUTES_DESC"
+			default="on*,formaction"
+		/>
+	</fieldset>
+	<fieldset
 		name="permissions"
 		label="JCONFIG_PERMISSIONS_LABEL"
 		>

@@ -33,7 +33,7 @@ abstract class RouteHelper
         $link = 'index.php?option=com_quiztools&view=lpaths';
 
         if (!empty($catid)) {
-            $link .= '&catid=' . $catid;
+            $link .= '&catid=' . (int) $catid;
         }
 
         return $link;
@@ -50,14 +50,14 @@ abstract class RouteHelper
      */
     public static function getLpathRoute($id, $catid = null, $order_id = null)
     {
-        $link = 'index.php?option=com_quiztools&view=lpath&id=' . $id;
+        $link = 'index.php?option=com_quiztools&view=lpath&id=' . (int) $id;
 
         if (!empty($catid)) {
-            $link .= '&catid=' . $catid;
+            $link .= '&catid=' . (int) $catid;
         }
 
         if (!empty($order_id)) {
-            $link .= '&order_id=' . $order_id;
+            $link .= '&order_id=' . (int) $order_id;
         }
 
         return $link;
@@ -75,7 +75,7 @@ abstract class RouteHelper
         $link = 'index.php?option=com_quiztools&view=quizzes';
 
         if (!empty($catid)) {
-		    $link .= '&catid=' . $catid;
+		    $link .= '&catid=' . (int) $catid;
 	    }
 
         return $link;
@@ -92,14 +92,14 @@ abstract class RouteHelper
      */
     public static function getQuizRoute($id, $catid = null, $order_id = null)
     {
-        $link = 'index.php?option=com_quiztools&view=quiz&id=' . $id;
+        $link = 'index.php?option=com_quiztools&view=quiz&id=' . (int) $id;
 
         if (!empty($catid)) {
-            $link .= '&catid=' . $catid;
+            $link .= '&catid=' . (int) $catid;
         }
 
         if (!empty($order_id)) {
-            $link .= '&order_id=' . $order_id;
+            $link .= '&order_id=' . (int) $order_id;
         }
 
         return $link;
@@ -127,7 +127,7 @@ abstract class RouteHelper
      */
     public static function getResultRoute($id)
     {
-        $link = 'index.php?option=com_quiztools&view=result&id=' . $id;
+        $link = 'index.php?option=com_quiztools&view=result&id=' . (int) $id;
 
         return $link;
     }

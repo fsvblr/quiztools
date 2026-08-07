@@ -65,6 +65,7 @@ trait QuestionOptionsGetHtml
 	    if (empty($data->id)) {
 		    return false;
 	    }
+
 	    $questionOptionsData = $this->QuestionOptionsGetData($data, 'site');
 
         $data->options = $this->hotspotsmultipleGetHtmlOptions($data, $questionOptionsData);
@@ -90,11 +91,14 @@ trait QuestionOptionsGetHtml
 			return $html;
 		}
 
+        $data->id = (int) $data->id;
+        $data->type = htmlspecialchars($data->type, ENT_QUOTES, 'UTF-8');
+
         // The type of quotes in the attribute with 'json_encode' matters!
         $html .=
-            '<div class="question-option question-option-'.$data->type.'" id="' . $data->type . $data->id . '-area"
+            '<div class="question-option question-option-' . $data->type . '" id="' . $data->type . $data->id . '-area"
                 data-id="' . $data->id . '" 
-                data-checkOrder="' . $questionOptionsData['typeData']['check_order'] . '" 
+                data-checkOrder="' . (int) $questionOptionsData['typeData']['check_order'] . '" 
 			    data-countMarkers="' . count($questionOptionsData['options']) . '" 
 			    data-prevAnswer=\'' . json_encode($questionOptionsData['user_answers']) . '\' 
             >

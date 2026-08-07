@@ -20,7 +20,7 @@ use Joomla\Event\Event;
 /**
  * Get question options for admin.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsGetAdminData
 {
@@ -28,8 +28,8 @@ trait QuestionOptionsGetAdminData
      * Get question options for admin.
      *
      * @param   Event  $event
-     *
      * @return bool
+     * @since  1.0.0
      */
     public function QuestionOptionsGetAdminData($event): bool
     {

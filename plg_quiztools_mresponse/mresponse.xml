@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" group="quiztools" method="upgrade">
 	<name>PLG_QUIZTOOLS_MRESPONSE</name>
-	<creationDate>2026-06-04</creationDate>
+	<creationDate>2026-08-07</creationDate>
 	<author>QuizTools</author>
 	<authorEmail>sf.webdev.box@gmail.com</authorEmail>
 	<authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
 	<copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
 	<license>GNU General Public License version 2 or later</license>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<description>PLG_QUIZTOOLS_MRESPONSE_XML_DESCRIPTION</description>
 	<namespace path="src">Qt\Plugin\Quiztools\Mresponse</namespace>
 	<scriptfile>script.php</scriptfile>

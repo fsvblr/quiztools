@@ -13,16 +13,17 @@
 // phpcs:enable PSR1.Files.SideEffects
 
 use Joomla\CMS\Language\Text;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 extract($displayData);
 
 ?>
 <div class="col-md-12 p-4 ps-3">
     <div>
-        <?php echo !empty($question->type) ? '[' . $question->typeName . ']:' : ''; ?>
+        <?php echo !empty($question->type) ? '[' . htmlspecialchars($question->typeName, ENT_QUOTES, 'UTF-8') . ']:' : ''; ?>
     </div>
     <div class="mt-2">
-        <?php echo !empty($question->text) ? $question->text : ''; ?>
+        <?php echo !empty($question->text) ? QuiztoolsHelper::cleanHtml($question->text) : ''; ?>
     </div>
 </div>
 
@@ -59,7 +60,7 @@ extract($displayData);
                     <?php echo '{blank' . $i + 1 . '}'; ?>
                 </td>
                 <td class="text-center">
-                    <?php echo implode('/ ', $result->answers); ?>
+                    <?php echo htmlspecialchars(implode('/ ', $result->answers), ENT_QUOTES, 'UTF-8'); ?>
                 </td>
                 <td class="text-center">
                     <span style="color:<?php echo $result->is_correct ? '#457d54' : '#EB5757'; ?>">

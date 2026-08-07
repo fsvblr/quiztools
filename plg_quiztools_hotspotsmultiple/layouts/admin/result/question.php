@@ -13,16 +13,17 @@
 // phpcs:enable PSR1.Files.SideEffects
 
 use Joomla\CMS\Language\Text;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 extract($displayData);
 
 ?>
 <div class="px-4 pt-4 pb-2">
     <div>
-        <?php echo !empty($question->type) ? '[' . $question->typeName . ']:' : ''; ?>
+        <?php echo !empty($question->type) ? '[' . htmlspecialchars($question->typeName, ENT_QUOTES, 'UTF-8') . ']:' : ''; ?>
     </div>
     <div class="mt-2">
-        <?php echo !empty($question->text) ? $question->text : ''; ?>
+        <?php echo !empty($question->text) ? QuiztoolsHelper::cleanHtml($question->text) : ''; ?>
     </div>
 </div>
 
@@ -33,7 +34,11 @@ extract($displayData);
         <hr />
         <div class="me-3"><?php echo Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_LAYOUT_ADMIN_RESULT_QUESTION_BY_HOTSPOTS_LABEL'); ?>:</div>
         <?php foreach ($question->results['options'] as $i => $option): ?>
-            <?php $color = !empty($option->color) ? $option->color : '#212529'; ?>
+            <?php
+            $color = !empty($option->color)
+                ? htmlspecialchars($option->color, ENT_QUOTES, 'UTF-8')
+                : '#212529';
+            ?>
             <div class="me-3" style="color:<?php echo $color; ?>">
                 <?php echo Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_LAYOUT_ADMIN_RESULT_QUESTION_TEXT_AREA') . '#' . ($i + 1); ?>:
             </div>

@@ -93,7 +93,7 @@ if ($saveOrder && !empty($this->items)) {
 							$canChange  = $user->authorise('core.edit.state', 'com_quiztools.category.' . $item->catid) && $canCheckin;
 
 							$item->text = $this->escape(strip_tags($item->text));
-                            if(mb_strlen($item->text, 'UTF-8') > 60) {
+                            if (mb_strlen($item->text, 'UTF-8') > 60) {
 	                            $item->text = mb_substr($item->text, 0, 60, 'UTF-8') . '...';
                             }
 							?>
@@ -136,7 +136,7 @@ if ($saveOrder && !empty($this->items)) {
                                     </div>
                                 </th>
                                 <td class="text-center d-none d-md-table-cell">
-		                            <?php echo ((int)$item->quiz_id === 0)
+		                            <?php echo ((int) $item->quiz_id === 0)
                                         ? Text::_('COM_QUIZTOOLS_QUESTIONS_QUESTION_POOL')
                                         : $this->escape($item->quiz_title); ?>
                                 </td>
@@ -147,7 +147,7 @@ if ($saveOrder && !empty($this->items)) {
 									<?php echo $this->escape($item->category_title); ?>
                                 </td>
                                 <td class="text-center d-none d-md-table-cell">
-									<?php echo $item->id; ?>
+									<?php echo (int) $item->id; ?>
                                 </td>
                             </tr>
 						<?php endforeach; ?>

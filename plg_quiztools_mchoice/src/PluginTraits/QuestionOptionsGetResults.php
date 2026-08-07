@@ -24,7 +24,7 @@ use Joomla\Event\Event;
 /**
  * Get the results of the answer to the question.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsGetResults
 {
@@ -32,8 +32,8 @@ trait QuestionOptionsGetResults
 	 * Get the results of the answer to the question.
 	 *
 	 * @param   Event  $event
-	 *
 	 * @return bool
+     * @since  1.0.0
 	 */
     public function QuestionOptionsGetResults($event): bool
     {

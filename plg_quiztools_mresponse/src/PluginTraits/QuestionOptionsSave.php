@@ -17,9 +17,11 @@ namespace Qt\Plugin\Quiztools\Mresponse\PluginTraits;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Event\Table\AfterStoreEvent;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\TableInterface;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\ParameterType;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 use Qt\Component\Quiztools\Administrator\Table\QuestionTable;
 use Qt\Plugin\Quiztools\Mresponse\Table\QuestionMresponseOptionsTable;
 use Qt\Plugin\Quiztools\Mresponse\Table\QuestionMresponseTable;
@@ -27,7 +29,7 @@ use Qt\Plugin\Quiztools\Mresponse\Table\QuestionMresponseTable;
 /**
  * Saving question options in the admin panel.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsSave
 {
@@ -35,8 +37,8 @@ trait QuestionOptionsSave
 	 * Saving question options in the admin panel.
 	 *
 	 * @param   AfterStoreEvent  $event
-	 *
 	 * @return bool
+     * @since  1.0.0
 	 */
     public function QuestionOptionsSave($event): bool
     {
@@ -100,11 +102,13 @@ trait QuestionOptionsSave
 	    );
 
 	    $typeFields = [];
-	    $typeFields['id'] = !empty($question_type_id) ? $question_type_id : 0;
-		$typeFields['question_id'] = $question_id;
-	    $typeFields['shuffle_answers'] = !empty($formData['shuffle_answers']) ? $formData['shuffle_answers'] : 0;
-	    $typeFields['partial_score'] = !empty($formData['partial_score']) ? $formData['partial_score'] : 0;
-	    $typeFields['feedback_partial_score'] = !empty($formData['feedback_partial_score']) ? $formData['feedback_partial_score'] : '';
+	    $typeFields['id'] = !empty($question_type_id) ? (int) $question_type_id : 0;
+		$typeFields['question_id'] = (int) $question_id;
+	    $typeFields['shuffle_answers'] = !empty($formData['shuffle_answers']) ? (int) $formData['shuffle_answers'] : 0;
+	    $typeFields['partial_score'] = !empty($formData['partial_score']) ? (int) $formData['partial_score'] : 0;
+	    $typeFields['feedback_partial_score'] = !empty($formData['feedback_partial_score'])
+            ? QuiztoolsHelper::cleanHtml($formData['feedback_partial_score'])
+            : '';
 
 		if (!$questionTable->save($typeFields)) {
 			return false;
@@ -127,6 +131,20 @@ trait QuestionOptionsSave
 			return false;
 		}
 
+        // Check the number of set correct answers. There must be at least one.
+        $correctCount = 0;
+        foreach ($questionOptions as $questionOption) {
+            if ((int) $questionOption['is_correct']) {
+                $correctCount++;
+            }
+        }
+
+        if ($correctCount < 1) {
+            $app->enqueueMessage(Text::_('PLG_QUIZTOOLS_MRESPONSE_WARNING_NUMBER_CORRECT_ANSWERS'), 'error');
+            //return false; // Continue to save options so that they can be more easily corrected.
+        }
+        // check - end
+
 	    $questionOptionsTable = new QuestionMresponseOptionsTable(
 			Factory::getContainer()->get('DatabaseDriver'),
 			$this->getDispatcher()
@@ -135,7 +153,10 @@ trait QuestionOptionsSave
 		$i = 0;
 		foreach ($questionOptions as $questionOption) {
 			$questionOption['id'] = 0;
-			$questionOption['question_id'] = $question_id;
+			$questionOption['question_id'] = (int) $question_id;
+            $questionOption['option'] = QuiztoolsHelper::cleanHtml($questionOption['option']);
+            $questionOption['is_correct'] = (int) $questionOption['is_correct'];
+            $questionOption['points'] = (float) $questionOption['points'];
 			$questionOption['ordering'] = $i;
 
 			$questionOptionsTable->save($questionOption);

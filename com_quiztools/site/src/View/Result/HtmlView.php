@@ -80,7 +80,7 @@ class HtmlView extends BaseHtmlView
         $this->state = $model->getState();
 	    $this->params = $this->state->get('params');
         $this->user = $this->getCurrentUser();
-	    $this->pageclass_sfx = htmlspecialchars($this->params->get('pageclass_sfx', ''));
+	    $this->pageclass_sfx = htmlspecialchars($this->params->get('pageclass_sfx', ''), ENT_QUOTES, 'UTF-8');
 
         if (\count($errors = $this->get('Errors'))) {
             throw new GenericDataException(implode("\n", $errors), 500);

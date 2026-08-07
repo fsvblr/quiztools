@@ -17,6 +17,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 use Qt\Component\Quiztools\Site\Helper\RouteHelper;
 
 extract($displayData);
@@ -43,7 +44,7 @@ if (!empty($result->results_pdf)
             <div class="quiz-result-row">
                 <div><?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_TIME_SPENT'); ?>:</div>
                 <div>
-                    <?php echo $result->sum_time_spent; ?>
+                    <?php echo htmlspecialchars($result->sum_time_spent, ENT_QUOTES, 'UTF-8'); ?>
                 </div>
             </div>
             <div class="quiz-result-row">
@@ -54,8 +55,8 @@ if (!empty($result->results_pdf)
                     echo ' ' . Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_BY_CATEGORIES_OUT_OF') . ' ';
                     echo number_format((float) $result->total_score, 2, '.', '');
                     if ((float) $result->total_score != 0) {
-                        $userPercent = number_format(((float) $result->sum_points_received / (float)
-                                $result->total_score) * 100, 2, '.', '');
+                        $userPercent = number_format(((float) $result->sum_points_received / (float) $result->total_score)
+                                * 100, 2, '.', '');
                         echo ' (' . $userPercent . '%)';
                     }
                     ?>
@@ -67,7 +68,7 @@ if (!empty($result->results_pdf)
                     <?php
                     $passingScore = round((float) $result->total_score * ((float) $result->passing_score / 100 ), 2);
                     $passingScore = number_format($passingScore, 2, '.', '') .
-                        ' (' . number_format($result->passing_score, 2, '.', '') . '%)';
+                        ' (' . number_format((float) $result->passing_score, 2, '.', '') . '%)';
                     echo $passingScore;
                     ?>
                 </div>
@@ -78,10 +79,10 @@ if (!empty($result->results_pdf)
                     <div>
                         <?php foreach ($result->byCategories as $categoryTitle => $category): ?>
                             <div class="quiz-result-category">
-                                <?php echo $categoryTitle . ': ' . $category['userScore'] .
+                                <?php echo htmlspecialchars($categoryTitle, ENT_QUOTES, 'UTF-8') . ': ' . (float) $category['userScore'] .
                                     ' ' . Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_BY_CATEGORIES_OUT_OF') .
-                                    ' ' . $category['totalScore'] .
-                                    ' (' . $category['userPercent'] . '%)'; ?>
+                                    ' ' . (float) $category['totalScore'] .
+                                    ' (' . (float) $category['userPercent'] . '%)'; ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -93,7 +94,7 @@ if (!empty($result->results_pdf)
     <?php if (!empty($result->finalMessage)): ?>
     <div class="quiz-result-block quiz-result-message">
         <h4><?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_TITLE_FINAL_MESSAGE'); ?></h4>
-        <div><?php echo $result->finalMessage; ?></div>
+        <div><?php echo QuiztoolsHelper::cleanHtml($result->finalMessage); ?></div>
     </div>
     <?php endif; ?>
 
@@ -141,14 +142,14 @@ if (!empty($result->results_pdf)
                 <div class="quiz-result-question">
                     <h5><?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_QUESTION_TITLE') . ' ' . $i; ?></h5>
                     <div class="quiz-result-question__type">
-                        <?php echo $question->typeName; ?>
+                        <?php echo htmlspecialchars($question->typeName, ENT_QUOTES, 'UTF-8'); ?>
                     </div>
                     <div class="quiz-result-question__text">
-                        <?php echo $question->text; ?>
+                        <?php echo QuiztoolsHelper::cleanHtml($question->text); ?>
                     </div>
                     <?php if (!empty($question->resultHtml)): ?>
                         <div class="quiz-result-question__options">
-                            <?php echo $question->resultHtml; ?>
+                            <?php echo QuiztoolsHelper::cleanHtml($question->resultHtml); ?>
                         </div>
                     <?php endif; ?>
                     <?php $i++; ?>

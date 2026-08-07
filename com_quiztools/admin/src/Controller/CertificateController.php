@@ -11,7 +11,7 @@
 namespace Qt\Component\Quiztools\Administrator\Controller;
 
 use Joomla\CMS\Event\Content;
-use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -30,6 +30,8 @@ use Joomla\Filesystem\File;
  */
 class CertificateController extends FormController
 {
+    private $allowedImageExtensions = ['png', 'jpeg', 'jpg'];
+
     /**
      * The prefix to use with controller messages.
      *
@@ -48,8 +50,11 @@ class CertificateController extends FormController
     {
         $this->checkToken();
 
-        $app = Factory::getApplication();
-        $input = $app->getInput();
+        if (!$this->app->getIdentity()->authorise('core.manage', 'com_quiztools')) {
+            throw new \Exception(Text::_('JGLOBAL_AUTH_ACCESS_DENIED'), 403);
+        }
+
+        $input = $this->app->getInput();
         $id = $input->getInt('id', 0);
 
         $files = $input->files->get('jform', [], 'ARRAY');
@@ -61,10 +66,9 @@ class CertificateController extends FormController
         }
 
         $filename = File::makeSafe($file['name']);
+        $filename = preg_replace('/\s+/', '_', $filename);
 
-        $allowed_ext = ['png', 'jpeg', 'jpg'];
-
-        if (!in_array(strtolower(File::getExt($filename)), $allowed_ext)) {
+        if (!in_array(strtolower(File::getExt($filename)), $this->allowedImageExtensions)) {
             $this->setMessage(Text::_('COM_QUIZTOOLS_CERTIFICATE_WARNING_UPLOAD_IMAGES_FILE_FORMAT'), 'warning');
             $this->setRedirect(Route::_('index.php?option=com_quiztools&view=certificate&layout=edit&id=' . $id, false));
             return false;
@@ -157,9 +161,20 @@ class CertificateController extends FormController
 
         $certificate_id = (int) $data['certificate_id'];
         $certificate = $model->getItem($certificate_id);
-        $bg = JPATH_SITE . '/images/quiztools/certificates/' . $certificate->file;
 
-        if (!file_exists($bg)) {
+        if (empty($certificate) || empty($certificate->file)) {
+            return false;
+        }
+
+        $safeFileName = InputFilter::getInstance()->clean($certificate->file, 'path');
+
+        if (!in_array(strtolower(File::getExt($safeFileName)), $this->allowedImageExtensions)) {
+            return false;
+        }
+
+        $bg = JPATH_SITE . '/images/quiztools/certificates/' . $safeFileName;
+
+        if (!file_exists($bg) || !is_file($bg)) {
             if ($data['client'] == 'administrator') {
                 $this->setMessage(Text::_('COM_QUIZTOOLS_CERTIFICATE_WARNING_UPLOAD_IMAGES_ERROR'), 'warning');
                 $this->setRedirect($data['urlItem']);
@@ -228,7 +243,11 @@ class CertificateController extends FormController
                 // end
 
                 $y = round($field['y'] + ($field['font_size'] * 0.328147));
-                $fontFamily = JPATH_SITE . '/media/com_quiztools/fonts/' . $field['font_family'] . '.ttf';
+                $fontFamily = basename($field['font_family']);
+                $fontFamily = JPATH_SITE . '/media/com_quiztools/fonts/' . $fontFamily . '.ttf';
+                if (!is_file($fontFamily)) {
+                    return false;
+                }
                 $rgb = preg_replace('/[^0-9,]/', '', $field['color']);
                 $rgb = explode(',', $rgb);
                 $color = imagecolorallocate($im, $rgb[0], $rgb[1], $rgb[2]);

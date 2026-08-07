@@ -11,6 +11,7 @@
 namespace Qt\Component\Quiztools\Site\Model;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Database\ParameterType;
@@ -38,7 +39,7 @@ class AjaxLpathModel extends BaseDatabaseModel
         $input = $app->getInput();
 
         $data = $input->get('lpath', [], 'ARRAY');
-        $lpath_id = (int) $data['id'] ?: 0;
+        $lpath_id = !empty($data['id']) ? (int) $data['id'] : 0;
 
         if (empty($lpath_id)) {
             throw new \Exception(Text::_('COM_QUIZTOOLS_LPATH_ERROR_LPATH_NOT_FOUND'));
@@ -66,9 +67,9 @@ class AjaxLpathModel extends BaseDatabaseModel
         $input = $app->getInput();
 
         $data = $input->get('lpath', [], 'ARRAY');
-        $lpath_id = (int) $data['id'] ?: 0;
+        $lpath_id = !empty($data['id']) ? (int) $data['id'] : 0;
 
-        $stepStage = !empty($data['stepStage']) ? (string) $data['stepStage'] : null;
+        $stepStage = !empty($data['stepStage']) ? htmlspecialchars($data['stepStage'], ENT_QUOTES, 'UTF-8') : null;
         $return['markedArticlePrevStage'] = $stepStage;
 
         $step = !empty($data['step']) ? json_decode($data['step'], true) : [];
@@ -83,6 +84,9 @@ class AjaxLpathModel extends BaseDatabaseModel
         ) {
             throw new \Exception(Text::_('COM_QUIZTOOLS_LPATH_ERROR_LPATH_ARTICLE_NOT_FOUND'));
         }
+
+        //$step['uniqueId'] = preg_replace('/[^A-Za-z0-9_]/', '', $step['uniqueId']);
+        $step['uniqueId'] = InputFilter::getInstance()->clean($step['uniqueId'], 'CMD');
 
         $db = $this->getDatabase();
         $query = $db->createQuery();
@@ -175,19 +179,21 @@ class AjaxLpathModel extends BaseDatabaseModel
         $input = $app->getInput();
 
         $data = $input->get('quiz', [], 'ARRAY');
-        $quiz_id = (int) $data['id'] ?: 0;
+        $quiz_id = !empty($data['id']) ? (int) $data['id'] : 0;
         $lp = !empty($data['lp']) ? json_decode($data['lp'], true) : [];
         $order_id = !empty($data['orderId']) ? (int) $data['orderId'] : 0;
-        $result_quiz_id = (int) $data['resultQuizId'] ?: 0;
+        $result_quiz_id = !empty($data['resultQuizId']) ? (int) $data['resultQuizId'] : 0;
 
         // This quiz is NOT in the Learning Path
         if (!empty($quiz_id) && empty($lp['id'])) {
             return null;
         }
 
-        if (empty($user->id) || empty($quiz_id) || empty($lp['id']) || empty($lp['uniqueId'])) {
+        if (empty($user->id) || empty($quiz_id) || empty((int) $lp['id']) || empty($lp['uniqueId'])) {
             throw new \Exception(Text::_('COM_QUIZTOOLS_LPATH_ERROR_LPATH_QUIZ_NOT_FOUND'));
         }
+
+        $lp['uniqueId'] = InputFilter::getInstance()->clean($lp['uniqueId'], 'CMD');
 
         $db = $this->getDatabase();
         $query = $db->createQuery();

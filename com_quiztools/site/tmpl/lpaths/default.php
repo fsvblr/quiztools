@@ -14,6 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 use Qt\Component\Quiztools\Site\Helper\RouteHelper;
 
 /** @var \Qt\Component\Quiztools\Site\View\Lpaths\HtmlView $this */
@@ -87,7 +88,7 @@ $wa->useStyle('com_quiztools.lpaths');
                     </div>
                     <?php if (!empty($item->description)): ?>
                         <div class="lpaths-list__item-desc">
-                            <?php echo $item->description; ?>
+                            <?php echo QuiztoolsHelper::cleanHtml($item->description); ?>
                         </div>
                     <?php endif; ?>
                 </div>

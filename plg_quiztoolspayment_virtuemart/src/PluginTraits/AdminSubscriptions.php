@@ -21,7 +21,7 @@ use Joomla\Event\Event;
 /**
  * Processing subscriptions list in the admin panel.
  *
- * @since   3.9.0
+ * @since  1.2.0
  */
 trait AdminSubscriptions
 {
@@ -30,7 +30,7 @@ trait AdminSubscriptions
      *
      * @param   Event $event  The event instance.
      * @return  bool
-     * @since   3.9.0
+     * @since  1.2.0
      */
     public function adminSubscriptionsGetData(Event $event): bool
     {
@@ -73,6 +73,8 @@ trait AdminSubscriptions
             }
         }
 
+        $product_ids = array_filter($product_ids);
+
         if (empty($product_ids)) {
             $event->setArgument('result', (array) $data);
             return true;
@@ -103,8 +105,9 @@ trait AdminSubscriptions
 
         foreach ($data as $subscription) {
             if ((string) $subscription->payment_method === (string) $this->storeName) {
-                $subscription->product_title = !empty($products[$subscription->product_id]->product_title) ?
-                    $products[$subscription->product_id]->product_title : '';
+                $subscription->product_title = !empty($products[$subscription->product_id]->product_title)
+                    ? htmlspecialchars($products[$subscription->product_id]->product_title, ENT_QUOTES, 'UTF-8')
+                    : '';
                 $subscription->product_admin_link = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id=' . (int) $subscription->product_id;
             }
         }
@@ -119,7 +122,7 @@ trait AdminSubscriptions
      *
      * @param   Model\PrepareFormEvent $event
      * @return void
-     * @since   3.9.0
+     * @since  1.2.0
      */
     public function adminSubscriptionsPrepareForm(Model\PrepareFormEvent $event): void
     {

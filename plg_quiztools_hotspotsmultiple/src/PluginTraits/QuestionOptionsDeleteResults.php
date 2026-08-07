@@ -17,6 +17,7 @@ namespace Qt\Plugin\Quiztools\Hotspotsmultiple\PluginTraits;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Event\Event;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Removing results from the question table.
@@ -55,6 +56,13 @@ trait QuestionOptionsDeleteResults
 	    if (!\is_array($data) || empty($data)) {
             return false;
 	    }
+
+        $data = ArrayHelper::toInteger((array) $data);
+        $data = array_filter((array) $data);
+
+        if (empty($data)) {
+            return false;
+        }
 
 	    $db = $this->getDatabase();
 	    $query = $db->createQuery();

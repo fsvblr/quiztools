@@ -19,7 +19,9 @@ use Joomla\CMS\Document\HtmlDocument;
 use Joomla\CMS\Event\Application\AfterRouteEvent;
 use Joomla\CMS\Event\Application\BeforeRenderEvent;
 use Joomla\CMS\Event\Plugin\AjaxEvent;
+use Joomla\CMS\Language\Text;
 use Joomla\Database\ParameterType;
+use Joomla\Utilities\ArrayHelper;
 use Qt\Component\Quiztools\Administrator\Model\OrderModel;
 
 /**
@@ -29,7 +31,7 @@ use Qt\Component\Quiztools\Administrator\Model\OrderModel;
  * It also doesn't use class Table to create and delete records.
  * Therefore, the code below is somewhat confusing...
  *
- * @since   3.9.0
+ * @since  1.2.0
  */
 trait AdminOrder
 {
@@ -70,19 +72,23 @@ trait AdminOrder
 
         // Checking if there is a subscription(s) in '#__quiztools_subscriptions' with the product from this order
         // 1 VM-product <=> 1 QT-subscription
-        $db = $this->getDatabase();
-        $query = $db->createQuery();
-        $query->select($db->qn(['id', 'product_id', 'attempts']))
-            ->from($db->qn('#__quiztools_subscriptions'))
-            ->where($db->qn('state') . ' = 1')
-            ->where($db->qn('payment_method') . ' = :paymentMethod')
-            ->where($db->qn('product_id') . " IN ('" . implode("','", $products_ids) . "')")
-            ->bind(':paymentMethod', $this->storeName, ParameterType::STRING);
+        if (!empty($products_ids)) {
+            $db = $this->getDatabase();
+            $query = $db->createQuery();
+            $query->select($db->qn(['id', 'product_id', 'attempts']))
+                ->from($db->qn('#__quiztools_subscriptions'))
+                ->where($db->qn('state') . ' = 1')
+                ->where($db->qn('payment_method') . ' = :paymentMethod')
+                ->where($db->qn('product_id') . " IN ('" . implode("','", $products_ids) . "')")
+                ->bind(':paymentMethod', $this->storeName, ParameterType::STRING);
 
-        try {
-            $subscriptions = $db->setQuery($query)->loadObjectList();
-        } catch (\RuntimeException $e) {
-            $this->getApplication()->enqueueMessage($e->getMessage(), 'error');
+            try {
+                $subscriptions = $db->setQuery($query)->loadObjectList();
+            } catch (\RuntimeException $e) {
+                //$this->getApplication()->enqueueMessage($e->getMessage(), 'error');
+                $this->getApplication()->enqueueMessage('QuizTools Virtuemart Payment: adminOrderCreate - Error 01', 'error');
+                // ToDo: Logging?
+            }
         }
 
         if (empty($subscriptions)) {
@@ -107,16 +113,16 @@ trait AdminOrder
 
             $QTorder = [
                 'id' => '',
-                'status' => $orderStatus,
-                'user_id' => $order_user_id,
+                'status' => htmlspecialchars($orderStatus, ENT_QUOTES, 'UTF-8'),
+                'user_id' => (int) $order_user_id,
                 'subscription_id' => (int) $subscription->id,
                 'users_used' => 1,
                 'attempts_max' => (int) $subscription->attempts * $qtyProductInSubscription,
-                'store_type' => $this->storeName,
-                'store_order_id' => $order_id,
+                'store_type' => htmlspecialchars($this->storeName, ENT_QUOTES, 'UTF-8'),
+                'store_order_id' => (int) $order_id,
                 'store_product_id' => (int) $subscription->product_id,
-                'created_by' => $order_user_id,
-                'modified_by' => $order_user_id,
+                'created_by' => (int) $order_user_id,
+                'modified_by' => (int) $order_user_id,
             ];
 
             $QTorderModel->save($QTorder);
@@ -145,7 +151,7 @@ trait AdminOrder
             return;
         }
 
-        if (empty($order->virtuemart_order_id)) {
+        if (empty((int) $order->virtuemart_order_id)) {
             return;
         }
 
@@ -159,7 +165,9 @@ trait AdminOrder
         try {
             $storeOrder = $db->setQuery($query)->loadObject();
         } catch (\RuntimeException $e) {
-            $this->getApplication()->enqueueMessage($e->getMessage(), 'error');
+            //$this->getApplication()->enqueueMessage($e->getMessage(), 'error');
+            $this->getApplication()->enqueueMessage('QuizTools Virtuemart Payment: adminOrderUpdate - Error 01', 'error');
+            // ToDo: Logging?
         }
 
         // Retrieving related orders from QuizTools
@@ -176,7 +184,9 @@ trait AdminOrder
         try {
             $QTorders = $db->setQuery($query)->loadObjectList();
         } catch (\RuntimeException $e) {
-            $this->getApplication()->enqueueMessage($e->getMessage(), 'error');
+            //$this->getApplication()->enqueueMessage($e->getMessage(), 'error');
+            $this->getApplication()->enqueueMessage('QuizTools Virtuemart Payment: adminOrderUpdate - Error 02', 'error');
+            // ToDo: Logging?
         }
 
         // The modified order in the e-store has no associated orders in QuizTools. Ignore it.
@@ -193,7 +203,9 @@ trait AdminOrder
         try {
             $storeOrderItems = $db->setQuery($query)->loadObjectList('virtuemart_product_id');
         } catch (\RuntimeException $e) {
-            $this->getApplication()->enqueueMessage($e->getMessage(), 'error');
+            //$this->getApplication()->enqueueMessage($e->getMessage(), 'error');
+            $this->getApplication()->enqueueMessage('QuizTools Virtuemart Payment: adminOrderUpdate - Error 03', 'error');
+            // ToDo: Logging?
         }
 
         // If there are no items in the VM-order, delete the associated orders in QuizTools:
@@ -202,7 +214,9 @@ trait AdminOrder
                 $db->qn('store_order_id') . '=' . (int) $order->virtuemart_order_id,
                 $db->qn('store_type') . '=' . $db->q($this->storeName),
             ];
+
             $this->adminOrderDelete($where);
+
             return;
         }
 
@@ -221,7 +235,7 @@ trait AdminOrder
             foreach ($QTorders as $QTorder) {
                 $updStatus = new \stdClass();
                 $updStatus->id = (int) $QTorder->id;
-                $updStatus->status = $orderStatus;
+                $updStatus->status = htmlspecialchars($orderStatus, ENT_QUOTES, 'UTF-8');
                 $db->updateObject('#__quiztools_orders', $updStatus, 'id');
             }
         }
@@ -238,7 +252,7 @@ trait AdminOrder
             if ((int) $QTorders[$i]->attempts_max !== $attemptsMax) {
                 $updAttemptsMax = new \stdClass();
                 $updAttemptsMax->id = (int) $QTorders[$i]->id;
-                $updAttemptsMax->attempts_max = $attemptsMax;
+                $updAttemptsMax->attempts_max = (int) $attemptsMax;
                 $db->updateObject('#__quiztools_orders', $updAttemptsMax, 'id');
             }
 
@@ -265,10 +279,12 @@ trait AdminOrder
             $delIds = [];
             foreach ($QTorders as $QTorder) {
                 $delIds[] = (int) $QTorder->id;
-                $where = [
-                    $db->qn('id') . " IN ('" . implode("','", $delIds) . "')",
-                ];
-                $this->adminOrderDelete($where);
+                if (!empty($delIds)) {
+                    $where = [
+                        $db->qn('id') . " IN ('" . implode("','", $delIds) . "')",
+                    ];
+                    $this->adminOrderDelete($where);
+                }
             }
         }
 
@@ -288,7 +304,7 @@ trait AdminOrder
                 $newOrder['items'][] = $item;
             }
 
-            $orderStatus = (string) $order->order_status;
+            $orderStatus = htmlspecialchars($order->order_status, ENT_QUOTES, 'UTF-8');
             $cart = new \stdClass();
 
             $this->adminOrderCreate($cart, $newOrder, $orderStatus);
@@ -315,7 +331,9 @@ trait AdminOrder
         try {
             $db->execute();
         } catch (\RuntimeException $e) {
-            $this->getApplication()->enqueueMessage($e->getMessage(), 'error');
+            //$this->getApplication()->enqueueMessage($e->getMessage(), 'error');
+            $this->getApplication()->enqueueMessage('QuizTools Virtuemart Payment: adminOrderDelete - Error 01', 'error');
+            // ToDo: Logging?
         }
 
         /** @var OrderModel $QTorderModel */
@@ -432,6 +450,19 @@ trait AdminOrder
     public function adminOrderVirtueMartRemoveOrder(AjaxEvent $event): void
     {
         $app = $this->getApplication();
+
+        if (!($app instanceof CMSApplication)) {
+            return;
+        }
+
+        if (!$app->isClient('administrator')) {
+            return;
+        }
+
+        if (!$app->getIdentity()->authorise('core.delete', 'com_quiztools')) {
+            throw new \Exception(Text::_('JGLOBAL_AUTH_ACCESS_DENIED'), 403);
+        }
+
         $input = $app->getInput();
         $action = $input->get('action');
 
@@ -441,6 +472,11 @@ trait AdminOrder
 
         $cid = $input->getString('cid', '[]');
         $cid = json_decode($cid, true);
+
+        if (!empty($cid)) {
+            $cid = ArrayHelper::toInteger((array) $cid);
+            $cid = array_filter((array) $cid);
+        }
 
         if (empty($cid)) {
             return;

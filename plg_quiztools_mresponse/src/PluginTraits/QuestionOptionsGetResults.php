@@ -20,11 +20,12 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\ParameterType;
 use Joomla\Event\Event;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 /**
  * Get the results of the answer to the question.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsGetResults
 {
@@ -32,8 +33,8 @@ trait QuestionOptionsGetResults
 	 * Get the results of the answer to the question.
 	 *
 	 * @param   Event  $event
-	 *
 	 * @return bool
+     * @since  1.0.0
 	 */
     public function QuestionOptionsGetResults($event): bool
     {
@@ -84,8 +85,10 @@ trait QuestionOptionsGetResults
             return false;
         }
 
-        $data->partial_score = !empty($questionTypeData->partial_score) ? $questionTypeData->partial_score : null;
-        $data->feedback_partial_score = !empty($questionTypeData->feedback_partial_score) ? $questionTypeData->feedback_partial_score : null;
+        $data->partial_score = !empty($questionTypeData->partial_score) ? (int) $questionTypeData->partial_score : null;
+        $data->feedback_partial_score = !empty($questionTypeData->feedback_partial_score)
+            ? QuiztoolsHelper::cleanHtml($questionTypeData->feedback_partial_score)
+            : null;
 
         $query->clear();
         $query->select('*')

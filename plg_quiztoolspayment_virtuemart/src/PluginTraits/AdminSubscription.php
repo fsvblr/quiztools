@@ -21,7 +21,7 @@ use Joomla\Event\Event;
 /**
  * Processing the subscription form in the admin panel.
  *
- * @since   3.9.0
+ * @since  1.2.0
  */
 trait AdminSubscription
 {
@@ -30,7 +30,7 @@ trait AdminSubscription
      *
      * @param   Event $event  The event instance.
      * @return  bool
-     * @since   3.9.0
+     * @since  1.2.0
      */
     public function adminSubscriptionGetData(Event $event): bool
     {
@@ -73,7 +73,7 @@ trait AdminSubscription
 	 *
 	 * @param   Model\PrepareFormEvent $event
 	 * @return void
-     * @since   3.9.0
+     * @since  1.2.0
 	 */
     public function adminSubscriptionPrepareForm(Model\PrepareFormEvent $event): void
     {

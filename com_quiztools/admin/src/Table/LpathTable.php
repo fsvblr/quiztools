@@ -156,7 +156,19 @@ class LpathTable extends Table
     public function bind($src, $ignore = [])
     {
         if (isset($src['lpath_items']) && \is_array($src['lpath_items'])) {
-            $src['lpath_items'] = array_map(function ($item) {
+            $min = 1;
+            $max = 86400;
+            $form = new Form('com_quiztools.lpath_items', ['control' => 'jform']);
+            $loaded = $form->loadFile(JPATH_ADMINISTRATOR . '/components/com_quiztools/forms/lpath_items.xml');
+            if ($loaded) {
+                $field = $form->getField('min_time_article');
+                if ($field) {
+                    $min = !empty($field->getAttribute('min')) ? (int) $field->getAttribute('min') : 1;
+                    $max = !empty($field->getAttribute('max')) ? (int) $field->getAttribute('max') : 86400;
+                }
+            }
+
+            $src['lpath_items'] = array_map(function ($item) use ($min, $max) {
                 if ($item['type'] !== 'a') {
                     $item['article_id'] = "0";
                 } else {
@@ -174,21 +186,11 @@ class LpathTable extends Table
                 }
 
                 if ($item['type'] == 'a') {
-                    $form = new Form('com_quiztools.lpath_items', ['control' => 'jform']);
-                    $loaded = $form->loadFile(JPATH_ADMINISTRATOR . '/components/com_quiztools/forms/lpath_items.xml');
-                    if ($loaded) {
-                        $field = $form->getField('min_time_article');
-                        if ($field) {
-                            $min = !empty($field->getAttribute('min')) ? (int) $field->getAttribute('min') : 1;
-                            if ((int) $item['min_time_article'] < $min) {
-                                $item['min_time_article'] = $min;
-                            }
-
-                            $max = !empty($field->getAttribute('max')) ? (int) $field->getAttribute('max') : 86400;
-                            if ((int) $item['min_time_article'] > $max) {
-                                $item['min_time_article'] = $max;
-                            }
-                        }
+                    if ((int) $item['min_time_article'] < $min) {
+                        $item['min_time_article'] = $min;
+                    }
+                    if ((int) $item['min_time_article'] > $max) {
+                        $item['min_time_article'] = $max;
                     }
                 }
 

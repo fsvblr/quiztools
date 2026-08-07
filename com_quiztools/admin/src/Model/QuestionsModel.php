@@ -169,7 +169,7 @@ class QuestionsModel extends ListModel
 		// Filter by question type
 		if ($question_type = $this->getState('filter.question_type')) {
 			$query->where('(' . $db->qn('a.type') . ' LIKE :questionType)')
-				->bind([':questionType'], $question_type);
+				->bind(':questionType', $question_type, ParameterType::STRING);
 		}
 
 		// Filter by search in text

@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.4.1] - 2026-08-07
+
+### Added
+- To clean up HTML, blacklists of tags and attributes with default values have been added to the component settings.
+
+### Changed
+- **Improving security**. Multiple minor code refactoring.
+- When the number of attempts for a specific question in a quiz is exceeded, this question is now blocked instead of ending the quiz.
+
+### Fixed
+- Continuing using filters on the results page in the admin panel after clicking the "Export to Excel" button.
+- When clicking on the certificate preview in the admin panel, a row (checkbox in the first column) was selected in the list of certificates.
+- Uploading a certificate image with spaces in the file name.
+- Using language variables from the front when generating a PDF report with the result in the admin panel.
+- If the user answered False to a "True/false" question and then returned to it (button "Prev"), the user's previously given answer was be lost.
+- Calculating the "total" points at the start of a quiz consisting of a pool of questions.
+
 ## [1.4.0] - 2026-06-03
 
 ### Added

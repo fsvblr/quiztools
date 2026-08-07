@@ -19,7 +19,7 @@ use Joomla\CMS\Event\Model;
 /**
  * Processing orders list in the admin panel.
  *
- * @since   3.9.0
+ * @since  1.2.0
  */
 trait AdminOrders
 {
@@ -28,7 +28,7 @@ trait AdminOrders
      *
      * @param   Model\PrepareFormEvent $event
      * @return void
-     * @since   3.9.0
+     * @since  1.2.0
      */
     public function adminOrdersPrepareForm(Model\PrepareFormEvent $event): void
     {

@@ -17,8 +17,7 @@ use Joomla\CMS\Form\Form;
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\ParameterType;
-use Joomla\Event\DispatcherAwareInterface;
-use Joomla\Event\DispatcherInterface;
+use Joomla\Utilities\ArrayHelper;
 use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -245,7 +244,10 @@ class QuestionModel extends AdminModel
         $dispatcher = $this->getDispatcher();
 
         PluginHelper::importPlugin($group, null, true, $dispatcher);
-        PluginHelper::importPlugin('quiztools', null, true, $dispatcher);  // custom
+        // custom
+        if ($group !== 'quiztools') {
+            PluginHelper::importPlugin('quiztools', null, true, $dispatcher);
+        }
 
         $dispatcher->dispatch(
             'onContentPrepareForm',
@@ -264,7 +266,7 @@ class QuestionModel extends AdminModel
 	 */
 	public function save($data)
 	{
-        $question_id = !empty($data['id']) ? $data['id'] : 0;
+        $question_id = !empty($data['id']) ? (int) $data['id'] : 0;
 
         // Get related quizzes BEFORE saving the question, since the quiz in the existing question may be changed.
         $affected_quizzes_ids_before = [];
@@ -288,7 +290,7 @@ class QuestionModel extends AdminModel
 				->select('MAX(' . $db->qn('id') . ')')
 				->from($db->qn('#__quiztools_questions'));
 			$db->setQuery($query);
-			$question_id = (int)$db->loadResult();
+			$question_id = (int) $db->loadResult();
 		}
 
 		// Create a dedicated images folder for this question
@@ -397,6 +399,10 @@ class QuestionModel extends AdminModel
 	 */
 	public function recalculateQuizzesTotalScore($quizzes_ids)
 	{
+        if (empty($quizzes_ids) || !is_array($quizzes_ids)) {
+            return false;
+        }
+
 		$db = $this->getDatabase();
 		$query = $db->createQuery();
 
@@ -458,15 +464,20 @@ class QuestionModel extends AdminModel
 	/**
 	 * Get quizzes Ids by questions Ids
 	 *
-	 * @param $question_ids
+	 * @param array $question_ids
 	 *
 	 * @return array
 	 */
 	private function getQuizzesIdsByQuestionsIds($question_ids=[])
 	{
-		if (!is_array($question_ids)) {
-			return [];
+		if (!empty($question_ids) && is_array($question_ids)) {
+            $question_ids = ArrayHelper::toInteger((array) $question_ids);
+            $question_ids = array_filter((array) $question_ids);
 		}
+
+        if (empty($question_ids) || !is_array($question_ids)) {
+            return [];
+        }
 
 		$db = $this->getDatabase();
 		$query = $db->createQuery()

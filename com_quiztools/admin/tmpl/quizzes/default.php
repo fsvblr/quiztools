@@ -152,7 +152,7 @@ $display_total_score_note = false;
                                 </td>
                                 <td class="text-center d-none d-md-table-cell">
                                     <?php if ($item->question_pool === 'no'): ?>
-	                                    <?php echo $item->total_score; ?>
+	                                    <?php echo (float) $item->total_score; ?>
                                     <?php else: ?>
                                         <?php
                                         $display_total_score_note = true;
@@ -161,7 +161,7 @@ $display_total_score_note = false;
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-center d-none d-md-table-cell">
-	                                <?php echo $item->passing_score; ?>
+	                                <?php echo (float) $item->passing_score; ?>
                                 </td>
                                 <td class="text-center d-none d-md-table-cell">
                                     <?php if ((int) $item->type_access === 0): ?>
@@ -171,7 +171,7 @@ $display_total_score_note = false;
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-center d-none d-md-table-cell">
-									<?php echo $item->id; ?>
+									<?php echo (int) $item->id; ?>
                                 </td>
                             </tr>
 						<?php endforeach; ?>

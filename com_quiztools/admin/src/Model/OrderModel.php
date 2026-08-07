@@ -14,6 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\Utilities\ArrayHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -270,6 +271,11 @@ class OrderModel extends AdminModel
         $db->setQuery($query);
         $ordersIds = $db->loadColumn();
 
+        if (!empty($ordersIds)) {
+            $ordersIds = ArrayHelper::toInteger((array) $ordersIds);
+            $ordersIds = array_filter((array) $ordersIds);
+        }
+
         $query->clear();
         $query->delete($db->qn('#__quiztools_order_users'));
         if (!empty($ordersIds)) {
@@ -287,9 +293,10 @@ class OrderModel extends AdminModel
         $query->clear();
         $query->select($db->qn('id'))
             ->from($db->qn('#__quiztools_results_quizzes'))
-            ->where($db->qn('order_id') . ' <> 0')
-            ->where($db->qn('order_id') . " NOT IN ('" . implode("','", $ordersIds) . "')")
-        ;
+            ->where($db->qn('order_id') . ' <> 0');
+        if (!empty($ordersIds)) {
+            $query->where($db->qn('order_id') . " NOT IN ('" . implode("','", $ordersIds) . "')");
+        }
         $db->setQuery($query);
         $deleteResultsIds = $db->loadColumn();
 
@@ -308,8 +315,10 @@ class OrderModel extends AdminModel
         $query->clear();
         $query->delete($db->qn('#__quiztools_lpaths_users'))
             ->where($db->qn('type') . ' = ' . $db->q('a'))  // type 'q' removed in $resultModel->delete($deleteResultsIds)
-            ->where($db->qn('order_id') . ' <> 0')
-            ->where($db->qn('order_id') . " NOT IN ('" . implode("','", $ordersIds) . "')");
+            ->where($db->qn('order_id') . ' <> 0');
+        if (!empty($ordersIds)) {
+            $query->where($db->qn('order_id') . " NOT IN ('" . implode("','", $ordersIds) . "')");
+        }
         $db->setQuery($query);
         try {
             $db->execute();

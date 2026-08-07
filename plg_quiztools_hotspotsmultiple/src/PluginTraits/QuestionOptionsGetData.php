@@ -14,6 +14,7 @@ namespace Qt\Plugin\Quiztools\Hotspotsmultiple\PluginTraits;
 \defined('_JEXEC') or die;
 // phpcs:enable PSR1.Files.SideEffects
 
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\ParameterType;
 
@@ -34,6 +35,8 @@ trait QuestionOptionsGetData
 	 */
     public function QuestionOptionsGetData($data, $client = 'administrator')
     {
+        $filter = InputFilter::getInstance();
+
 	    $questionData = [];
 
 	    $db = $this->getDatabase();
@@ -49,6 +52,10 @@ trait QuestionOptionsGetData
 	    } catch (ExecutionFailureException $e) {
 		    return false;
 	    }
+
+        if (!empty($questionData['typeData']['image'])) {
+            $questionData['typeData']['image'] = $filter->clean($questionData['typeData']['image'], 'path');
+        }
 
 	    $query->clear();
 		if ($client == 'administrator') {
@@ -84,7 +91,7 @@ trait QuestionOptionsGetData
                 $query->clear();
                 $query->select($db->qn('rqo.answer_coordinates'))
                     ->from($db->qn('#__quiztools_results_questions_' . $this->name, 'rqo'))
-                    ->where($db->qn('rqo.results_question_id') . ' = ' . $db->q($data->resultQuestionId))
+                    ->where($db->qn('rqo.results_question_id') . ' = ' . $db->q((int) $data->resultQuestionId))
                     ->order($db->qn('rqo.answer_ordering') . ' ASC');
 
                 try {

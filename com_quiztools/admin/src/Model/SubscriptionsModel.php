@@ -178,8 +178,9 @@ class SubscriptionsModel extends ListModel
 		}
 
         // Filter by Payment method
-        if ($payment_method = $this->getState('filter.payment_method')) {
-            $query->where($db->qn('a.payment_method') . '=' . $db->q($payment_method));
+        if ($payment_method = (string) $this->getState('filter.payment_method')) {
+            $query->where($db->qn('a.payment_method') . ' = :paymentMethod')
+                ->bind(':paymentMethod', $payment_method, ParameterType::STRING);
         }
 
 		// Add the list ordering clause.
@@ -275,8 +276,9 @@ class SubscriptionsModel extends ListModel
         }
 
         // Filter by Payment method
-        if ($payment_method = $this->getState('filter.payment_method')) {
-            $query->where($db->qn('payment_method') . '=' . $db->q($payment_method));
+        if ($payment_method = (string) $this->getState('filter.payment_method')) {
+            $query->where($db->qn('payment_method') . ' = :paymentMethod')
+                ->bind(':paymentMethod', $payment_method, ParameterType::STRING);
         }
 
 		$db->setQuery($query);

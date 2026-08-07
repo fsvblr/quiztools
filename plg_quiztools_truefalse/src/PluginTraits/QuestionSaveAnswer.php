@@ -23,7 +23,7 @@ use Joomla\Event\Event;
 /**
  * Saving the answer to the question on the site.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionSaveAnswer
 {
@@ -31,8 +31,8 @@ trait QuestionSaveAnswer
      * Saving the answer to the question on the site.
      *
      * @param   Event  $event
-     *
      * @return bool
+     * @since  1.0.0
      */
     public function QuestionSaveAnswer($event): bool
     {
@@ -113,7 +113,7 @@ trait QuestionSaveAnswer
         // If there are restrictions on attempts and if there is more than one attempt,
         // we apply a penalty to the points received for the answer:
         if ((int) $data->attempts > 0 && $attemptsMade > 1 && $data->penalty) {  // penalty in %%
-            $penaltyCoefficient = (100 - $data->penalty * ($attemptsMade - 1)) / 100;
+            $penaltyCoefficient = (100 - (int) $data->penalty * ($attemptsMade - 1)) / 100;
 
             if ($penaltyCoefficient < 0) {
                 $answerPointsReceived = 0;
@@ -139,20 +139,20 @@ trait QuestionSaveAnswer
 
         // Insert new result
         $resultQuestion = new \stdClass();
-        $resultQuestion->result_quiz_id = $data->resultQuizId;
-        $resultQuestion->question_id = $data->id;
-        $resultQuestion->total_points = $totalPoints;
-        $resultQuestion->points_received = $answerPointsReceived;
+        $resultQuestion->result_quiz_id = (int) $data->resultQuizId;
+        $resultQuestion->question_id = (int) $data->id;
+        $resultQuestion->total_points = (float) $totalPoints;
+        $resultQuestion->points_received = (float) $answerPointsReceived;
         $resultQuestion->attempts = $attemptsMade + 1;
-        $resultQuestion->is_correct = $data->savedAnswerResult['is_correct'];
+        $resultQuestion->is_correct = (int) $data->savedAnswerResult['is_correct'];
         $resultQuestion->response_at = Factory::getDate()->toSql(); // in UTC
         $db->insertObject('#__quiztools_results_questions', $resultQuestion);
         $resultQuestion->id = $db->insertid();
 
         // Insert answer in type‑specific table
         $resultTypeQuestion = new \stdClass();
-        $resultTypeQuestion->results_question_id = $resultQuestion->id;
-        $resultTypeQuestion->user_answer = $userAnswer;
+        $resultTypeQuestion->results_question_id = (int) $resultQuestion->id;
+        $resultTypeQuestion->user_answer = (int) $userAnswer;
         $db->insertObject('#__quiztools_results_questions_' . $this->name, $resultTypeQuestion);
 
         $event->setArgument('result', $data);

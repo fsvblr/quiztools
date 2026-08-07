@@ -59,6 +59,7 @@ final class Mresponse extends CMSPlugin implements SubscriberInterface, Dispatch
 	 * Used in dynamic language variables.
 	 *
 	 * @var string
+     * @since  1.0.0
 	 */
 	public $name = 'mresponse';
 
@@ -112,7 +113,7 @@ final class Mresponse extends CMSPlugin implements SubscriberInterface, Dispatch
 	 * @return  void
 	 *
 	 * @throws  \Exception
-	 * @since   4.0.0
+	 * @since  1.0.0
 	 */
 	public function onQuestionGetAssets(Event $event)
 	{
@@ -155,7 +156,7 @@ final class Mresponse extends CMSPlugin implements SubscriberInterface, Dispatch
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionOptionsDeleteResults(Event $event)
     {
@@ -170,7 +171,7 @@ final class Mresponse extends CMSPlugin implements SubscriberInterface, Dispatch
 	 * @return  void
 	 *
 	 * @throws  \Exception
-	 * @since   4.0.0
+	 * @since  1.0.0
 	 */
 	public function onQuestionOptionsGetAdminData(Event $event)
 	{
@@ -186,7 +187,7 @@ final class Mresponse extends CMSPlugin implements SubscriberInterface, Dispatch
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionOptionsGetFinalPageHtml(Event $event)
     {
@@ -201,7 +202,7 @@ final class Mresponse extends CMSPlugin implements SubscriberInterface, Dispatch
 	 * @return  void
 	 *
 	 * @throws  \Exception
-	 * @since   4.0.0
+	 * @since  1.0.0
 	 */
 	public function onQuestionOptionsGetHtml(Event $event)
 	{
@@ -216,7 +217,7 @@ final class Mresponse extends CMSPlugin implements SubscriberInterface, Dispatch
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionOptionsGetPdfData(Event $event)
     {
@@ -231,7 +232,7 @@ final class Mresponse extends CMSPlugin implements SubscriberInterface, Dispatch
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionOptionsGetResults(Event $event)
     {
@@ -246,7 +247,7 @@ final class Mresponse extends CMSPlugin implements SubscriberInterface, Dispatch
 	 * @return  void
 	 *
 	 * @throws  \Exception
-	 * @since   4.0.0
+	 * @since  1.0.0
 	 */
 	public function onQuestionOptionsGetScore(Event $event)
 	{
@@ -261,7 +262,7 @@ final class Mresponse extends CMSPlugin implements SubscriberInterface, Dispatch
 	 * @return  void
 	 *
 	 * @throws  \Exception
-	 * @since   4.0.0
+	 * @since  1.0.0
 	 */
 	public function onQuestionSaveAnswer(Event $event)
 	{

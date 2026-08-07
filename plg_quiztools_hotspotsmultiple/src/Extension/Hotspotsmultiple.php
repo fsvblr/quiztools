@@ -62,6 +62,7 @@ final class Hotspotsmultiple extends CMSPlugin implements SubscriberInterface, D
      * Used in dynamic language variables.
      *
      * @var string
+     * @since  1.0.0
      */
     public $name = 'hotspotsmultiple';
 
@@ -116,7 +117,7 @@ final class Hotspotsmultiple extends CMSPlugin implements SubscriberInterface, D
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionGetAssets(Event $event)
     {
@@ -160,7 +161,7 @@ final class Hotspotsmultiple extends CMSPlugin implements SubscriberInterface, D
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionOptionsDeleteResults(Event $event)
     {
@@ -175,7 +176,7 @@ final class Hotspotsmultiple extends CMSPlugin implements SubscriberInterface, D
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionOptionsGetAdminData(Event $event)
     {
@@ -191,7 +192,7 @@ final class Hotspotsmultiple extends CMSPlugin implements SubscriberInterface, D
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionOptionsGetFinalPageHtml(Event $event)
     {
@@ -206,7 +207,7 @@ final class Hotspotsmultiple extends CMSPlugin implements SubscriberInterface, D
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionOptionsGetHtml(Event $event)
     {
@@ -221,7 +222,7 @@ final class Hotspotsmultiple extends CMSPlugin implements SubscriberInterface, D
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionOptionsGetPdfData(Event $event)
     {
@@ -236,7 +237,7 @@ final class Hotspotsmultiple extends CMSPlugin implements SubscriberInterface, D
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionOptionsGetResults(Event $event)
     {
@@ -251,7 +252,7 @@ final class Hotspotsmultiple extends CMSPlugin implements SubscriberInterface, D
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionOptionsGetScore(Event $event)
     {
@@ -266,7 +267,7 @@ final class Hotspotsmultiple extends CMSPlugin implements SubscriberInterface, D
      * @return  void
      *
      * @throws  \Exception
-     * @since   4.0.0
+     * @since  1.0.0
      */
     public function onQuestionSaveAnswer(Event $event)
     {

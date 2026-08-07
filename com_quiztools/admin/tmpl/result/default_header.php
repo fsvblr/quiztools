@@ -16,7 +16,7 @@ use Joomla\CMS\Language\Text;
 
 ?>
 <div class="col-md-12 p-4 ps-3">
-    <h3><?php echo $this->item->quiz_title; ?></h3>
+    <h3><?php echo $this->escape($this->item->quiz_title); ?></h3>
     <div class="d-flex mt-4">
         <div>
             <div class="me-3"><?php echo Text::_('COM_QUIZTOOLS_RESULT_QUIZ_HEADER_USER_NAME'); ?>:</div>
@@ -29,16 +29,16 @@ use Joomla\CMS\Language\Text;
             <div class="me-3"><?php echo Text::_('COM_QUIZTOOLS_RESULT_QUIZ_HEADER_USER_PASSED'); ?>:</div>
         </div>
         <div>
-            <div><?php echo !empty($this->item->user_name) ? $this->item->user_name : '-'; ?></div>
-            <div><?php echo !empty($this->item->user_email) ? $this->item->user_email : '-'; ?></div>
-            <div><?php echo !empty($this->item->start_datetime_for_display) ? $this->item->start_datetime_for_display : '-'; ?></div>
-            <div><?php echo !empty($this->item->sum_time_spent) ? $this->item->sum_time_spent : '-'; ?></div>
+            <div><?php echo !empty($this->item->user_name) ? $this->escape($this->item->user_name) : '-'; ?></div>
+            <div><?php echo !empty($this->item->user_email) ? $this->escape($this->item->user_email) : '-'; ?></div>
+            <div><?php echo !empty($this->item->start_datetime_for_display) ? $this->escape($this->item->start_datetime_for_display) : '-'; ?></div>
+            <div><?php echo !empty($this->item->sum_time_spent) ? $this->escape($this->item->sum_time_spent) : '-'; ?></div>
             <div><?php echo !empty($this->item->total_score) ? number_format((float) $this->item->total_score, 2, '.', '') : '-'; ?></div>
             <div>
                 <?php
                 $passingScore = (float) $this->item->total_score * ((float) $this->item->passing_score / 100 );
                 $passingScore = round($passingScore, 2);
-                echo number_format($passingScore, 2, '.', '') . ' (' . $this->item->passing_score . '%)';
+                echo number_format($passingScore, 2, '.', '') . ' (' . (float) $this->item->passing_score . '%)';
                 ?>
             </div>
             <div>

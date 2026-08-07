@@ -29,7 +29,7 @@ use Joomla\CMS\Router\Route;
         </h2>
         <div class="main-card card-columns p-4">
             <?php foreach ($this->items as $item) : ?>
-                <?php $link = 'index.php?option=com_quiztools&task=question.add&type=' . $item->type; ?>
+                <?php $link = 'index.php?option=com_quiztools&task=question.add&type=' . $this->escape($item->type); ?>
                 <?php $name = $this->escape($item->name); ?>
                 <?php $desc = HTMLHelper::_('string.truncate', $this->escape(strip_tags($item->desc)), 200); ?>
                 <a href="<?php echo Route::_($link); ?>" class="new-module mb-3"

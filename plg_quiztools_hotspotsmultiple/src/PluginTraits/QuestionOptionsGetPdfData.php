@@ -20,7 +20,10 @@ use Joomla\CMS\Language\Text;
 use Joomla\Event\Event;
 
 /**
- * Get question options pdf data.
+ * Get question options PDF data.
+ *
+ * Note: Cleaning the data used to generate PDFs - in generationPdf()
+ * [administrator/components/com_quiztools/src/Controller/ResultController.php].
  *
  * @since   1.0.0
  */
@@ -75,7 +78,7 @@ trait QuestionOptionsGetPdfData
             $data->pdfSvg = [
                 'svg' => $data->results['resultImage'],
                 'imagePath' => $data->results['questionData']->imagePath,
-                'imageRatio' => $imageRatio,
+                'imageRatio' => (float) $imageRatio,
             ];
         }
 

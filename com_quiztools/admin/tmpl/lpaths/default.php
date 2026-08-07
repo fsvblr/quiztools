@@ -142,7 +142,7 @@ if ($saveOrder && !empty($this->items)) {
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-center d-none d-md-table-cell">
-									<?php echo $item->id; ?>
+									<?php echo (int) $item->id; ?>
                                 </td>
                             </tr>
 						<?php endforeach; ?>

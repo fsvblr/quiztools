@@ -20,7 +20,7 @@ use Joomla\Event\Event;
 /**
  * Get question options html (site).
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsGetHtml
 {
@@ -28,8 +28,8 @@ trait QuestionOptionsGetHtml
 	 * Get question options html (site).
 	 *
 	 * @param   Event  $event
-	 *
 	 * @return bool
+     * @since  1.0.0
 	 */
     public function QuestionOptionsGetHtml($event): bool
     {
@@ -81,6 +81,7 @@ trait QuestionOptionsGetHtml
      * @param object $data
      * @param array $questionOptionsData
      * @return string
+     * @since  1.0.0
      */
     private function blankPrepareQuestionText($data, $questionOptionsData)
     {
@@ -108,9 +109,9 @@ trait QuestionOptionsGetHtml
 
                 if (!empty($opt['user_answer'])) {
                     $i = array_search($opt['user_answer'], $questionOptionsData['typeData']['fillers']);
-                    $id = 'blank_' . $opt['questionId'] . '_' . $i;
+                    $id = 'blank_' . (int) $opt['questionId'] . '_' . $i;
                     $html .= '<span class="quiztools-blank filler" id="' . $id . '" draggable="true" 
-                        data-parent-id="draggable-zone_' . $opt['questionId'] . '">'
+                        data-parent-id="draggable-zone_' . (int) $opt['questionId'] . '">'
                         . htmlspecialchars($opt['user_answer'], ENT_QUOTES, 'UTF-8') . '</span>';
                 }
 
@@ -129,8 +130,8 @@ trait QuestionOptionsGetHtml
 	 *
 	 * @param object $data
 	 * @param array $questionOptionsData
-	 *
 	 * @return string
+     * @since  1.0.0
 	 */
 	private function blankGetHtmlOptions($data, $questionOptionsData)
 	{
@@ -147,16 +148,16 @@ trait QuestionOptionsGetHtml
             }
         }
 
-        $html .= '<div class="quiztools-blank draggable-zone" id="draggable-zone_' . $data->id . '">';
+        $html .= '<div class="quiztools-blank draggable-zone" id="draggable-zone_' . (int) $data->id . '">';
 
 		foreach ($questionOptionsData['typeData']['fillers'] as $i => $filler) {
             if (in_array($filler, $user_answers)) {
                 continue;
             }
 
-            $id = 'blank_' . $data->id . '_' . $i;
+            $id = 'blank_' . (int) $data->id . '_' . $i;
             $html .= '<span class="quiztools-blank filler" id="' . $id . '" draggable="true" 
-                        data-parent-id="draggable-zone_' . $data->id . '">'
+                        data-parent-id="draggable-zone_' . (int) $data->id . '">'
                 . htmlspecialchars($filler, ENT_QUOTES, 'UTF-8') . '</span>';
 		}
 

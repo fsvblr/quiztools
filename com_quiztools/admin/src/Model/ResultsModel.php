@@ -15,6 +15,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\DatabaseQuery;
 use Joomla\Database\ParameterType;
+use Joomla\Utilities\ArrayHelper;
 use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -161,7 +162,7 @@ class ResultsModel extends ListModel
                             CONCAT(" . $db->qn('ru.user_name') . ", ' '," . $db->qn('ru.user_surname') . ")
                         ), 
                         ' ', 
-                        ' (" . Text::_('COM_QUIZTOOLS_RESULTS_USER_GUEST') . ")'
+                        '(" . Text::_('COM_QUIZTOOLS_RESULTS_USER_GUEST') . ")'
                     )
                 ) as 'user_name'")
 
@@ -174,30 +175,37 @@ class ResultsModel extends ListModel
         // Filter by selected items for export to file
         $selectedItems = $this->getState('filter.selectedItems');
         $task = $this->getState('filter.task');
+        $allowed_tasks = ['exportExcel'];
 
-        if (!empty($selectedItems) && !empty($task) && \in_array($task, ['exportExcel'])) {
+        if (!empty($selectedItems) && !empty($task) && \in_array($task, $allowed_tasks)) {
+            $selectedItems = ArrayHelper::toInteger((array) $selectedItems);
             $selectedItems = array_filter((array) $selectedItems);
-            $query->where($db->qn('a.id') . " IN ('".implode("','", $selectedItems)."')");
+
+            if (!empty($selectedItems)) {
+                $query->where($db->qn('a.id') . " IN ('" . implode("','", $selectedItems) . "')");
+            } else {
+                $query->where($db->qn('a.id') . " IN ('0')");
+            }
         } else {
 
             // Filter by passed
-            $passed = (string)$this->getState('filter.passed');
+            $passed = (string) $this->getState('filter.passed');
             if (is_numeric($passed)) {
-                $passed = (int)$passed;
+                $passed = (int) $passed;
                 $query->where($db->qn('a.passed') . ' = :passed')
                     ->bind(':passed', $passed, ParameterType::INTEGER);
             }
 
             // Filter by quiz_id
-            $quiz_id = (string)$this->getState('filter.quiz_id');
+            $quiz_id = (string) $this->getState('filter.quiz_id');
             if (is_numeric($quiz_id)) {
-                $quiz_id = (int)$quiz_id;
+                $quiz_id = (int) $quiz_id;
                 $query->where($db->qn('a.quiz_id') . ' = :quizId')
                     ->bind(':quizId', $quiz_id, ParameterType::INTEGER);
             }
 
             // Filter by user_id
-            $filterUserId = (string)$this->getState('filter.user_id');
+            $filterUserId = (string) $this->getState('filter.user_id');
             if (is_numeric($filterUserId)) {
                 $filterUserId = (int) $filterUserId;
                 $query->where($db->qn('a.user_id') . ' = :userId')
@@ -227,11 +235,12 @@ class ResultsModel extends ListModel
             // Filter by search in the quiz title
             if ($search = $this->getState('filter.search')) {
                 if (stripos($search, 'id:') === 0) {
-                    $search = (int)substr($search, 3);
+                    $search = (int) substr($search, 3);
                     $query->where($db->qn('a.quiz_id') . ' = :search')
                         ->bind(':search', $search, ParameterType::INTEGER);
                 } else {
-                    $search = '%' . $db->escape(trim($search), true) . '%';
+                    //$search = '%' . $db->escape(trim($search), true) . '%';
+                    $search = '%' . str_replace(' ', '%', trim($search)) . '%';
                     $query->where(
                         '(' .
                         $db->qn('q.title') . ' LIKE :search1 ' .

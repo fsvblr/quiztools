@@ -21,19 +21,11 @@ use Joomla\CMS\Uri\Uri;
 
 /** @var \Joomla\CMS\WebAsset\WebAssetManager $wa */
 $wa = $this->getDocument()->getWebAssetManager();
-$wa->useScript('table.columns')
+$wa->useStyle('com_quiztools.admin.certificates')
+    ->useScript('table.columns')
     ->useScript('multiselect')
-    ->useScript('joomla.dialog-autocreate');
-
-$wa->addInlineStyle('
-.preview-certificate-dialog .joomla-dialog-body {
-    display: flex;
-    justify-content: center;
-}
-.preview-certificate-dialog img {
-    max-width: 100%;
-}
-');
+    ->useScript('joomla.dialog-autocreate')
+    ->useScript('com_quiztools.admin.certificates');
 
 $user      = $this->getCurrentUser();
 $user_id   = $user->id;
@@ -110,20 +102,20 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                                     </div>
                                 </th>
                                 <td class="text-center d-none d-md-table-cell">
-                                    <img src="<?php echo URI::root(true) . '/'; ?>images/quiztools/certificates/<?php echo $item->file; ?>"
+                                    <img src="<?php echo URI::root(true) . '/'; ?>images/quiztools/certificates/<?php echo $this->escape($item->file); ?>"
                                          alt="<?php echo $this->escape($item->title); ?>"
                                          style="width: 80%; max-width: 50px; cursor: pointer;"
                                          data-joomla-dialog='{"popupType": "image", "width":"80vw", "height": "80vh",
                                             "className":"preview-certificate-dialog",
                                             "textHeader":"<?php echo $this->escape($item->title); ?>",
-                                            "src":"index.php?option=com_quiztools&task=certificate.previewCertificate&id=<?php echo $item->id; ?>&<?php echo Session::getFormToken(); ?>=1"}'
+                                            "src":"index.php?option=com_quiztools&task=certificate.previewCertificate&id=<?php echo (int) $item->id; ?>&<?php echo Session::getFormToken(); ?>=1"}'
                                     />
                                 </td>
                                 <td class="text-center d-none d-md-table-cell">
-	                                <?php echo $item->file; ?>
+	                                <?php echo $this->escape($item->file); ?>
                                 </td>
                                 <td class="text-center d-none d-md-table-cell">
-									<?php echo $item->id; ?>
+									<?php echo (int) $item->id; ?>
                                 </td>
                             </tr>
 						<?php endforeach; ?>

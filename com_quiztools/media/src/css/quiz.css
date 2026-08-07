@@ -31,9 +31,23 @@
 .quiz-app .quiz-question__text {
     min-height: 3.5rem;
 }
+.quiz-app .quiz-question--blocked {
+    pointer-events: none !important;
+    user-select: none;
+    opacity: 0.6;
+}
+.quiz-app .quiz-question__text--disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    user-select: none;
+}
 .quiz-app .quiz-question__options {
     margin-top: 1rem;
     margin-bottom: 1rem;
+}
+.quiz-app .quiz-question__options:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 .quiz-app .quiz-question__feedback {
     margin: 0.5rem 0;

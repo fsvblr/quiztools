@@ -17,6 +17,7 @@ namespace Qt\Plugin\Quiztools\Hotspotsmultiple\PluginTraits;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Event\Table\AfterStoreEvent;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\TableInterface;
 use Joomla\Database\Exception\ExecutionFailureException;
@@ -81,6 +82,7 @@ trait QuestionOptionsSave
 
 		$app = $this->getApplication();
 		$input = $app->getInput();
+        $filter = InputFilter::getInstance();
 		$formData = $input->get('jform', [], 'ARRAY');
 
 	    $db = $this->getDatabase();
@@ -101,14 +103,15 @@ trait QuestionOptionsSave
 	    );
 
         $typeFields = [];
-	    $typeFields['id'] = !empty($question_type_id) ? $question_type_id : 0;
-		$typeFields['question_id'] = $question_id;
-        $typeFields['check_order'] = !empty($formData['check_order']) ? $formData['check_order'] : 0;
+	    $typeFields['id'] = !empty($question_type_id) ? (int) $question_type_id : 0;
+		$typeFields['question_id'] = (int) $question_id;
+        $typeFields['check_order'] = !empty($formData['check_order']) ? (int) $formData['check_order'] : 0;
 
         $typeFields['image'] = !empty($formData['image']) ? $formData['image'] : '';
         $typeFields['image'] = explode('#', $typeFields['image'])[0];
+        $typeFields['image'] = $filter->clean($typeFields['image'], 'path');
 
-		if (!$questionTable->save($typeFields)) {
+        if (!$questionTable->save($typeFields)) {
 			return false;
 		}
 
@@ -141,7 +144,27 @@ trait QuestionOptionsSave
                 continue;
             }
 
-            $questionOption['coordinates'] = json_decode($questionOption['coordinates'], true);
+            // Filtering polygon coordinates: start
+            $polygon = json_decode($questionOption['coordinates'], true);
+            $cleanPolygon = [];
+
+            if (is_array($polygon)) {
+                foreach ($polygon as $point) {
+                    if (is_array($point) && count($point) >= 2) {
+                        $x = (float) $point[0];
+                        $y = (float) $point[1];
+                        $cleanPolygon[] = [$x, $y];
+                    }
+                }
+            }
+
+            if (empty($cleanPolygon)) {
+                $cleanPolygon = [[0.0, 0.0]];
+            }
+
+            $questionOption['coordinates']  = $cleanPolygon;
+            // Filtering polygon coordinates: end
+
             if (!$this->polygonIsSimple($questionOption['coordinates'])) {
                 $this->getApplication()->enqueueMessage(Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_WARNING_POLYGON_NOT_SIMPLE'), 'warning');
                 continue;
@@ -149,7 +172,7 @@ trait QuestionOptionsSave
             $questionOption['coordinates'] = json_encode($questionOption['coordinates']);
 
 			$questionOption['id'] = 0;
-			$questionOption['question_id'] = $question_id;
+			$questionOption['question_id'] = (int) $question_id;
 			$questionOption['ordering'] = $i;
 
 			$questionOptionsTable->save($questionOption);

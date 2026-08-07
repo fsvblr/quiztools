@@ -23,7 +23,7 @@ use Qt\Component\Quiztools\Administrator\Table\QuestionTable;
 /**
  * Deleting question type data (options) when deleting a question.
  *
- * @since   4.0.0
+ * @since  1.0.0
  */
 trait QuestionOptionsDelete
 {
@@ -31,8 +31,8 @@ trait QuestionOptionsDelete
 	 * Deleting question type data (options) when deleting a question.
 	 *
 	 * @param   AfterDeleteEvent  $event
-	 *
 	 * @return bool
+     * @since  1.0.0
 	 */
     public function QuestionOptionsDelete($event): bool
     {
