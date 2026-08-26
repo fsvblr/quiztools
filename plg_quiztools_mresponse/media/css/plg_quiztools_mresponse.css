@@ -1,1 +1,10 @@
-
+.question-option-mresponse {
+    display: flex;
+    margin-bottom: 0.25rem;
+}
+.question-option-mresponse input {
+    margin-right: 1rem;
+}
+.question-option-mresponse label p {
+    margin-bottom: 0;
+}

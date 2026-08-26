@@ -1,3 +1,6 @@
+.quiztools .page-header {
+    margin: 1rem 0;
+}
 .quiz-app {
     border: 0.0625rem solid #dfe3e7;
     border-radius: 0.5rem;

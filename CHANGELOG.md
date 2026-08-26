@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2] - 2026-08-26
+
+### Fixed
+- Error generating PDF report if quiz title contained quotation marks.
+- Displaying the step description in the Learning Path (step's flag "Show description").
+- Minor fixes of quiz's styles.
+
 ## [1.4.1] - 2026-08-07
 
 ### Added

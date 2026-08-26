@@ -63,9 +63,9 @@ trait AddCssAndJs
         $wa = $this->getApplication()->getDocument()->getWebAssetManager();
         $wa->getRegistry()->addRegistryFile('media/plg_quiztools_truefalse/joomla.asset.json');
 
-        //if (!$wa->isAssetActive('style', 'plg_quiztools_truefalse.truefalse')) {
-        //    $wa->useStyle('plg_quiztools_truefalse.truefalse');
-        //}
+        if (!$wa->isAssetActive('style', 'plg_quiztools_truefalse.truefalse')) {
+            $wa->useStyle('plg_quiztools_truefalse.truefalse');
+        }
 
         if (!$wa->isAssetActive('script', 'plg_quiztools_truefalse.truefalse')) {
             $wa->useScript('plg_quiztools_truefalse.truefalse');

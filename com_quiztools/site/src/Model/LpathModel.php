@@ -267,6 +267,7 @@ class LpathModel extends ItemModel
 
             $step->uniqueId = $filter->clean($item['unique_id'], 'CMD');
             $step->passed = false;
+            $step->show_desc = isset($item['show_desc']) ? (int) $item['show_desc'] : 0;
             $step->title = '';
             $step->desc = '';
             $step->link = '';
@@ -284,8 +285,7 @@ class LpathModel extends ItemModel
         $articles = [];
         if (!empty($articles_ids)) {
             $query->clear();
-            $query->select($db->qn(['id', 'title', 'catid', 'language']))
-                ->select($db->qn('introtext', 'desc'))
+            $query->select($db->qn(['id', 'title', 'catid', 'introtext', 'language']))
                 ->from($db->qn('#__content'))
                 ->where($db->qn('state') . '=' . $db->q(1))
                 ->where($db->qn('id') . " IN ('" . implode("','", $articles_ids) . "')")
@@ -310,12 +310,6 @@ class LpathModel extends ItemModel
             $query->whereIn($db->qn('access'), $groups);
             $db->setQuery($query);
             $quizzes = $db->loadObjectList('id');
-
-            if (!empty($quizzes)) {
-                foreach ($quizzes as $quiz) {
-                    $quiz->desc = QuiztoolsHelper::getDescriptionInCategory($quiz->desc);
-                }
-            }
         }
 
         // If 'lpath_items' contains a step but $articles or $quizzes doesn't, remove that step from $steps.
@@ -326,7 +320,11 @@ class LpathModel extends ItemModel
                 if (isset($articles[$steps[$i]->type_id])) {
                     $steps[$i]->title = htmlspecialchars($articles[$steps[$i]->type_id]->title, ENT_QUOTES, 'UTF-8');
                     $steps[$i]->catid = (int) $articles[$steps[$i]->type_id]->catid;
-                    $steps[$i]->desc = QuiztoolsHelper::cleanHtml($articles[$steps[$i]->type_id]->desc);
+                    if ($steps[$i]->show_desc) {
+                        $steps[$i]->desc = QuiztoolsHelper::cleanHtml($articles[$steps[$i]->type_id]->introtext);
+                    } else {
+                        $steps[$i]->desc = '';
+                    }
                     $steps[$i]->language = htmlspecialchars($articles[$steps[$i]->type_id]->language, ENT_QUOTES, 'UTF-8');
                 } else {
                     unset($steps[$i]);
@@ -335,7 +333,12 @@ class LpathModel extends ItemModel
                 if (isset($quizzes[$steps[$i]->type_id])) {
                     $steps[$i]->title = htmlspecialchars($quizzes[$steps[$i]->type_id]->title, ENT_QUOTES, 'UTF-8');
                     $steps[$i]->catid = (int) $quizzes[$steps[$i]->type_id]->catid;
-                    $steps[$i]->desc = QuiztoolsHelper::cleanHtml($quizzes[$steps[$i]->type_id]->desc);
+                    if ($steps[$i]->show_desc) {
+                        $steps[$i]->desc = QuiztoolsHelper::getDescriptionInCategory($quizzes[$steps[$i]->type_id]->desc);
+                        $steps[$i]->desc = QuiztoolsHelper::cleanHtml($steps[$i]->desc);
+                    } else {
+                        $steps[$i]->desc = '';
+                    }
                     $steps[$i]->type_access = (int) $quizzes[$steps[$i]->type_id]->type_access;
                 } else {
                     unset($steps[$i]);
