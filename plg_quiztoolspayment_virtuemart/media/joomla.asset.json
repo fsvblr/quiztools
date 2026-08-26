@@ -1,7 +1,7 @@
 {
     "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
     "name": "plg_quiztoolspayment_virtuemart",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "description": "Quiztools Payment Plugin.",
     "license": "GPL-2.0-or-later",
     "assets": [

@@ -2,6 +2,16 @@
     <changelog>
         <element>pkg_quiztools</element>
         <type>package</type>
+        <version>1.4.2</version>
+        <fix>
+            <item>Error generating PDF report if quiz title contained quotation marks.</item>
+            <item>Displaying the step description in the Learning Path (step's flag "Show description").</item>
+            <item>Minor fixes of quiz's styles.</item>
+        </fix>
+    </changelog>
+    <changelog>
+        <element>pkg_quiztools</element>
+        <type>package</type>
         <version>1.4.1</version>
         <security>
             <item>Improving security. Multiple minor code refactoring.</item>

@@ -1,1 +1,10 @@
-
+.question-option-mchoice {
+    display: flex;
+    margin-bottom: 0.25rem;
+}
+.question-option-mchoice input {
+    margin-right: 1rem;
+}
+.question-option-mchoice label p {
+    margin-bottom: 0;
+}

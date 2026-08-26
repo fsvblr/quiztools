@@ -1,0 +1,10 @@
+.question-option-truefalse {
+    display: flex;
+    margin-bottom: 0.25rem;
+}
+.question-option-truefalse input {
+    margin-right: 1rem;
+}
+.question-option-truefalse label p {
+    margin-bottom: 0;
+}

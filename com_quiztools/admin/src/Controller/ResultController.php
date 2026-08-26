@@ -436,6 +436,7 @@ class ResultController extends BaseController
         $pdf->lastPage();
 
         $pdfFileName = $result->quiz_title . '_' . $result->user_name . '_' . $result->start_datetime_for_display . '.pdf';
+        $pdfFileName = preg_replace('/\s+/', '_', $pdfFileName);
 
         // Possibility to change the PDF-file name via the content plugin.
         // Note: the "text" property is processed by other content plugins.
@@ -458,7 +459,7 @@ class ResultController extends BaseController
         }
         // end
 
-        $pdfFileName = htmlspecialchars($pdfFileName, ENT_QUOTES, 'UTF-8');
+        $pdfFileName = preg_replace('/[&"\'<>]/', '', $pdfFileName); // characters from htmlspecialchars
 
         return ['pdf' => $pdf, 'pdfFileName' => $pdfFileName];
     }
