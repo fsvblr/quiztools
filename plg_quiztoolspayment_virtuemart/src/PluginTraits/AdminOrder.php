@@ -102,6 +102,14 @@ trait AdminOrder
             return;
         }
 
+        $access_statuses = $this->params->get('access_statuses', []);
+        // An order in QuizTools has only 2 statuses: P (Pending) / C (Confirmed):
+        if (in_array((string) $orderStatus, $access_statuses)) {
+            $orderStatus = 'C';
+        } else {
+            $orderStatus = 'P';
+        }
+
         /** @var OrderModel $QTorderModel */
         $QTorderModel = $this->getApplication()->bootComponent('com_quiztools')->getMVCFactory()
             ->createModel('Order', 'Administrator', ['ignore_request' => true]);
@@ -151,7 +159,7 @@ trait AdminOrder
             return;
         }
 
-        if (empty((int) $order->virtuemart_order_id)) {
+        if (empty($order->virtuemart_order_id)) {
             return;
         }
 

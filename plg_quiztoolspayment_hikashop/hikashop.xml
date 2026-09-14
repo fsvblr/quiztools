@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="quiztoolspayment" method="upgrade">
+	<name>PLG_QUIZTOOLSPAYMENT_HIKASHOP</name>
+	<creationDate>2026-09-14</creationDate>
+	<author>QuizTools</author>
+	<authorEmail>sf.webdev.box@gmail.com</authorEmail>
+	<authorUrl>https://github.com/fsvblr/quiztools</authorUrl>
+	<copyright>(C) 2025 https://github.com/fsvblr/quiztools</copyright>
+	<license>GNU General Public License version 2 or later</license>
+	<version>1.5.0</version>
+	<description>PLG_QUIZTOOLSPAYMENT_HIKASHOP_XML_DESCRIPTION</description>
+	<namespace path="src">Qt\Plugin\Quiztoolspayment\Hikashop</namespace>
+	<scriptfile>script.php</scriptfile>
+	<media folder="media" destination="plg_quiztoolspayment_hikashop">
+		<folder>js</folder>
+		<file>joomla.asset.json</file>
+	</media>
+	<files>
+		<folder plugin="hikashop">services</folder>
+		<folder>src</folder>
+	</files>
+	<languages>
+		<language tag="en-GB">language/en-GB/plg_quiztoolspayment_hikashop.ini</language>
+		<language tag="en-GB">language/en-GB/plg_quiztoolspayment_hikashop.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic" addfieldprefix="Qt\Plugin\Quiztoolspayment\Hikashop\Field">
+				<field
+					name="access_statuses"
+					type="orderstatuseslist"
+					label="PLG_QUIZTOOLSPAYMENT_HIKASHOP_FIELD_ACCESS_STATUSES_LABEL"
+					description="PLG_QUIZTOOLSPAYMENT_HIKASHOP_FIELD_ACCESS_STATUSES_DESC"
+					default="confirmed"
+					multiple="true"
+					layout="joomla.form.field.list-fancy-select" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>

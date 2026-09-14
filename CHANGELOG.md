@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.0] - 2026-09-14
+
+### Added
+- **Integration with the Hikashop** online store component: the new "Hikashop" payment plugin.
+- Help has been added to the certificate creation page (the "Help" button).
+
+### Fixed
+- Loading the payment plugin only if it is enabled.
+- Minor refactoring of the integration with Virtuemart.
+
 ## [1.4.2] - 2026-08-26
 
 ### Fixed

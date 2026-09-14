@@ -18,6 +18,7 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\User\UserFactoryAwareTrait;
 use Joomla\Database\DatabaseAwareTrait;
+use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherAwareInterface;
 use Joomla\Event\DispatcherAwareTrait;
 use Joomla\Event\Priority;
@@ -110,7 +111,25 @@ final class Quiztools extends CMSPlugin implements SubscriberInterface, Dispatch
         $payment = $this->getQuizToolsPaymentComponent();
 
         if (!empty($payment)) {
-            PluginHelper::importPlugin('quiztoolspayment', (string) $payment, true, $this->getApplication()->getDispatcher());
+            // Let's check that this plugin is enabled.
+            $db = $this->getDatabase();
+            $query = $db->createQuery();
+            $query->select($db->qn('enabled'))
+                ->from($db->qn('#__extensions'))
+                ->where($db->qn('type') . ' = ' . $db->q('plugin'))
+                ->where($db->qn('folder') . ' = ' . $db->q('quiztoolspayment'))
+                ->where($db->qn('element') . ' = :paymentMethod')
+                ->bind(':paymentMethod', $payment, ParameterType::STRING);
+            try {
+                $enabled = $db->setQuery($query)->loadResult();
+            } catch (\RuntimeException $e) {
+                //$this->getApplication()->enqueueMessage($e->getMessage(), 'error');
+                // ToDo: Logging?
+            }
+
+            if (!empty($enabled) && (int) $enabled === 1) {
+                PluginHelper::importPlugin('quiztoolspayment', (string) $payment, true, $this->getApplication()->getDispatcher());
+            }
         }
     }
 

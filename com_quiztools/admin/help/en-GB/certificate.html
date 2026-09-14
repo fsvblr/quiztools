@@ -1,10 +1,88 @@
 <!DOCTYPE html>
 <html lang="en-GB">
     <head>
-        <title>QuizTools: Certificate New/Edit</title>
+        <title>QuizTools: Creating and editing a certificate</title>
+        <style>
+            body {
+                font-size: 1.125rem;
+                margin: 0;
+                padding: 0 1rem 1rem;
+            }
+            dd {
+                margin-bottom: 0.5rem;
+            }
+        </style>
     </head>
     <body>
-        <h1>QuizTools: Certificate New/Edit</h1>
-        <p>Coming soon...</p>
+        <h1>QuizTools: Creating and editing a certificate</h1>
+        <p>This page is used to create a new certificate for a quiz or edit an existing one.<br>
+            A certificate can be assigned to a specific quiz in its settings so that it is issued to participants after successful completion.</p>
+
+        <h3>General tab</h3>
+        <p>Basic certificate settings are configured here.</p>
+        <dl>
+            <dt>Note</dt>
+            <dd>
+                A short internal note about the certificate. Pay attention to the information included here.
+            </dd>
+
+            <dt>Title</dt>
+            <dd>The name of the certificate. It is shown in the list of certificates and used when selecting a certificate in quiz settings.</dd>
+
+            <dt>Status</dt>
+            <dd>Determines whether the certificate is published. Only published certificates can be used in quizzes.</dd>
+
+            <dt>Image</dt>
+            <dd>Selection of the image file (background) from which the certificate will be generated. The image is in PNG or JPG format.</dd>
+
+            <dt>Upload image</dt>
+            <dd>Field for uploading your own image from your computer.
+                It is available only to users with the <strong>core.manage</strong> permission for the QuizTools component.
+                If this permission is missing, a message about insufficient rights is shown instead of the upload field, but you can select an existing file in the “Image” field.</dd>
+
+            <dt>Certificate fields</dt>
+            <dd>
+                Variables that will be inserted into the certificate are configured here: user name, result, completion date, and others.<br>
+                Each subform row is one text line:
+                <ul>
+                    <li>When a new row is added in the subform, a new line “Edit this text” appears in the upper-left corner of the preview area.</li>
+                    <li>When you hover over this line you can move it to the desired position on the certificate image.</li>
+                    <li>When you click on this line it becomes editable, and you can change the text to your own.</li>
+                    <li>When you move a text line or change its content, the corresponding data in the subform fields is updated automatically.</li>
+                    <li>In the subform fields you can change the font, font size, and font color for the text line.</li>
+                </ul>
+            </dd>
+        </dl>
+
+        <div>
+            The preview area below the field list shows an interactive layout of the certificate.
+            Fields can be moved directly on this canvas, after which their positions are saved together with the certificate.
+        </div>
+
+        <h3>Publishing tab</h3>
+        <p>The Publishing tab shows service information about the record:</p>
+        <ul>
+            <li>ID — unique number of the certificate in the database;</li>
+            <li>Created — date and time when the certificate was created;</li>
+            <li>Created by — user who created the certificate;</li>
+            <li>Modified Date — date of the last change;</li>
+            <li>Modified by — user who last changed the certificate.</li>
+        </ul>
+        <p>These fields are filled in automatically and usually do not require manual changes.</p>
+
+        <h3>Saving changes</h3>
+        <p>
+            Before saving, fill in at least the required fields “Title” and “Image”.
+            If the “Upload image” field is available, you can upload the certificate background file.
+            Or select it from already uploaded files via the “Image” field.
+            After configuring the certificate fields, click “Save” or “Save &amp; Close” on the toolbar.
+        </p>
+
+        <h3>The "Preview" button on the toolbar.</h3>
+        <p>
+            Clicking this button will display a pop-up window previewing your certificate with the saved text data.<br>
+            Since this is the admin panel, the shortcodes will be displayed without the actual data.
+            You can generate the certificate with the actual data in the "Results" section (admin or front-end).
+        </p>
     </body>
 </html>

@@ -26,6 +26,7 @@
 
 ### Monetization & E-Commerce
 - **Paid Subscriptions**: Access control rules mapped to subscription models.
+- **Hikashop Integration**: Automated payment and sales workflow processing (Tested on Hikashop 6.5.2).
 - **VirtueMart Integration**: Automated payment and sales workflow processing (Tested on VirtueMart 4.4.10).
 - **Administrative Controls**: Manual order entry, manual access overrides, and expired order reactivation/extension.
 
