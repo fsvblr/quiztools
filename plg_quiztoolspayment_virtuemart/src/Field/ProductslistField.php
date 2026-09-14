@@ -15,6 +15,7 @@ use Joomla\CMS\Form\Field\ListField;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\Utilities\ArrayHelper;
 use Qt\Component\Quiztools\Administrator\Model\SubscriptionModel;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -78,9 +79,15 @@ class ProductslistField extends ListField
             ->join('LEFT', $db->qn('#__virtuemart_products_' . $langSuffix, 'lang'),
                 $db->qn('lang.virtuemart_product_id') . ' = ' . $db->qn('p.virtuemart_product_id'))
             ->where($db->qn('p.published') . ' = ' . $db->q(1));
+
         if (!empty($used_product_ids)) {
-            $query->where($db->qn('p.virtuemart_product_id') . " NOT IN ('" . implode("','", $used_product_ids) . "')");
+            $used_product_ids = ArrayHelper::toInteger((array) $used_product_ids);
+            $used_product_ids = array_filter($used_product_ids);
+            if (!empty($used_product_ids)) {
+                $query->where($db->qn('p.virtuemart_product_id') . " NOT IN ('" . implode("','", $used_product_ids) . "')");
+            }
         }
+
         $db->setQuery($query);
 
         try {

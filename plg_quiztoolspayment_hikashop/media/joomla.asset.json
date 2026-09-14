@@ -1,0 +1,21 @@
+{
+    "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+    "name": "plg_quiztoolspayment_hikashop",
+    "version": "1.5.0",
+    "description": "Quiztools Payment Plugin.",
+    "license": "GPL-2.0-or-later",
+    "assets": [
+        {
+            "name": "plg_quiztoolspayment_hikashop.hikashopAdminOrder",
+            "type": "script",
+            "uri": "plg_quiztoolspayment_hikashop/hikashopAdminOrder.js",
+            "dependencies": [
+                "core"
+            ],
+            "attributes": {
+                "defer": true
+            },
+            "version": "202609101930"
+        }
+    ]
+}

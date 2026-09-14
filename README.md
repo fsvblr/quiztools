@@ -9,6 +9,7 @@ It provides a robust framework for creating interactive assessments, structured 
 
 **Monetization and Sales - Paid Subscriptions**
 - Creating subscriptions for quizzes and learning paths and sell them through integration with e-store components or offline sales with manual order creation in the admin panel.
+- Integration with **Hikashop** for automated sales flows. Tested on version 6.5.2.
 - Integration with **VirtueMart** for automated sales flows. Tested on version 4.4.10.
 - Support for manual order entry and administrative override of access rights.
 - Order Reactivation: Easily reactivate or extend expired orders directly from the backend.

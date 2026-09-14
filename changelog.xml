@@ -2,6 +2,19 @@
     <changelog>
         <element>pkg_quiztools</element>
         <type>package</type>
+        <version>1.5.0</version>
+        <fix>
+            <item>Loading the payment plugin only if it is enabled.</item>
+            <item>Minor refactoring of the integration with Virtuemart.</item>
+        </fix>
+        <addition>
+            <item>Integration with the Hikashop online store component: the new "Hikashop" payment plugin.</item>
+            <item>Help has been added to the certificate creation page (the "Help" button).</item>
+        </addition>
+    </changelog>
+    <changelog>
+        <element>pkg_quiztools</element>
+        <type>package</type>
         <version>1.4.2</version>
         <fix>
             <item>Error generating PDF report if quiz title contained quotation marks.</item>
