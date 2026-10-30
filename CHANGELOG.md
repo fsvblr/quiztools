@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.1] - 2026-10-30
+
+### Added
+- Help information (a "Help" button) has been added to the subscription creation page and the order creation page.
+
+### Fixed
+- Correct display of dates for non-Gregorian calendars, provided the corresponding language pack is installed.
+- Certificate generation for RTL languages.
+
 ## [1.5.0] - 2026-09-14
 
 ### Added

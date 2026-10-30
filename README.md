@@ -42,6 +42,8 @@ It provides a robust framework for creating interactive assessments, structured 
 **Certificates and recognition**
 - Built‑in certificate designer in the admin panel
 - Certificate download for learners who pass
+- Support for dates in non-Gregorian calendars
+- RTL support
 
 **Analytics and exports**
 - View and filter results both in the admin panel and on the front end
@@ -59,6 +61,7 @@ the use of mathematical/chemical formulas, video/audio, and other content insert
 - core component
 - modular plugins for question types
 - payment plugins
+- system plugin for integrations
 
 **Customizable**  
 - Numerous built-in custom events allow you to extend functionality without hacks.

@@ -1,6 +1,7 @@
 (function () {
 
     const siteRoot = Joomla.getOptions('com_quiztools.certificate').siteRoot || '/'
+    const isRtl = document.documentElement.dir === 'rtl'
 
     let canvas = null
 
@@ -137,7 +138,10 @@
             lockScalingY: true,
             cornerSize: 1,
             id: 'canvasText_' + n,
+            direction: isRtl ? 'rtl' : 'ltr',
+            textAlign: isRtl ? 'right' : 'left',
         })
+
         text.controls.mtr.visible = false
         canvas.add(text)
 

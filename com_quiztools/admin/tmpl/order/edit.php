@@ -98,7 +98,7 @@ Text::script('COM_QUIZTOOLS_ORDER_DIALOG_REACTIVATE_BTN_REACTIVATE');
                     <div>
                         <div class="control-group">
                             <div class="control-label">
-                                <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_STORE_TYPE'); ?>:
+                                <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_STORE_TYPE'); ?>
                             </div>
                             <div class="controls hstack">
                                 <?php if (empty($this->item->id)) : ?>
@@ -114,7 +114,7 @@ Text::script('COM_QUIZTOOLS_ORDER_DIALOG_REACTIVATE_BTN_REACTIVATE');
                         <?php if (!empty($this->item->store_order_id)) : ?>
                             <div class="control-group">
                                 <div class="control-label">
-                                    <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_STORE_ORDER_ID'); ?>:
+                                    <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_STORE_ORDER_ID'); ?>
                                 </div>
                                 <div class="controls hstack">
                                     <?php echo (int) $this->item->store_order_id; ?>
@@ -125,7 +125,7 @@ Text::script('COM_QUIZTOOLS_ORDER_DIALOG_REACTIVATE_BTN_REACTIVATE');
                         <?php if (!empty($this->item->store_product_id)) : ?>
                             <div class="control-group">
                                 <div class="control-label">
-                                    <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_STORE_PRODUCT_ID'); ?>:
+                                    <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_STORE_PRODUCT_ID'); ?>
                                 </div>
                                 <div class="controls hstack">
                                     <?php echo (int) $this->item->store_product_id; ?>
@@ -136,15 +136,15 @@ Text::script('COM_QUIZTOOLS_ORDER_DIALOG_REACTIVATE_BTN_REACTIVATE');
                         <?php if (!empty($this->item->id)) : ?>
                             <div class="control-group">
                                 <div class="control-label">
-                                    <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_START_DATETIME'); ?>:
+                                    <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_START_DATETIME'); ?>
                                 </div>
                                 <div class="controls hstack">
-                                    <?php echo QuiztoolsHelper::fromUtcToUsersTimeZone($this->item->start_datetime); ?>
+                                    <?php echo QuiztoolsHelper::fromUtcToUsersTimeZone($this->item->start_datetime, 0, 'Y-m-d H:i:s', 'administrator'); ?>
                                 </div>
                             </div>
                             <div class="control-group">
                                 <div class="control-label">
-                                    <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_END_DATETIME'); ?>:
+                                    <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_END_DATETIME'); ?>
                                 </div>
                                 <div class="controls hstack">
                                     <?php if (is_null($this->item->end_datetime)):  // "lifetime" access, unlimited days ?>
@@ -154,13 +154,13 @@ Text::script('COM_QUIZTOOLS_ORDER_DIALOG_REACTIVATE_BTN_REACTIVATE');
                                             <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXT_DEPENDS_ATTEMPTS') ?>
                                         <?php endif; ?>
                                     <?php else: ?>
-                                        <?php echo QuiztoolsHelper::fromUtcToUsersTimeZone($this->item->end_datetime); ?>
+                                        <?php echo QuiztoolsHelper::fromUtcToUsersTimeZone($this->item->end_datetime, 0, 'Y-m-d H:i:s', 'administrator'); ?>
                                     <?php endif; ?>
                                 </div>
                             </div>
                             <div class="control-group">
                                 <div class="control-label">
-                                    <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_ATTEMPTS_MAX'); ?>:
+                                    <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_ATTEMPTS_MAX'); ?>
                                 </div>
                                 <div class="controls hstack">
                                     <?php if (isset($this->item->attempts_max) && (int) $this->item->attempts_max === 0):  // unlimited ?>
@@ -173,7 +173,7 @@ Text::script('COM_QUIZTOOLS_ORDER_DIALOG_REACTIVATE_BTN_REACTIVATE');
                             <?php if (isset($this->item->users_used)) : ?>
                                 <div class="control-group">
                                     <div class="control-label">
-                                        <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_ATTEMPTS_USED'); ?>:
+                                        <?php echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_ATTEMPTS_USED'); ?>
                                     </div>
                                     <div class="controls hstack">
                                         <?php echo (int) $this->item->attempts_used; ?>
@@ -186,7 +186,7 @@ Text::script('COM_QUIZTOOLS_ORDER_DIALOG_REACTIVATE_BTN_REACTIVATE');
                         <?php //if (!empty($this->item->users_used)) : ?>
                             <!--<div class="control-group">
                                 <div class="control-label">
-                                    <?php //echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_USERS_MAX'); ?>:
+                                    <?php //echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_USERS_MAX'); ?>
                                 </div>
                                 <div class="controls hstack">
                                     <?php //echo (int) $this->item->subscription->users_max; ?>
@@ -194,7 +194,7 @@ Text::script('COM_QUIZTOOLS_ORDER_DIALOG_REACTIVATE_BTN_REACTIVATE');
                             </div>
                             <div class="control-group">
                                 <div class="control-label">
-                                    <?php //echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_USERS_USED'); ?>:
+                                    <?php //echo Text::_('COM_QUIZTOOLS_ORDER_TEXTLABEL_USERS_USED'); ?>
                                 </div>
                                 <div class="controls hstack">
                                     <?php //echo (int) $this->item->users_used; ?>

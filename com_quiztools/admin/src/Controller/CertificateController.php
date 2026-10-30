@@ -18,6 +18,7 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Filesystem\File;
+use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -122,6 +123,7 @@ class CertificateController extends FormController
      *    Example structure:
      *    [
      *        'result_id' => 12345
+     *        'user_id' => int User ID
      *        'certificate_id' => int Certificate ID,
      *        'client' => string User client type ('administrator' or other),
      *        'urlList' => string URL to list view,
@@ -208,19 +210,36 @@ class CertificateController extends FormController
         PluginHelper::importPlugin('content', null, true, $dispatcher);
 
         if (!empty($certificate->fields) && is_array($certificate->fields)) {
+
+            $languageTagForCertificate = QuiztoolsHelper::getLanguageTag((int) $data['user_id'], 'site');
+
+            // For RTL: dates and percentage values should not be reversed when rendered.
+            // Wrap them in a marker \u{200E} (left-to-right) and restore the context \u{200F} (right-to-left).
+            $lrm = "\u{200E}";
+            $rlm = "\u{200F}";
+
             foreach ($certificate->fields as $key => $field) {
                 if (!empty($data['shortcodes']) && is_array($data['shortcodes'])) {
                     foreach ($data['shortcodes'] as $code => $val) {
                         if ($code === 'date') {
-                            $field['text'] = str_replace('#' . $code . '#', date('d.m.Y', strtotime($val)), $field['text']);
-                            if (str_contains($field['text'], '#date(')) {
-                                $pattern = '/#date\(["\']?(.*?)["\']?\)#/';
-                                preg_match($pattern, $field['text'], $matches);
-                                $customFormattedDate = date($matches[1], strtotime($val));
-                                $field['text'] = preg_replace($pattern, $customFormattedDate, $field['text']);
-                            }
-                        } else if ($code === 'percent') {
-                            $field['text'] = str_replace('#' . $code . '#', $val . '%', $field['text']);
+                            $certificateDate = QuiztoolsHelper::fromUtcToUsersTimeZone($val, $data['user_id'], 'd.m.Y');
+                            $certificateDate = $lrm . $certificateDate . $rlm;
+                            $field['text'] = str_replace('#' . $code . '#', $certificateDate, $field['text']);
+
+                            // Handling custom date formats
+                            $pattern = '/#date\(["\']?(.*?)["\']?\)#/';
+                            $field['text'] = preg_replace_callback($pattern, function ($matches) use ($val, $data, $lrm, $rlm) {
+                                $format = $matches[1];
+                                $certificateDate = QuiztoolsHelper::fromUtcToUsersTimeZone($val, $data['user_id'], $format);
+                                return $lrm . $certificateDate . $rlm;
+                            }, $field['text']);
+                        }
+                        else if ($code === 'percent') {
+                            $val = $lrm . $val . '%' . $rlm;
+                            $field['text'] = str_replace('#' . $code . '#', $val, $field['text']);
+                        } else if ($code === 'points') {
+                            $val = $lrm . $val . $rlm;
+                            $field['text'] = str_replace('#' . $code . '#', $val, $field['text']);
                         } else {
                             $field['text'] = str_replace('#' . $code . '#', $val, $field['text']);
                         }
@@ -251,6 +270,9 @@ class CertificateController extends FormController
                 $rgb = preg_replace('/[^0-9,]/', '', $field['color']);
                 $rgb = explode(',', $rgb);
                 $color = imagecolorallocate($im, $rgb[0], $rgb[1], $rgb[2]);
+
+                $field['text'] = QuiztoolsHelper::prepareRtlText($field['text'], $languageTagForCertificate);
+
                 imagefttext($im, $field['font_size'], 0,  round($field['x']), $y, $color, $fontFamily, $field['text']);
             }
         }

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+    <head>
+        <title>QuizTools: Creating and editing an order</title>
+        <style>
+            body {
+                font-size: 1.125rem;
+                margin: 0;
+                padding: 0 1rem 1rem;
+            }
+            dd {
+                margin-bottom: 0.5rem;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>QuizTools: Creating and editing an order</h1>
+        <p>This page is used to create a new order or edit an existing one.</p>
+
+        <h3>General tab</h3>
+        <p>Basic order settings are configured here.</p>
+        <dl>
+            <dt>Subscription</dt>
+            <dd>
+                <p>
+                    Required when an administrator creates a new order manually.
+                    Select the subscription that should become available to the user after the order status is changed to <strong>Confirmed</strong>.
+                </p>
+                <p>
+                    This field is available only for orders created with the <strong>Manual</strong> payment method.
+                    After the first saving of the order, this field becomes read-only.
+                </p>
+            </dd>
+
+            <dt>User</dt>
+            <dd>
+                <p>
+                    Required when an administrator creates a new order manually.
+                    Select the user to whom this order will be assigned.
+                    This user will be able to take the quiz or learning path linked to the selected subscription.
+                </p>
+                <p>
+                    This field is available only for orders created with the <strong>Manual</strong> payment method.
+                    After the first saving of the order, this field becomes read-only.
+                </p>
+            </dd>
+
+            <dt>Order status</dt>
+            <dd>
+                Select the current order status. An order is available to a user on the front-end only when its status is <strong>Confirmed</strong>.
+                <br />
+                To allow users to access their own orders on the front-end, we recommend creating a menu item of the type "Orders List (My subscriptions)."
+                The minimum access level for this menu item should be set to "Registered."
+            </dd>
+
+            <dt>Payment method</dt>
+            <dd>
+                <p>
+                    For manually created orders, the payment method is always <strong>Manual</strong>.
+                    This option means that the order is created in the administrator area and payment is tracked manually.
+                </p>
+                <p>
+                    For orders created automatically via a third-party e-shop component,
+                    the payment method is set automatically to the name of that e-shop component and cannot be changed.
+                </p>
+            </dd>
+
+            <dt>Access start</dt>
+            <dd>
+                Read-only field. It is generated from the subscription linked to the order after the order is first saved.
+                It defines the date and time from which access to the subscription is available.
+            </dd>
+
+            <dt>Access end</dt>
+            <dd>
+                Read-only field. It is generated from the subscription linked to the order after the order is first saved.
+                It defines the date and time until which access to the subscription is available.
+            </dd>
+
+            <dt>Attempts max</dt>
+            <dd>
+                Read-only field. It is generated from the subscription linked to the order after the order is first saved.
+                It defines the maximum number of attempts allowed for this order.
+            </dd>
+
+            <dt>Attempts used</dt>
+            <dd>
+                Read-only field. It is calculated automatically based on the attempts that the assigned user has already made for this order.
+                This field cannot be changed manually.
+            </dd>
+
+            <dt>Order ID in e-store</dt>
+            <dd>
+                Read-only field. It is filled automatically for orders created via a third-party e-shop component.
+                It contains the order identifier from that e-shop.
+            </dd>
+
+            <dt>Product ID in e-store</dt>
+            <dd>
+                Read-only field. It is filled automatically for orders created via a third-party e-shop component.
+                It contains the product identifier from that e-shop.
+            </dd>
+        </dl>
+
+        <h3>Manual order creation in the administrator area</h3>
+        <p>
+            An administrator can create a new order only with the <strong>Manual</strong> payment method.
+            In this case, the <strong>Subscription</strong>, <strong>User</strong>, and <strong>Order status</strong> fields must be filled in before saving.
+            After saving a manually created order, the only editable field is <strong>Order status</strong>.
+            All other order fields become read-only because their values are determined by the linked subscription and the user's attempts.
+        </p>
+
+        <h3>Automatic order creation via an e-shop component</h3>
+        <p>
+            Orders can be created automatically in the administrator area if a third-party e-shop component is installed
+            (for example, <strong>HikaShop</strong> or <strong>VirtueMart</strong>)
+            and the corresponding QuizTools payment plugin is enabled and configured.
+        </p>
+        <p>
+            When a user places an order in the e-shop on the front-end,
+            the corresponding order is automatically displayed in the QuizTools administrator area.
+            For such orders, the payment method, order ID in the e-shop, and product ID in the e-shop
+            are filled in automatically from the e-shop data and cannot be edited.
+        </p>
+
+        <h3>The “Reactivate” toolbar button</h3>
+        <p>
+            Clicking <strong>Reactivate</strong> opens a pop-up window where the administrator can extend this order.
+            The following options are available in the pop-up:
+        </p>
+        <ul>
+            <li>
+                <strong>Access to</strong> — change the date until which the order remains available.
+                If the field is left blank, the order will be available for “lifetime” access, i.e. unlimited days.
+                If a date is selected, the order will be available until that date, provided that the available number of attempts has not yet been used or is unlimited (zero).
+            </li>
+            <li>
+                <strong>Attempts</strong> — specify a new number of attempts. A new countdown of attempts begins from
+                the moment the order is reactivated. Set the value to <strong>0 (zero)</strong> for unlimited attempts.
+            </li>
+        </ul>
+
+        <h3>Publishing tab</h3>
+        <p>The Publishing tab shows service information about the record:</p>
+        <ul>
+            <li>ID — unique number of the order in the database;</li>
+            <li>Created — date and time when the order was created;</li>
+            <li>Created by — user who created the order;</li>
+            <li>Modified Date — date of the last change;</li>
+            <li>Modified by — user who last changed the order.</li>
+        </ul>
+        <p>These fields are filled in automatically and usually do not require manual changes.</p>
+
+        <h3>Saving changes</h3>
+        <p>
+            For manually created orders, fill in at least the required fields <strong>Subscription</strong>,
+            <strong>User</strong>, and <strong>Order status</strong> before saving.
+            After the initial save, only <strong>Order status</strong> remains editable.
+        </p>
+        <p>
+            For orders created automatically through an e-shop component, the data is populated from the e-shop.
+        </p>
+    </body>
+</html>

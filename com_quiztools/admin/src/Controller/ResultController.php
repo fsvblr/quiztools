@@ -103,6 +103,7 @@ class ResultController extends BaseController
 
         $data = [];
         $data['result_id'] = $result_id;
+        $data['user_id'] = (int) $result->user_id;
         $data['certificate_id'] = (int) $result->certificate_id;
         $data['client'] = $client;
         $data['urlList'] = Route::_('index.php?option=com_quiztools&view=results', false);
@@ -253,6 +254,7 @@ class ResultController extends BaseController
         $altLang = [
             'ar-AA', //Arabic (Unitag)
             'ar-SA', //Arabic (Saudi Arabia)
+            'fa-IR', //Persian (Farsi)
             'he-IL', //Hebrew (Israel)
             'ja-JP', //Japanese (Japan)
             'zh-CN', //Chinese (China)

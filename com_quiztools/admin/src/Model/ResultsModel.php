@@ -273,13 +273,20 @@ class ResultsModel extends ListModel
      */
     public function getItems()
     {
+        $app = Factory::getApplication();
+
         $items = parent::getItems();
 
         if (!empty($items)) {
             foreach ($items as $item) {
                 // From UTC to user's time zone
                 if (!empty($item->start_datetime)) {
-                    $item->start_datetime_for_display = QuiztoolsHelper::fromUtcToUsersTimeZone($item->start_datetime);
+                    $client = $this->getState('context.client', 'administrator');
+                    $user_id = 0;
+                    if ($client === 'site') {
+                        $user_id = (int) $app->getIdentity()->id;
+                    }
+                    $item->start_datetime_for_display = QuiztoolsHelper::fromUtcToUsersTimeZone($item->start_datetime, $user_id, 'Y-m-d H:i:s', $client);
                 }
             }
         }

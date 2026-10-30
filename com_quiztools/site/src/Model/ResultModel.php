@@ -51,5 +51,7 @@ class ResultModel extends AdminResultModel
         $this->setState('params', $params);
 
         $this->setState('result.layout', 'result');
+
+        $this->setState('context.client', 'site');
     }
 }

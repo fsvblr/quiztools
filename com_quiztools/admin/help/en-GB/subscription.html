@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+    <head>
+        <title>QuizTools: Creating and editing a subscription</title>
+        <style>
+            body {
+                font-size: 1.125rem;
+                margin: 0;
+                padding: 0 1rem 1rem;
+            }
+            dd {
+                margin-bottom: 0.5rem;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>QuizTools: Creating and editing a subscription</h1>
+        <p>On this page, you can create a new subscription to a quiz or learning path, or edit an existing one.</p>
+
+        <h3>General tab</h3>
+        <p>Basic subscription settings are configured here.</p>
+        <dl>
+            <dt>Title</dt>
+            <dd>The name of the subscription. It is shown in the list of subscriptions and used when assigning a subscription.</dd>
+
+            <dt>Status</dt>
+            <dd>Subscription status toggle: enable/disable.</dd>
+
+            <dt>Payment method</dt>
+            <dd>
+                <p>Select the method by which you will sell access to this subscription.</p>
+                <p>
+                    By default only <strong>Manual</strong> is available.
+                    This option means that the subscription is handled manually:
+                    an order is created in the administrator area for the selected user, and you
+                    yourself track payment for this subscription and manually change its status to
+                    <strong>Confirmed</strong>.
+                </p>
+                <p>
+                    If a third-party e-shop component is installed on the site (for example,
+                    <strong>HikaShop</strong> or <strong>VirtueMart</strong>) and the corresponding
+                    QuizTools payment plugin is enabled, then the choice of paying through that shop
+                    is added to this field.<br />
+                    Don't forget to configure the appropriate QuizTools payment plugin.
+                </p>
+                <p>
+                    When a payment method other than <strong>Manual</strong> is selected, an
+                    additional required field <strong>[E-shop name] Product</strong> appears.
+                </p>
+            </dd>
+
+            <dt>[E-shop name] Product</dt>
+            <dd>
+                <p>This field is shown only when the selected payment method is not <strong>Manual</strong>. It is mandatory in that case.</p>
+                <p>
+                    The field contains a list of products that exist in the selected e-shop component.
+                    You need to match one of these products with the subscription being created.
+                    The selected product is the one that the site user will purchase on the front-end
+                    to gain access to this subscription.
+                </p>
+                <p>
+                    One product of a third-party e-shop component can be linked to only one
+                    QuizTools subscription. If a product is already used in another subscription,
+                    it will disappear from the selection list for the current subscription.
+                </p>
+                <p>
+                    Create the product in the third-party e-shop component <strong>before</strong>
+                    creating the subscription in QuizTools.
+                    We recommend giving the product the same name as the subscription so that users
+                    are not confused.
+                </p>
+            </dd>
+
+            <dt>Type</dt>
+            <dd>Select what the subscription grants access to: a single quiz or a learning path.</dd>
+
+            <dt>Quiz</dt>
+            <dd>
+                Visible when the type is <strong>Quiz</strong>. Select the quiz to which this subscription provides access.
+            </dd>
+
+            <dt>Learning path</dt>
+            <dd>
+                Visible when the type is <strong>Learning path</strong>. Select the learning path to which this subscription provides access.
+            </dd>
+
+            <!--<dt>Users limit</dt>
+            <dd>The maximum number of users who can use the same order created from this subscription.</dd>-->
+
+            <dt>Access type</dt>
+            <dd>Choose how access duration is defined: by a fixed number of days or by an exact date range.</dd>
+
+            <dt>Number of days of access</dt>
+            <dd>
+                Visible when access type is <strong>X days</strong>. The number of days a user will have access after the order is confirmed.<br />
+                If 0 (zero) is selected, this means "lifetime" access—an unlimited number of days.
+            </dd>
+
+            <dt>From</dt>
+            <dd>Visible when access type is <strong>Period of days</strong>. Start date and time from which access is available.</dd>
+
+            <dt>To</dt>
+            <dd>
+                Visible when access type is <strong>Period of days</strong>. End date and time until which access is available.<br />
+                If an end date and time for access are not selected, then access is not limited by time.
+            </dd>
+
+            <dt>Attempts</dt>
+            <dd>
+                The number of attempts allowed for the quiz or learning path linked to this subscription.<br />
+                If 0 (zero) is selected, this means an unlimited number of attempts.
+            </dd>
+        </dl>
+
+        <h3>Publishing tab</h3>
+        <p>The Publishing tab shows service information about the record:</p>
+        <ul>
+            <li>ID — unique number of the subscription in the database;</li>
+            <li>Created — date and time when the subscription was created;</li>
+            <li>Created by — user who created the subscription;</li>
+            <li>Modified Date — date of the last change;</li>
+            <li>Modified by — user who last changed the subscription.</li>
+        </ul>
+        <p>These fields are filled in automatically and usually do not require manual changes.</p>
+
+        <h3>Payment processing and front-end orders</h3>
+        <p>
+            When an order is created for this subscription, the user can see it on the front-end in
+            the list of orders. If the order status is <strong>Confirmed</strong>, and if the order
+            has not yet expired (based on its <strong>End</strong> and <strong>Attempts</strong>
+            characteristics), then that order is available for the user to take the quiz or learning
+            path.
+        </p>
+        <p>
+            For payments through a third-party e-shop component, after the user pays for the product, the
+            subscription status automatically changes to <strong>Confirmed</strong>, and the
+            subscription becomes available on the front-end.
+        </p>
+        <p>
+            For the manual payment method, the subscription status must be changed to
+            <strong>Confirmed</strong> manually by an administrator after payment has been received.
+        </p>
+
+        <h3>Saving changes</h3>
+        <p>
+            Before saving, fill in at least the required fields <strong>Title</strong> and
+            <strong>Payment method</strong>.
+            If the selected payment method is not <strong>Manual</strong>, the
+            <strong>[E-shop name] Product</strong> field also becomes required.
+            After configuring the subscription fields, click <strong>Save</strong> or
+            <strong>Save &amp; Close</strong> on the toolbar.
+        </p>
+        <p>
+            Once a subscription has been created (after the initial save), the "Payment method" and "[E-shop name] Product" fields become non-editable.
+        </p>
+    </body>
+</html>

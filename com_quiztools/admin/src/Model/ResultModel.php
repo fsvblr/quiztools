@@ -166,7 +166,12 @@ class ResultModel extends BaseDatabaseModel
 
                 // From UTC to user's time zone
                 if (!empty($data->start_datetime)) {
-                    $data->start_datetime_for_display = QuiztoolsHelper::fromUtcToUsersTimeZone($data->start_datetime);
+                    $client = $this->getState('context.client', 'administrator');
+                    $user_id = 0;
+                    if ($client === 'site') {
+                        $user_id = (int) $app->getIdentity()->id;
+                    }
+                    $data->start_datetime_for_display = QuiztoolsHelper::fromUtcToUsersTimeZone($data->start_datetime, $user_id, 'Y-m-d H:i:s', $client);
                 }
 
                 $data->results_questions = $this->getResultsQuestions($data->id);
