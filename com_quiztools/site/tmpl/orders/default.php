@@ -10,6 +10,7 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 
@@ -18,6 +19,13 @@ use Qt\Component\Quiztools\Administrator\Helper\QuiztoolsHelper;
 /** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 $wa = $this->getDocument()->getWebAssetManager();
 $wa->useStyle('com_quiztools.orders');
+
+try {
+    $user = Factory::getApplication()->getIdentity();
+    $user_id = (int) $user->id;
+} catch (Exception $e) {
+    $user_id =0;
+}
 
 ?>
 <div class="quiztools orders-list<?php echo !empty($this->pageclass_sfx) ? ' orders-list-'.$this->pageclass_sfx : ''; ?>">
@@ -57,7 +65,7 @@ $wa->useStyle('com_quiztools.orders');
                         <div class="orders-list__item-data">
                             <span>
                                 <?php echo Text::_('COM_QUIZTOOLS_ORDERS_TEXT_START') ?>:&nbsp;
-                                <?php echo QuiztoolsHelper::fromUtcToUsersTimeZone($item->accessData->start); ?>
+                                <?php echo QuiztoolsHelper::fromUtcToUsersTimeZone($item->accessData->start, $user_id); ?>
                             </span>
                             <span class="orders-list__data-separator"></span>
                             <span>
@@ -69,7 +77,7 @@ $wa->useStyle('com_quiztools.orders');
                                         <?php echo Text::_('COM_QUIZTOOLS_ORDERS_TEXT_DEPENDS_ATTEMPTS') ?>
                                     <?php endif; ?>
                                 <?php else: ?>
-                                    <?php echo QuiztoolsHelper::fromUtcToUsersTimeZone($item->accessData->end); ?>
+                                    <?php echo QuiztoolsHelper::fromUtcToUsersTimeZone($item->accessData->end, $user_id); ?>
                                 <?php endif; ?>
                             </span>
                         </div>

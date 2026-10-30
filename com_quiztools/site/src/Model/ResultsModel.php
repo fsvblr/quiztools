@@ -88,6 +88,8 @@ class ResultsModel extends AdminResultsModel
         if ($user->authorise('core.admin', 'com_quiztools')) {
             $this->setState('admin.mode', 1);
         }
+
+        $this->setState('context.client', 'site');
     }
 
     /**

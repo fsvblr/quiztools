@@ -2,6 +2,18 @@
     <changelog>
         <element>pkg_quiztools</element>
         <type>package</type>
+        <version>1.5.1</version>
+        <fix>
+            <item>Correct display of dates for non-Gregorian calendars, provided the corresponding language pack is installed.</item>
+            <item>Certificate generation for RTL languages.</item>
+        </fix>
+        <addition>
+            <item>Help information (a "Help" button) has been added to the subscription creation page and the order creation page.</item>
+        </addition>
+    </changelog>
+    <changelog>
+        <element>pkg_quiztools</element>
+        <type>package</type>
         <version>1.5.0</version>
         <fix>
             <item>Loading the payment plugin only if it is enabled.</item>

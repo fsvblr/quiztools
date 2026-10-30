@@ -12,9 +12,12 @@ namespace Qt\Component\Quiztools\Administrator\Helper;
 
 use enshrined\svgSanitize\Sanitizer;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Language\LanguageHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\Filesystem\Exception\FilesystemException;
 use Joomla\String\StringHelper;
 
@@ -46,24 +49,113 @@ class QuiztoolsHelper
     }
 
     /**
-     * Converting a time string from UTC to the user's time zone.
+     * Converting a time string from UTC to the user's time zone, locale and native calendar.
+     * Supports user profile language, frontend/backend multilingualism and custom formatting.
+     * Automatically handles non-Gregorian calendars (Thai, Persian, etc.) if the language pack is installed.
      *
      * @param string $utcTimeString
+     * @param int $user_id Target user ID (e.g. the student)
+     * @param string $format Date format (PHP style)
+     * @param string $clientContext Context for language lookup ('site' or 'administrator')
+     * @param string $explicitLanguage Explicit language tag (e.g. 'fa-IR') to override detection
+     * @throws \Exception
+     * @since 1.5.1
      * @return string
-     * @throws \DateInvalidTimeZoneException
-     * @throws \DateMalformedStringException
      */
-    public static function fromUtcToUsersTimeZone($utcTimeString)
-    {
-        $utcTime = new \DateTime($utcTimeString, new \DateTimeZone('UTC'));
+    public static function fromUtcToUsersTimeZone(
+        string $utcTimeString,
+        int $user_id = 0,
+        string $format = 'Y-m-d H:i:s',
+        string $clientContext = 'site',
+        string $explicitLanguage = ''
+    ): string {
+        $app = Factory::getApplication();
 
-        $user = Factory::getApplication()->getIdentity();
-        $userTimezone = $user->getParam('timezone', Factory::getApplication()->getConfig()->get('offset', 'UTC'));
+        $user = null;
+        if ((int) $user_id > 0) {
+            $userFactory = Factory::getContainer()->get(UserFactoryInterface::class);
+            $user = $userFactory->loadUserById((int) $user_id);
+        }
 
-        $userTimezone = new \DateTimeZone($userTimezone);
-        $utcTime->setTimezone($userTimezone);
+        if ($user && (int) $user->id > 0) {
+            $userTimezone = $user->getParam('timezone', $app->getConfig()->get('offset', 'UTC'));
+        } else {
+            $userTimezone = $app->getConfig()->get('offset', 'UTC');
+        }
 
-        $localTimeString = $utcTime->format('Y-m-d H:i:s');
+        // Determining the exact language based on setting priorities
+        $languageTag = self::getLanguageTag($user_id, $clientContext, $explicitLanguage);
+
+        // Including the localization file for an alternative calendar.
+        // If the target language differs from the language of the current session
+        //  (for example, when generating a certificate for a student in Persian while using an English-language administration interface),
+        //  PHP will not yet be aware of the calendar class (such as `Fa_IRDate`).
+        // We explicitly include the `localise.php` file for the required language.
+        if ($languageTag !== $app->getLanguage()->getTag()) {
+            $localiseFile = JPATH_SITE . '/language/' . $languageTag . '/localise.php';
+            if (!file_exists($localiseFile)) {
+                $localiseFile = JPATH_ADMINISTRATOR . '/language/' . $languageTag . '/localise.php';
+            }
+
+            if (file_exists($localiseFile)) {
+                try {
+                    include_once $localiseFile;
+                } catch (\Throwable $e) {
+                    // The file is corrupted or contains a syntax error — ignoring it; the global fallback will take effect.
+                }
+            }
+        }  // ELSE : the core has already loaded localise.php for the current language
+
+        // Determining the class name for a date
+        $dateClassName = '\\Joomla\\CMS\\Date\\Date'; // By default, we use a standard core class.
+
+        try {
+            // Constructing the class name
+            $cleanTag = str_replace('-', '_', $languageTag);
+
+            // Option 1: Modern standard using namespaces (Joomla 5/6): \Joomla\Language\Fa_IR\Fa_IRDate
+            $nsClassName = '\\Joomla\\Language\\' . $cleanTag . '\\' . $cleanTag . 'Date';
+
+            // Option 2: Old standard without namespaces (Joomla 3/4): Fa_IRDate
+            $oldClassName = $cleanTag . 'Date';
+
+            if (class_exists($nsClassName)) {
+                $dateClassName = $nsClassName;
+            } elseif (class_exists($oldClassName)) {
+                $dateClassName = $oldClassName;
+            }
+        } catch (\Throwable $e) {
+            // In the event of any unforeseen failures during class lookup, we fall back to the default core class.
+            $dateClassName = '\\Joomla\\CMS\\Date\\Date';
+        }
+
+        // Creating a date object
+        try {
+            $date = new $dateClassName($utcTimeString, new \DateTimeZone('UTC'));
+        } catch (\Throwable $e) {
+            // If the date is empty or invalid, Date won't throw a fatal error but will use the current time instead.
+            try {
+                $date = new Date('now', new \DateTimeZone('UTC'));
+            } catch (\Exception $finalException) {
+                return '';
+            }
+        }
+
+        // Setting the user's time zone and generating the date.
+        try {
+            $date->setTimezone(new \DateTimeZone($userTimezone));
+
+            // The calendar() method will invoke the overridden logic for an alternative calendar from the localise.php file.
+            $localTimeString = $date->calendar($format, false, true);
+        } catch (\Throwable $e) {
+            try {
+                $fallbackDate = new Date($utcTimeString, new \DateTimeZone('UTC'));
+                $fallbackDate->setTimezone(new \DateTimeZone($userTimezone));
+                $localTimeString = $fallbackDate->format($format);
+            } catch (\Throwable $lastError) {
+                $localTimeString = date($format);
+            }
+        }
 
         return $localTimeString;
     }
@@ -363,5 +455,183 @@ class QuiztoolsHelper
         }
 
         return true;
+    }
+
+    /**
+     * Get language tag
+     *
+     * @param int $user_id Target user ID (e.g. the student)
+     * @param string $clientContext Context for language lookup ('site' or 'administrator')
+     * @param string $explicitLanguage Explicit language tag (e.g. 'fa-IR') to override detection
+     * @return string
+     * @throws \Exception
+     * @since 1.5.1
+     */
+    public static function getLanguageTag(
+        int $user_id = 0,
+        string $clientContext = 'site',
+        string $explicitLanguage = ''): string
+    {
+        $app = Factory::getApplication();
+
+        $user = null;
+        if ((int) $user_id > 0) {
+            $userFactory = Factory::getContainer()->get(UserFactoryInterface::class);
+            $user = $userFactory->loadUserById((int) $user_id);
+        }
+
+        // Determining the exact language based on setting priorities
+        $languageTag = '';
+
+        // Priority 1: Explicitly passed language
+        if (!empty($explicitLanguage)) {
+            $languageTag = $explicitLanguage;
+        }
+
+        // Priority 2: Language from the target user profile
+        if (empty($languageTag) && $user && (int) $user->id > 0) {
+            $langParam = ($clientContext === 'administrator') ? 'admin_language' : 'language';
+            $languageTag = $user->getParam($langParam, '');
+        }
+
+        // Priority 3: Current active system language, taking the call context into account.
+        if (empty($languageTag)) {
+            if ($app->isClient($clientContext)) {
+                // If we execute the code in the same place where we request the context (e.g., frontend for frontend)
+                $languageTag = $app->getLanguage()->getTag();
+            } else {
+                // If we are in the admin area but need the frontend (or vice versa), we use the default language for that context.
+                try {
+                    $langParams  = ComponentHelper::getParams('com_languages');
+                    $languageTag = $langParams->get($clientContext, '');
+                } catch (\Exception $e) {
+                    $languageTag = '';
+                }
+            }
+        }
+
+        // Ultimate fallback for unforeseen situations
+        if (empty($languageTag)) {
+            $languageTag = 'en-GB';
+        }
+
+        return $languageTag;
+    }
+
+    /**
+     * Checks whether the provided language tag is an RTL  language, with a fallback based on the ISO code.
+     *
+     * @param string $langTag Language tag (e.g. 'fa-IR', 'en-GB')
+     * @since 1.5.1
+     * @return bool
+     */
+    public static function isLanguageRtl(string $langTag): bool
+    {
+        $installedLanguages = LanguageHelper::getLanguages('lang_code');
+
+        if (isset($installedLanguages[$langTag])) {
+            return (bool) $installedLanguages[$langTag]->rtl;
+        }
+
+        // Fallback: verify the language code itself against international standards for RTL locales.
+        $rtlLanguages = ['ar', 'fa', 'he', 'ur', 'ps', 'syr', 'dv', 'yi'];
+        $baseLang = strtolower(explode('-', str_replace('_', '-', $langTag))[0]);
+        return in_array($baseLang, $rtlLanguages);
+    }
+
+    /**
+     * Checks whether the provided text contains an RTL language.
+     *
+     * @param string $text Text
+     * @since 1.5.1
+     * @return bool
+     */
+    public static function isTextRtl(string $text): bool
+    {
+        return preg_match('/[\x{0590}-\x{05FF}\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}]/u', $text);
+    }
+
+    /**
+     * Prepares text for correct rendering in GD (fixes RTL)
+     *
+     * @param string $text    Source text
+     * @param string $langTag The language tag for which the text is being processed (for example, when a certificate is being generated)
+     * @since 1.5.1
+     * @return string
+     */
+    public static function prepareRtlText(string $text, string $langTag): string
+    {
+        $isRtl = self::isLanguageRtl($langTag);
+
+        // If the language is defined as LTR, but the text itself (for example, a user's name) contains RTL characters, we still enable processing.
+        if (!$isRtl) {
+            $isRtl = self::isTextRtl($text);
+        }
+
+        if (!$isRtl) {
+            return str_replace(["\u{200E}", "\u{200F}"], '', $text);
+        }
+
+        if (extension_loaded('intl')) {
+            $baseLang = strtolower(explode('-', str_replace('_', '-', $langTag))[0]);
+
+            // If a language uses the Arabic script (Persian, Arabic, Urdu, etc.)
+            if (in_array($baseLang, ['ar', 'fa', 'ur', 'ps', 'syr'])) {
+                $transliterator = \Transliterator::create('Any-Name; Arabic-Visual; Any-Name');
+            } else {
+                // For other RTL languages (e.g., Hebrew 'he' or Yiddish 'yi'), where only the reversal of lines (Bidi)
+                // is required, we use the standard ICU rule for logical-to-visual mapping.
+                $transliterator = \Transliterator::create('Bidi-LogicalVisual');
+            }
+
+            if ($transliterator) {
+                // ICU correctly handles the markers \u200E} and \u200F}, preventing dates from being reversed.
+                $visualText = $transliterator->transliterate($text);
+                if ($visualText !== false) {
+                    return $visualText;
+                }
+            }
+        }
+
+        if (extension_loaded('mbstring')) {
+            // We use the correct PCRE syntax for UTF-8 control characters (\x{200E} and \x{200F}).
+            $parts = preg_split('/(\x{200E}.*?\x{200F})/u', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+            // If the regular expression returns an error, perform a safe rollback.
+            if (!is_array($parts)) {
+                $cleanText = str_replace(["\u{200E}", "\u{200F}"], '', $text);
+                return self::mbStrRev($cleanText);
+            }
+
+            foreach ($parts as $key => &$part) {
+                // Checking for the presence of an LRM marker at the beginning of the block.
+                if (mb_strpos($part, "\u{200E}") === 0) {
+                    // This is a protected block. We are removing the markers, but we are NOT reversing the date itself.
+                    $part = str_replace(["\u{200E}", "\u{200F}"], '', $part);
+                } else {
+                    // This is a standard RTL text. We reverse it character by character.
+                    $part = self::mbStrRev($part);
+                }
+            }
+
+            // Reassemble the string by reversing the order of the blocks.
+            return implode('', array_reverse($parts));
+        }
+
+        $cleanText = str_replace(["\u{200E}", "\u{200F}"], '', $text);
+        return strrev($cleanText);
+    }
+
+    /**
+     * Safe reversal of a UTF-8 string.
+     *
+     * @param string $str
+     * @since 1.5.1
+     * @return string
+     */
+    private static function mbStrRev(string $str): string
+    {
+        preg_match_all('/./us', $str, $ar);
+        return isset($ar[0]) ? implode('', array_reverse($ar[0])) : $str;
     }
 }
