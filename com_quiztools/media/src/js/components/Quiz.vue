@@ -108,7 +108,6 @@
 
 <script setup>
 import { ref, reactive, watch, onMounted } from 'vue'
-import axios from 'axios'
 import QuizCountQuestions from './QuizCountQuestions.vue'
 import QuizAnswerPoints from './QuizAnswerPoints.vue'
 import QuizTimer from './QuizTimer.vue'
@@ -168,7 +167,7 @@ function clickButtonAction(act) {
 
     isLoading.value = true
 
-    setTimeout(async () => {
+    setTimeout(() => {
         const formData = new FormData(form.value)
         formData.append(token.value, 1)
 
@@ -177,20 +176,34 @@ function clickButtonAction(act) {
             formData.append('quiz[orderId]', orderId)
         }
 
-        try {
-            const rootFull = Joomla.getOptions('system.paths').rootFull || '/'
-            const response = await axios.post(rootFull + 'index.php?option=com_quiztools&task=ajaxQuiz.getQuizData', formData)
-            if (response.data.success === true) {
-                processingResponse(response.data.data)
-            } else if (response.data.message) {
-                Joomla.renderMessages({ warning: [response.data.message] })
+        const rootFull = Joomla.getOptions('system.paths').rootFull || '/'
+        const url = `${rootFull}index.php?option=com_quiztools&task=ajaxQuiz.getQuizData`
+
+        Joomla.request({
+            url: url,
+            method: 'POST',
+            data: formData,
+            onSuccess: (response) => {
+                try {
+                    const result = JSON.parse(response)
+                    if (result.success === true) {
+                        processingResponse(result.data)
+                    } else if (result.message) {
+                        Joomla.renderMessages({ warning: [result.message] })
+                    }
+                } catch (e) {
+                    Joomla.renderMessages({ error: [e.message] })
+                } finally {
+                    isLoading.value = false
+                    started.value = true
+                }
+            },
+            onError: (xhr) => {
+                Joomla.renderMessages({ error: [`Error: ${xhr.status} ${xhr.statusText}`] })
+                isLoading.value = false
+                started.value = true
             }
-        } catch (error) {
-            Joomla.renderMessages({ error: [error.message] })
-        } finally {
-            isLoading.value = false
-            started.value = true
-        }
+        })
     }, 50)
 }
 
@@ -249,7 +262,7 @@ function processingResponse(data) {
                 // The number of attempts to answer a question within a single quiz run has been exceeded.
                 // This can happen if you return to the question ('Prev' button).
                 // Do NOT end the quiz (action.value = 'result'); instead, lock the question, as it already has an answer.
-                question.isBlocked = true;
+                question.isBlocked = true
             }
         })
         pointsCurrentQuestion.value = points

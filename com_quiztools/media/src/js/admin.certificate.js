@@ -3,6 +3,11 @@
     const siteRoot = Joomla.getOptions('com_quiztools.certificate').siteRoot || '/'
     const isRtl = document.documentElement.dir === 'rtl'
 
+    // Cache for already loaded fonts, to avoid reloading them
+    const loadedFonts = new Set()
+    // Path to the fonts folder
+    const fontsBaseUrl = siteRoot + 'media/com_quiztools/fonts/'
+
     let canvas = null
 
     // Upload image
@@ -130,7 +135,6 @@
             top: parseInt(coordY.value),
             originX: 'left',
             originY: 'top',
-            fontFamily: fontFamily.value,
             fontSize: fontSizeInPixels,  // in pixels
             fill: colorpicker.value,
             lockRotation: true,
@@ -144,11 +148,11 @@
 
         text.controls.mtr.visible = false
         canvas.add(text)
+        void applyFontToCanvasText(text, fontFamily.value)
 
-        // Сhanges in font -> to canvas
+        // Changes in font -> to canvas
         fontFamily.addEventListener('input', (event) => {
-            text.set('fontFamily', event.target.value)
-            canvas.requestRenderAll()
+            void applyFontToCanvasText(text, event.target.value)
         })
 
         // Сhanges in font size -> to canvas
@@ -156,7 +160,7 @@
             let fontSizeInPixels = Math.round(event.target.value * 1.328147)  // pt => px
             text.set('fontSize', fontSizeInPixels)
             canvas.requestRenderAll()
-        });
+        })
 
         // Сhanges in color -> to canvas
         colorpicker.addEventListener('selectionchange', (event) => {
@@ -199,6 +203,41 @@
             rows.forEach((row) => {
                 canvasPopulate(row)
             })
+        }
+    }
+
+    // Loading fonts—not present on the computer—into the browser
+    // to ensure better visual rendering of the text on the certificate.
+    async function applyFontToCanvasText(textObj, fontValue) {
+        if (!fontValue) return
+
+        // Remove the .ttf extension to get a clean name for fontFamily
+        const fontName = fontValue.replace(/\.ttf$/i, '')
+
+        const fontFile = fontName + '.ttf'
+
+        if (!loadedFonts.has(fontName)) {
+            try {
+                // Creating and loading a font from a file
+                const fontFace = new FontFace(fontName, `url("${fontsBaseUrl}${fontFile}")`)
+                const loadedFace = await fontFace.load()
+
+                // Registering a font in a browser document
+                document.fonts.add(loadedFace)
+                loadedFonts.add(fontName)
+            } catch (err) {
+                console.error('Font loading error:', fontValue, err)
+                return
+            }
+        }
+
+        // Apply to the Fabric.js object and redraw the canvas
+        textObj.set('fontFamily', fontName)
+        textObj.initDimensions() // Recalculates the width and height of letters for a new font
+        textObj.setCoords()      // Updates the selection frame
+
+        if (canvas) {
+            canvas.requestRenderAll()
         }
     }
 

@@ -385,9 +385,7 @@ trait QuestionOptionsGetResults
                     <text x="' . $markerX . '" y="' . $markerY . '" font-family="Arial, sans-serif" font-size="' . $markerFontSize . '" 
                         font-weight="bold" fill="#fff" text-anchor="middle" 
                         dx="-' . $markerDx .'" 
-                        dy="' . $markerDy . '">
-                        ' . $number . ' 
-                    </text>
+                        dy="' . $markerDy . '">' . $number . '</text>
                 </g>';
         }
 

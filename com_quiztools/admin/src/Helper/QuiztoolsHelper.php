@@ -15,7 +15,6 @@ use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\InputFilter;
-use Joomla\CMS\Language\LanguageHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\Filesystem\Exception\FilesystemException;
@@ -28,7 +27,7 @@ use Joomla\String\StringHelper;
 /**
  * QuizTools Component Helper.
  *
- * @since  1.5
+ * @since  1.0.0
  */
 class QuiztoolsHelper
 {
@@ -146,7 +145,7 @@ class QuiztoolsHelper
             $date->setTimezone(new \DateTimeZone($userTimezone));
 
             // The calendar() method will invoke the overridden logic for an alternative calendar from the localise.php file.
-            $localTimeString = $date->calendar($format, false, true);
+            $localTimeString = $date->calendar($format, true, true);
         } catch (\Throwable $e) {
             try {
                 $fallbackDate = new Date($utcTimeString, new \DateTimeZone('UTC'));
@@ -527,15 +526,11 @@ class QuiztoolsHelper
      */
     public static function isLanguageRtl(string $langTag): bool
     {
-        $installedLanguages = LanguageHelper::getLanguages('lang_code');
-
-        if (isset($installedLanguages[$langTag])) {
-            return (bool) $installedLanguages[$langTag]->rtl;
-        }
-
-        // Fallback: verify the language code itself against international standards for RTL locales.
+        // Verify the language code itself against international standards for RTL locales.
         $rtlLanguages = ['ar', 'fa', 'he', 'ur', 'ps', 'syr', 'dv', 'yi'];
+
         $baseLang = strtolower(explode('-', str_replace('_', '-', $langTag))[0]);
+
         return in_array($baseLang, $rtlLanguages);
     }
 
@@ -552,86 +547,85 @@ class QuiztoolsHelper
     }
 
     /**
-     * Prepares text for correct rendering in GD (fixes RTL)
+     * Prepares RTL text (Arabic, Persian/Farsi, Urdu, Hebrew, etc.)
+     * for visual rendering in ImagickDraw or PHP GD (imagefttext).
      *
-     * @param string $text    Source text
-     * @param string $langTag The language tag for which the text is being processed (for example, when a certificate is being generated)
+     * @param string $text    Input UTF-8 text (may contain LRM/RLM markers).
+     * @param string $langTag Language tag (e.g., 'fa-IR', 'ar-AA', 'he-IL').
+     *
      * @since 1.5.1
      * @return string
      */
-    public static function prepareRtlText(string $text, string $langTag): string
+    public static function prepareRtlText(string $text, string $langTag = ''): string
     {
-        $isRtl = self::isLanguageRtl($langTag);
+        $lrm = "\u{200E}";
+        $rlm = "\u{200F}";
 
-        // If the language is defined as LTR, but the text itself (for example, a user's name) contains RTL characters, we still enable processing.
+        $isRtl = self::isLanguageRtl($langTag)
+            || self::isTextRtl($text); // If the language is defined as LTR, but the text itself (for example, a user's name) contains RTL characters, we still enable processing.
+
         if (!$isRtl) {
-            $isRtl = self::isTextRtl($text);
+            return str_replace([$lrm, $rlm], '', $text);
         }
 
-        if (!$isRtl) {
-            return str_replace(["\u{200E}", "\u{200F}"], '', $text);
+        // If a string contains characters from the Arabic/Persian script, use ArPHP.
+        if (preg_match('/\p{Arabic}/u', $text)) {
+            $autoloadPath = __DIR__ . '/../../vendor/autoload.php';
+
+            if (is_file($autoloadPath)) {
+                require_once $autoloadPath;
+            }
+
+            if (class_exists('\ArPHP\I18N\Arabic')) {
+                // We remove LRM/RLM characters before passing the data to ArPHP, as the library itself correctly handles
+                // the directionality of numbers, dates, and Latin-script text within an RTL context.
+                $cleanText = str_replace([$lrm, $rlm], '', $text);
+
+                static $arabic = null;
+                if ($arabic === null) {
+                    $arabic = new \ArPHP\I18N\Arabic();
+                }
+
+                // The second parameter (10000) disables forced line breaks within ArPHP,
+                // ensuring that long phrases are not automatically split across multiple lines.
+                return $arabic->utf8Glyphs($cleanText, 10000);
+            }
         }
 
-        if (extension_loaded('intl')) {
-            $baseLang = strtolower(explode('-', str_replace('_', '-', $langTag))[0]);
+        // Universal reversal for other RTL languages, without letters merging (e.g., Hebrew)
+        $parts = preg_split('/(\x{200E}.*?\x{200F})/u', $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
-            // If a language uses the Arabic script (Persian, Arabic, Urdu, etc.)
-            if (in_array($baseLang, ['ar', 'fa', 'ur', 'ps', 'syr'])) {
-                $transliterator = \Transliterator::create('Any-Name; Arabic-Visual; Any-Name');
+        $visualParts = [];
+
+        foreach ($parts as $part) {
+            if (str_starts_with($part, $lrm) && str_ends_with($part, $rlm)) {
+                // Keep the LTR blocks (dates, scores, percentages) arranged from left to right.
+                $visualParts[] = str_replace([$lrm, $rlm], '', $part);
             } else {
-                // For other RTL languages (e.g., Hebrew 'he' or Yiddish 'yi'), where only the reversal of lines (Bidi)
-                // is required, we use the standard ICU rule for logical-to-visual mapping.
-                $transliterator = \Transliterator::create('Bidi-LogicalVisual');
-            }
+                // Break down into Latin/numeric segments and RTL text
+                $subParts = preg_split('/([a-zA-Z0-9.,:%+\-\/]+(?:\s+[a-zA-Z0-9.,:%+\-\/]+)*)/u', $part, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+                $reversedSub = [];
 
-            if ($transliterator) {
-                // ICU correctly handles the markers \u200E} and \u200F}, preventing dates from being reversed.
-                $visualText = $transliterator->transliterate($text);
-                if ($visualText !== false) {
-                    return $visualText;
+                foreach ($subParts as $sub) {
+                    if (preg_match('/^[a-zA-Z0-9.,:%+\-\/\s]+$/u', $sub) && trim($sub) !== '') {
+                        $reversedSub[] = $sub;
+                    } else {
+                        $chars = mb_str_split($sub, 1, 'UTF-8');
+                        $chars = array_map(static fn($ch) => match ($ch) {
+                            '(' => ')', ')' => '(',
+                            '[' => ']', ']' => '[',
+                            '{' => '}', '}' => '{',
+                            '«' => '»', '»' => '«',
+                            default => $ch,
+                        }, $chars);
+                        $reversedSub[] = implode('', array_reverse($chars));
+                    }
                 }
+
+                $visualParts[] = implode('', array_reverse($reversedSub));
             }
         }
 
-        if (extension_loaded('mbstring')) {
-            // We use the correct PCRE syntax for UTF-8 control characters (\x{200E} and \x{200F}).
-            $parts = preg_split('/(\x{200E}.*?\x{200F})/u', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
-
-            // If the regular expression returns an error, perform a safe rollback.
-            if (!is_array($parts)) {
-                $cleanText = str_replace(["\u{200E}", "\u{200F}"], '', $text);
-                return self::mbStrRev($cleanText);
-            }
-
-            foreach ($parts as $key => &$part) {
-                // Checking for the presence of an LRM marker at the beginning of the block.
-                if (mb_strpos($part, "\u{200E}") === 0) {
-                    // This is a protected block. We are removing the markers, but we are NOT reversing the date itself.
-                    $part = str_replace(["\u{200E}", "\u{200F}"], '', $part);
-                } else {
-                    // This is a standard RTL text. We reverse it character by character.
-                    $part = self::mbStrRev($part);
-                }
-            }
-
-            // Reassemble the string by reversing the order of the blocks.
-            return implode('', array_reverse($parts));
-        }
-
-        $cleanText = str_replace(["\u{200E}", "\u{200F}"], '', $text);
-        return strrev($cleanText);
-    }
-
-    /**
-     * Safe reversal of a UTF-8 string.
-     *
-     * @param string $str
-     * @since 1.5.1
-     * @return string
-     */
-    private static function mbStrRev(string $str): string
-    {
-        preg_match_all('/./us', $str, $ar);
-        return isset($ar[0]) ? implode('', array_reverse($ar[0])) : $str;
+        return implode('', array_reverse($visualParts));
     }
 }

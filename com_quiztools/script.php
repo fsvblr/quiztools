@@ -74,6 +74,7 @@ return new class () implements ServiceProviderInterface {
 				{
                     $this->assetsCreating($type);
                     $this->assetsDeleting($type);
+                    $this->deletingOldFiles($type);
 
                     return true;
 				}
@@ -145,6 +146,24 @@ return new class () implements ServiceProviderInterface {
                     }
 
                     return rmdir($dir);
+                }
+
+                private function deletingOldFiles(string $type): void
+                {
+                    if ($type !== 'update') {
+                        return;
+                    }
+
+                    $filesToDelete = [
+                        JPATH_ROOT . '/media/com_quiztools/fonts/arial.ttf',
+                        JPATH_ROOT . '/media/com_quiztools/fonts/times.ttf',
+                    ];
+
+                    foreach ($filesToDelete as $file) {
+                        if (is_file($file)) {
+                            @unlink($file);
+                        }
+                    }
                 }
             }
 		);

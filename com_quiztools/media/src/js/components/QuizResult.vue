@@ -7,7 +7,6 @@
 
 <script setup>
 import { ref, watch, inject } from 'vue'
-import axios from 'axios'
 import Preloader from "./Preloader.vue"
 
 const props = defineProps({
@@ -21,7 +20,7 @@ const Joomla = inject('Joomla')
 const resultHtml = ref('')
 const isLoading = ref(true)
 
-async function fetchResultData(id) {
+function fetchResultData(id) {
     isLoading.value = true
 
     try {
@@ -41,26 +40,43 @@ async function fetchResultData(id) {
         }
 
         const rootFull = Joomla.getOptions('system.paths').rootFull || '/'
-        const response = await axios.post(rootFull + 'index.php?option=com_quiztools&task=ajaxQuiz.getQuizData', formData)
+        const url = `${rootFull}index.php?option=com_quiztools&task=ajaxQuiz.getQuizData`
 
-        if (response.data.success === true) {
-            const rd = response.data.data.redirect
-            // Redirection is not applied if the quiz is part of a Learning Path
-            if (!props.isLP && rd && parseInt(rd.redirectAfterFinish) === 1) {
-                const delay = parseInt(rd.redirectAfterFinishDelay)
-                if (delay > 0) resultHtml.value = response.data.data.html
-                setTimeout(() => {
-                    window.location.href = rd.redirectAfterFinishLink
-                }, delay * 1000)
-            } else {
-                resultHtml.value = response.data.data.html
+        Joomla.request({
+            url: url,
+            method: 'POST',
+            data: formData,
+            onSuccess: (response) => {
+                try {
+                    const result = JSON.parse(response)
+                    if (result.success === true) {
+                        const rd = result.data.redirect
+                        // Redirection is not applied if the quiz is part of a Learning Path
+                        if (!props.isLP && rd && parseInt(rd.redirectAfterFinish) === 1) {
+                            const delay = parseInt(rd.redirectAfterFinishDelay)
+                            if (delay > 0) resultHtml.value = result.data.html
+                            setTimeout(() => {
+                                window.location.href = rd.redirectAfterFinishLink
+                            }, delay * 1000)
+                        } else {
+                            resultHtml.value = result.data.html
+                        }
+                    } else if (result.message) {
+                        Joomla.renderMessages({ warning: [result.message] })
+                    }
+                } catch (e) {
+                    Joomla.renderMessages({ error: [error.message] })
+                } finally {
+                    isLoading.value = false
+                }
+            },
+            onError: (xhr) => {
+                Joomla.renderMessages({ error: [`Error: ${xhr.status} ${xhr.statusText}`] })
+                isLoading.value = false
             }
-        } else {
-            Joomla.renderMessages({ warning: [response.data.message] })
-        }
+        })
     } catch (error) {
         Joomla.renderMessages({ error: [error.message] })
-    } finally {
         isLoading.value = false
     }
 }

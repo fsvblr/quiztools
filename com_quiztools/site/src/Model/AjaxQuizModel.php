@@ -104,7 +104,7 @@ class AjaxQuizModel extends BaseDatabaseModel
             }
         }
 
-		if (empty($unique_id) || empty((int) $resultQuiz->id)) {
+		if (empty($unique_id) || (empty($resultQuiz) && empty($resultQuiz->id))) {
 			$unique_id = md5(uniqid(rand(), true));  // =>  may consist of symbols 0123456789abcdef
 		}
 

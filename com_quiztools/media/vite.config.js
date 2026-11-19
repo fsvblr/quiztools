@@ -54,7 +54,7 @@ export default defineConfig({
                 },
             },
         },
-        minify: 'esbuild',  // default
+        minify: 'oxc',  // default
         cssMinify: true,    // default
         //manifest: true,
     },
