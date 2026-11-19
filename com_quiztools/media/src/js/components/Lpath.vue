@@ -26,7 +26,6 @@ import { ref, provide, onMounted, onUnmounted, nextTick } from 'vue'
 import LpathSteps from './LpathSteps.vue'
 import LpathStep from './LpathStep.vue'
 import Preloader from './Preloader.vue'
-import axios from 'axios'
 
 const lpath = ref({})
 const countStepsTotal = ref(0)
@@ -39,28 +38,45 @@ const token = ref('')
 const isLoading = ref(false)
 
 const sendRequest = async (actionType, stepData = step.value, stepStage = null) => {
-    const formData = new FormData()
-    formData.append('lpath[id]', lpath.value.id)
-    formData.append('lpath[action]', actionType)
-    formData.append('lpath[step]', JSON.stringify(stepData))
-    formData.append(token.value, 1)
-
-    const orderId = Joomla.getOptions('com_quiztools.orderId')
-    if (parseInt(orderId) > 0) {
-        formData.append('lpath[orderId]', orderId)
-    }
-
-    if (actionType === 'markArticle' && stepStage) {
-        formData.append('lpath[stepStage]', stepStage)
-    }
-
     try {
+        const formData = new FormData()
+        formData.append('lpath[id]', lpath.value.id)
+        formData.append('lpath[action]', actionType)
+        formData.append('lpath[step]', JSON.stringify(stepData))
+        formData.append(token.value, 1)
+
+        const orderId = Joomla.getOptions('com_quiztools.orderId')
+        if (parseInt(orderId) > 0) {
+            formData.append('lpath[orderId]', orderId)
+        }
+
+        if (actionType === 'markArticle' && stepStage) {
+            formData.append('lpath[stepStage]', stepStage)
+        }
+
         const rootFull = Joomla.getOptions('system.paths').rootFull || '/'
-        const response = await axios.post(
-            rootFull + 'index.php?option=com_quiztools&task=ajaxLpath.getLpathData',
-            formData
-        )
-        return response.data
+        const url = `${rootFull}index.php?option=com_quiztools&task=ajaxLpath.getLpathData`
+
+        return await new Promise((resolve) => {
+            Joomla.request({
+                url: url,
+                method: 'POST',
+                data: formData,
+                onSuccess: (response) => {
+                    try {
+                        const result = JSON.parse(response)
+                        resolve(result)
+                    } catch (e) {
+                        Joomla.renderMessages({ error: ['Ошибка обработки ответа сервера'] })
+                        resolve(null)
+                    }
+                },
+                onError: (xhr) => {
+                    Joomla.renderMessages({ error: [`Error: ${xhr.status} ${xhr.statusText}`] })
+                    resolve(null)
+                }
+            })
+        })
     } catch (error) {
         Joomla.renderMessages({ error: [error.message] })
         return null
@@ -127,8 +143,8 @@ const processingResponse = (data) => {
 
     if (data.hasOwnProperty('steps') && typeof data.steps === 'object') {
         if (typeof data.setRedirect === 'string' && data.setRedirect !== '') {
-            window.location.replace(data.setRedirect);
-            return;
+            window.location.replace(data.setRedirect)
+            return
         }
 
         lpath.value.steps = data.steps.steps
@@ -166,12 +182,12 @@ onMounted(() => {
     showProgressbar.value = !!Number(lpath.value.showProgressbar)
 
     // Listening to messages from the children's iframe:
-    window.addEventListener('message', handleMessage);
+    window.addEventListener('message', handleMessage)
 
     //console.log(lpath.value)
 })
 
 onUnmounted(() => {
-    window.removeEventListener('message', handleMessage);
-});
+    window.removeEventListener('message', handleMessage)
+})
 </script>

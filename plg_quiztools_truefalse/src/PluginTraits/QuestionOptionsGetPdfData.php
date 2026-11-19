@@ -70,8 +70,9 @@ trait QuestionOptionsGetPdfData
         $j = 'A';
         $answersCorrect = [];
         $answersUser = [];
+        $dirAttr = $data->isRTL ? ' dir="rtl" ' : '';
 
-        $htmlOptions = '<table>';
+        $htmlOptions = '<table ' . $dirAttr . '>';
         foreach ($data->results as $option) {
             $htmlOptions .= '<tr><td style="width: 20px;">' . $j . '.</td><td>' . $option->option . '</td></tr>';
             if ($option->is_correct) {
@@ -86,8 +87,13 @@ trait QuestionOptionsGetPdfData
         $data->pdfOptions = $htmlOptions;
 
         $htmlResume = '<br><br><table>';
-        $htmlResume .= '<tr><td>' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_PDF_RESULT_CORRECT_ANSWERS') . ': ' . implode(', ', $answersCorrect) . '</td></tr>';
-        $htmlResume .= '<tr><td>' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_PDF_RESULT_USER_ANSWERS') . ': ' . implode(', ', $answersUser) . '</td></tr>';
+        if ($data->isRTL) {
+            $htmlResume .= '<tr><td>' . implode(', ', $answersCorrect) . ' :' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_PDF_RESULT_CORRECT_ANSWERS') . '</td></tr>';
+            $htmlResume .= '<tr><td>' . implode(', ', $answersUser) . ' :' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_PDF_RESULT_USER_ANSWERS') . '</td></tr>';
+        } else {
+            $htmlResume .= '<tr><td>' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_PDF_RESULT_CORRECT_ANSWERS') . ': ' . implode(', ', $answersCorrect) . '</td></tr>';
+            $htmlResume .= '<tr><td>' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_PDF_RESULT_USER_ANSWERS') . ': ' . implode(', ', $answersUser) . '</td></tr>';
+        }
         $htmlResume .= '</table>';
         $data->pdfResume = $htmlResume;
 
@@ -110,7 +116,11 @@ trait QuestionOptionsGetPdfData
             $feedback = $modelAjax->getQuestionFeedback($data->quizDataForFeedback, $savedQuestion);
 
             if (!empty($feedback['text'])) {
-                $htmlFeedback .= '<p>' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_PDF_RESULT_FEEDBACK') . ': ' . $feedback['text'] . '</p>';
+                if ($data->isRTL) {
+                    $htmlFeedback .= '<p>'. ' :' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_PDF_RESULT_FEEDBACK') . $feedback['text'] . '</p>';
+                } else {
+                    $htmlFeedback .= '<p>' . Text::_('PLG_QUIZTOOLS_TRUEFALSE_PDF_RESULT_FEEDBACK') . ': ' . $feedback['text'] . '</p>';
+                }
             }
 
             $data->pdfFeedback = $htmlFeedback;

@@ -38,6 +38,12 @@ if (!empty($result->results_pdf)
 
 ?>
 <div class="quiz-result">
+    <?php if (!empty($showTitle)): ?>
+        <h3 class="quiz-result-block quiz-result-title">
+            <?php echo htmlspecialchars($result->quiz_title, ENT_QUOTES, 'UTF-8'); ?>
+        </h3>
+    <?php endif; ?>
+
     <div class="quiz-result-block quiz-result-summary">
         <h4><?php echo Text::_('COM_QUIZTOOLS_LAYOUTS_RESULT_TITLE_RESULTS'); ?></h4>
         <div>

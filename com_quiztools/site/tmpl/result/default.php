@@ -25,6 +25,6 @@ $wa->useStyle('com_quiztools.result');
         <h1><?php echo Text::_('COM_QUIZTOOLS_RESULT_PAGE_TITLE'); ?></h1>
     </div>
     <div class="quiz-result-wrap">
-        <?php echo LayoutHelper::render('result', ['result' => $this->item]); ?>
+        <?php echo LayoutHelper::render('result', ['result' => $this->item, 'showTitle' => true]); ?>
     </div>
 </div>

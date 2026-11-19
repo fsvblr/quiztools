@@ -16,6 +16,7 @@ namespace Qt\Component\Quiztools\Administrator\Service;
 
 use Joomla\CMS\Crypt\Crypt;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Database\ParameterType;
@@ -73,12 +74,14 @@ class AccessService
 	public function isAccessQuiz($pk, $order_id = 0)
 	{
 		$pk = (int) $pk;
-		$user = Factory::getApplication()->getIdentity();
-		$input = Factory::getApplication()->getInput();
+        $app = Factory::getApplication();
+		$user = $app->getIdentity();
+		$input = $app->getInput();
 
         if (is_null($order_id)) {  // from components/com_quiztools/layouts/result.php
             $order_id = 0;
         }
+
         if (empty($order_id)) {
             $order_id = $input->getInt('order_id', 0);
         }
@@ -92,7 +95,7 @@ class AccessService
                 $order_id = isset($ajaxData['orderId']) ? (int) $ajaxData['orderId'] : 0;
                 $lp = !empty($ajaxData['lp']) ? json_decode($ajaxData['lp'], true) : [];
 
-                $this->ajaxQuizAction = !empty($ajaxData['action']) ? (string) $ajaxData['action'] : null;
+                $this->ajaxQuizAction = !empty($ajaxData['action']) ? htmlspecialchars($ajaxData['action'], ENT_QUOTES, 'UTF-8') : null;
 			}
 		}
 
@@ -136,6 +139,15 @@ class AccessService
         if ($quiz->type_access == QuiztoolsComponent::CONDITION_TYPE_ACCESS_FREE) {
             if ($quiz->limit_attempts) {
                 if (empty($this->checkQuizAttempts($quiz))) {
+                    // Message displayed only on the quiz page, upon initial load.
+                    // Scenario: after completing the quiz — with no attempts remaining — the "take again" button is not present;
+                    // however, the user reloads the page in their browser.
+                    if ($input->get('option') === 'com_quiztools' && $input->get('view') === 'quiz'
+                        && $input->getInt('id') > 0 && empty($input->get('task'))
+                    ) {
+                        $app->enqueueMessage(Text::_('COM_QUIZTOOLS_SERVICE_ACCESS_ERROR_NO_QUIZ_ATTEMPTS'), 'warning');
+                    }
+
                     return false;
                 }
             }
@@ -153,6 +165,15 @@ class AccessService
             }
 
 			if (empty($this->checkPaidQuizAccess($quiz, $lpath_id))) {
+                // Message displayed only on the quiz page, upon initial load.
+                // Scenario: after completing the quiz — with no attempts remaining — the "take again" button is not present;
+                // however, the user reloads the page in their browser.
+                if ($input->get('option') === 'com_quiztools' && $input->get('view') === 'quiz'
+                    && $input->getInt('id') > 0 && empty($input->get('task'))
+                ) {
+                    $app->enqueueMessage(Text::_('COM_QUIZTOOLS_SERVICE_ACCESS_ERROR_ORDER_ACCESS'), 'warning');
+                }
+
 				return false;
 			}
 		}
@@ -284,9 +305,11 @@ class AccessService
      */
     private function isAccessResults()
     {
-        $user = Factory::getApplication()->getIdentity();
+        $app = Factory::getApplication();
+        $user = $app->getIdentity();
 
         if ($user->guest) {
+            $app->enqueueMessage(Text::_('COM_QUIZTOOLS_SERVICE_ACCESS_ERROR_GUEST'), 'warning');
             return false;
         }
 
@@ -438,10 +461,12 @@ class AccessService
      */
     private function isAccessLpaths()
     {
-        $user = Factory::getApplication()->getIdentity();
+        $app = Factory::getApplication();
+        $user = $app->getIdentity();
 
         // Learning Paths are available only to authorized users.
         if ($user->guest) {
+            $app->enqueueMessage(Text::_('COM_QUIZTOOLS_SERVICE_ACCESS_ERROR_GUEST'), 'warning');
             return false;
         }
 
@@ -518,6 +543,7 @@ class AccessService
             $lpath->order_id = !empty($order_id) ? (int) $order_id : $input->getInt('order_id', 0);
 
             if (empty($this->checkPaidLpathAccess($lpath))) {
+                $app->enqueueMessage(Text::_('COM_QUIZTOOLS_SERVICE_ACCESS_ERROR_ORDER_ACCESS'), 'warning');
                 return false;
             }
         }
@@ -533,10 +559,12 @@ class AccessService
      */
     private function isAccessOrders()
     {
-        $user = Factory::getApplication()->getIdentity();
+        $app = Factory::getApplication();
+        $user = $app->getIdentity();
 
         // Orders are available only to authorized users
         if ($user->guest) {
+            $app->enqueueMessage(Text::_('COM_QUIZTOOLS_SERVICE_ACCESS_ERROR_GUEST'), 'warning');
             return false;
         }
 
@@ -635,7 +663,8 @@ class AccessService
      */
     private function isOrderChildUser($order)
     {
-        $user = Factory::getApplication()->getIdentity();
+        $app = Factory::getApplication();
+        $user = $app->getIdentity();
 
         if ($user->guest) {
             return false;

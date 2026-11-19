@@ -135,7 +135,7 @@ class CertificateController extends FormController
      *              'course' => 'My First Quiz',
      *              'points' => '176',
      *              'percent' => '80.24',
-     *              'date' => '2025-04-30 12:00:00', // MySQL DATETIME format
+     *              'date' => '2025-04-30 12:00:00', // MySQL DATETIME format ($result->start_datetime)
      *              'output' => 'inline / attachment',
      *          ]
      *    ]
@@ -180,7 +180,7 @@ class CertificateController extends FormController
             if ($data['client'] == 'administrator') {
                 $this->setMessage(Text::_('COM_QUIZTOOLS_CERTIFICATE_WARNING_UPLOAD_IMAGES_ERROR'), 'warning');
                 $this->setRedirect($data['urlItem']);
-            } else {
+            } else if ($data['client'] == 'site') {
                 $this->setMessage(Text::_('COM_QUIZTOOLS_CERTIFICATE_GENERATE_WARNING'), 'warning');
                 $this->setRedirect(Uri::root());
             }
@@ -188,13 +188,9 @@ class CertificateController extends FormController
             return false;
         }
 
-        $imageFullSize = getimagesize($bg);
+        $imageFullSize = @getimagesize($bg);
 
-        if ($imageFullSize[2] == 2) {
-            $im = imagecreatefromjpeg($bg);
-        } elseif ($imageFullSize[2] == 3) {
-            $im = imagecreatefrompng($bg);
-        } else {
+        if (!$imageFullSize || !in_array($imageFullSize[2], [2, 3], true)) {
             if ($data['client'] == 'administrator') {
                 $this->setMessage(Text::_('COM_QUIZTOOLS_CERTIFICATE_WARNING_UPLOAD_IMAGES_ERROR'), 'warning');
                 $this->setRedirect($data['urlItem']);
@@ -209,20 +205,24 @@ class CertificateController extends FormController
         $dispatcher = $this->getDispatcher();
         PluginHelper::importPlugin('content', null, true, $dispatcher);
 
+        // Prepare fields once before rendering
+        $preparedFields = [];
+        $languageTagForCertificate = QuiztoolsHelper::getLanguageTag((int) ($data['user_id'] ?? 0), 'site');
+
         if (!empty($certificate->fields) && is_array($certificate->fields)) {
-
-            $languageTagForCertificate = QuiztoolsHelper::getLanguageTag((int) $data['user_id'], 'site');
-
             // For RTL: dates and percentage values should not be reversed when rendered.
             // Wrap them in a marker \u{200E} (left-to-right) and restore the context \u{200F} (right-to-left).
             $lrm = "\u{200E}";
             $rlm = "\u{200F}";
 
-            foreach ($certificate->fields as $key => $field) {
+            $fontsDir    = JPATH_SITE . '/media/com_quiztools/fonts/';
+            $defaultFont = $fontsDir . 'DejaVuSans.ttf';
+
+            foreach ($certificate->fields as $field) {
                 if (!empty($data['shortcodes']) && is_array($data['shortcodes'])) {
                     foreach ($data['shortcodes'] as $code => $val) {
                         if ($code === 'date') {
-                            $certificateDate = QuiztoolsHelper::fromUtcToUsersTimeZone($val, $data['user_id'], 'd.m.Y');
+                            $certificateDate = QuiztoolsHelper::fromUtcToUsersTimeZone($val, (int) ($data['user_id'] ?? 0), 'd.m.Y');
                             $certificateDate = $lrm . $certificateDate . $rlm;
                             $field['text'] = str_replace('#' . $code . '#', $certificateDate, $field['text']);
 
@@ -230,17 +230,19 @@ class CertificateController extends FormController
                             $pattern = '/#date\(["\']?(.*?)["\']?\)#/';
                             $field['text'] = preg_replace_callback($pattern, function ($matches) use ($val, $data, $lrm, $rlm) {
                                 $format = $matches[1];
-                                $certificateDate = QuiztoolsHelper::fromUtcToUsersTimeZone($val, $data['user_id'], $format);
+                                $certificateDate = QuiztoolsHelper::fromUtcToUsersTimeZone($val, (int) ($data['user_id'] ?? 0), $format);
                                 return $lrm . $certificateDate . $rlm;
                             }, $field['text']);
                         }
                         else if ($code === 'percent') {
                             $val = $lrm . $val . '%' . $rlm;
                             $field['text'] = str_replace('#' . $code . '#', $val, $field['text']);
-                        } else if ($code === 'points') {
+                        }
+                        else if ($code === 'points') {
                             $val = $lrm . $val . $rlm;
                             $field['text'] = str_replace('#' . $code . '#', $val, $field['text']);
-                        } else {
+                        }
+                        else {
                             $field['text'] = str_replace('#' . $code . '#', $val, $field['text']);
                         }
                     }
@@ -261,22 +263,162 @@ class CertificateController extends FormController
                 )->getArgument('result', $textObj)->text;
                 // end
 
-                $y = round($field['y'] + ($field['font_size'] * 0.328147));
-                $fontFamily = basename($field['font_family']);
-                $fontFamily = JPATH_SITE . '/media/com_quiztools/fonts/' . $fontFamily . '.ttf';
-                if (!is_file($fontFamily)) {
+                // Resolve font file with fallback to NotoSans-Regular.ttf if old font (arial/times) was deleted
+                $fontName = basename((string) ($field['font_family'] ?? ''));
+                $fontName = preg_replace('/\.ttf$/i', '', $fontName);
+
+                // Mapping of removed proprietary fonts to free DejaVu equivalents
+                $legacyFontMap = [
+                    'times' => 'DejaVuSerif',
+                    'arial' => 'DejaVuSans',
+                ];
+
+                $lowerFontName = strtolower($fontName);
+                if (isset($legacyFontMap[$lowerFontName])) {
+                    $fontName = $legacyFontMap[$lowerFontName];
+                }
+                // end mapping
+
+                $fontPath = $fontsDir . $fontName . '.ttf';
+
+                if (empty($fontName) || !is_file($fontPath)) {
+                    $fontPath = $defaultFont;
+                }
+
+                // f the text contains Cyrillic characters but the selected font does not support them (e.g., an Arabic/Hebrew font),
+                // switch to DejaVuSans (while preserving the Bold weight, if it was selected).
+                if (preg_match('/\p{Cyrillic}/u', (string) $field['text'])
+                    && (stripos($fontName, 'Arabic') !== false || stripos($fontName, 'Hebrew') !== false)
+                ) {
+                    $fallbackName = (stripos($fontName, 'Bold') !== false) ? 'DejaVuSans-Bold.ttf' : 'DejaVuSans.ttf';
+                    if (is_file($fontsDir . $fallbackName)) {
+                        $fontPath = $fontsDir . $fallbackName;
+                    }
+                }
+
+                if (!is_file($fontPath)) {
                     return false;
                 }
-                $rgb = preg_replace('/[^0-9,]/', '', $field['color']);
-                $rgb = explode(',', $rgb);
-                $color = imagecolorallocate($im, $rgb[0], $rgb[1], $rgb[2]);
 
-                $field['text'] = QuiztoolsHelper::prepareRtlText($field['text'], $languageTagForCertificate);
+                // Parse RGB color string e.g. "rgb(180, 30, 30)" or hex "#b41e1e"
+                $colorInput = trim((string) ($field['color'] ?? ''));
 
-                imagefttext($im, $field['font_size'], 0,  round($field['x']), $y, $color, $fontFamily, $field['text']);
+                if (str_starts_with($colorInput, '#')) {
+                    $hex = ltrim($colorInput, '#');
+                    if (strlen($hex) === 3) {
+                        $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+                    }
+                    $r = hexdec(substr($hex, 0, 2));
+                    $g = hexdec(substr($hex, 2, 2));
+                    $b = hexdec(substr($hex, 4, 2));
+                } else {
+                    $rgbStr = preg_replace('/[^0-9,]/', '', $colorInput);
+                    $rgb = array_pad(explode(',', $rgbStr), 3, 0);
+                    $r = (int) $rgb[0];
+                    $g = (int) $rgb[1];
+                    $b = (int) $rgb[2];
+                }
+
+                $preparedFields[] = [
+                    'raw_text'  => str_replace(["\u{200E}", "\u{200F}"], '', (string) $field['text']),
+                    'text'      => QuiztoolsHelper::prepareRtlText((string) $field['text'], $languageTagForCertificate),
+                    'font_path' => $fontPath,
+                    'font_size' => (float) $field['font_size'],
+                    'x'         => (float) $field['x'],
+                    'y'         => round((float) $field['y'] + ((float) $field['font_size'] * 0.328147)),
+                    'rgb'       => [$r, $g, $b],
+                ];
             }
         }
 
+        $imageBlob = null;
+
+        // =========================================================================
+        // PRIMARY ENGINE: Imagick + ImagickDraw
+        // =========================================================================
+        if (extension_loaded('imagick') && class_exists('\Imagick')) {
+            try {
+                $imagick = new \Imagick($bg);
+                $imagick->setImageFormat('png');
+
+                foreach ($preparedFields as $field) {
+                    if ($field['raw_text'] === '') {
+                        continue;
+                    }
+
+                    [$r, $g, $b] = $field['rgb'];
+                    $draw = new \ImagickDraw();
+                    $draw->setFont($field['font_path']);
+                    $draw->setFontSize($field['font_size']);
+                    $draw->setFillColor(new \ImagickPixel(sprintf('rgb(%d,%d,%d)', $r, $g, $b)));
+                    $draw->setTextEncoding('UTF-8');
+
+                    // In the JS-based certificate generator, the font size was being converted from `pt` to `px`,
+                    // whereas the PHP `imagefttext()` function expects the size in `pt`.
+                    // While `ImagickDraw::setFontSize()` defaults to a resolution of 72 DPI (meaning `1 pt = 1 px`),
+                    // the FreeType rasterization process within ImageMagick also uses 72 DPI;
+                    // in contrast, GD’s `imagefttext()` defaults to **96 DPI**.
+                    // Consequently, without the `96 / 72` multiplier, text rendered via Imagick appears 25% smaller
+                    // than it does in GD. Applying the `96 / 72` multiplier in the code ensures that the visual size
+                    // of the characters remains consistent—matching one-to-one—between Imagick and GD.
+
+                    // ImagickDraw expects font size in points (1 px = 0.75 pt at 96 DPI),
+                    // matching PHP GD's imagefttext() behavior
+                    $draw->setFontSize($field['font_size'] * (96 / 72));
+
+                    $imagick->annotateImage($draw, round($field['x']), $field['y'], 0, $field['raw_text']);
+                    $draw->clear();
+                    $draw->destroy();
+                }
+
+                $imageBlob = $imagick->getImagesBlob();
+                $imagick->clear();
+                $imagick->destroy();  // deprecated
+
+            } catch (\Throwable $e) {
+                $imageBlob = null; // Fall back to GD below
+            }
+        }
+
+        // =========================================================================
+        // FALLBACK ENGINE: PHP GD (imagefttext)
+        // =========================================================================
+        if ($imageBlob === null) {
+            $im = ($imageFullSize[2] == 2) ? imagecreatefromjpeg($bg) : imagecreatefrompng($bg);
+
+            if (!$im) {
+                return false;
+            }
+
+            foreach ($preparedFields as $field) {
+                if ($field['text'] === '') {
+                    continue;
+                }
+
+                [$r, $g, $b] = $field['rgb'];
+                $color = imagecolorallocate($im, $r, $g, $b);
+
+                imagefttext(
+                    $im,
+                    $field['font_size'],
+                    0,
+                    round($field['x']),
+                    $field['y'],
+                    $color,
+                    $field['font_path'],
+                    $field['text']
+                );
+            }
+
+            ob_start();
+            imagepng($im);
+            $imageBlob = ob_get_clean();
+            imagedestroy($im);
+        }
+
+        // =========================================================================
+        // OUTPUT IMAGE TO BROWSER
+        // =========================================================================
         $fileName = [];
         $fileName[] = Text::_('COM_QUIZTOOLS_CERTIFICATE_GENERATE_FILE_NAME');
         $fileName[] = !empty($data['shortcodes']['course']) ? '_' . $data['shortcodes']['course'] : '';
@@ -310,8 +452,7 @@ class CertificateController extends FormController
         header('Pragma: no-cache');
 
         @ob_end_clean();
-        imagepng($im);
-        imagedestroy($im);
+        echo $imageBlob;
 
         exit;
     }

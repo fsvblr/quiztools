@@ -83,7 +83,11 @@ trait QuestionOptionsGetPdfData
         $data->pdfOptions = '';
 
         $htmlResume = '<br><br><table>';
-        $htmlResume .= '<tr><td>' . Text::_('PLG_QUIZTOOLS_BLANK_PDF_RESULT_USER_ANSWERS') . ': ' . implode(', ', $answersUser) . '</td></tr>';
+        if ($data->isRTL) {
+            $htmlResume .= '<tr><td>'. ' :' . Text::_('PLG_QUIZTOOLS_BLANK_PDF_RESULT_USER_ANSWERS') . implode(', ', $answersUser) . '</td></tr>';
+        } else {
+            $htmlResume .= '<tr><td>' . Text::_('PLG_QUIZTOOLS_BLANK_PDF_RESULT_USER_ANSWERS') . ': ' . implode(', ', $answersUser) . '</td></tr>';
+        }
         $htmlResume .= '</table>';
         $data->pdfResume = $htmlResume;
 
@@ -106,7 +110,11 @@ trait QuestionOptionsGetPdfData
             $feedback = $modelAjax->getQuestionFeedback($data->quizDataForFeedback, $savedQuestion);
 
             if (!empty($feedback['text'])) {
-                $htmlFeedback .= '<p>' . Text::_('PLG_QUIZTOOLS_BLANK_PDF_RESULT_FEEDBACK') . ': ' . $feedback['text'] . '</p>';
+                if ($data->isRTL) {
+                    $htmlFeedback .= '<p>'. ' :' . Text::_('PLG_QUIZTOOLS_BLANK_PDF_RESULT_FEEDBACK') . $feedback['text'] . '</p>';
+                } else {
+                    $htmlFeedback .= '<p>' . Text::_('PLG_QUIZTOOLS_BLANK_PDF_RESULT_FEEDBACK') . ': ' . $feedback['text'] . '</p>';
+                }
             }
 
             $data->pdfFeedback = $htmlFeedback;

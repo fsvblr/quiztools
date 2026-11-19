@@ -82,12 +82,23 @@ trait QuestionOptionsGetPdfData
             ];
         }
 
-        $htmlResume = '<table><tr>';
-        $htmlResume .= '<td>' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESUME_LABEL') . ': </td>';
+        $htmlResume = '<br><table><tr>';
         if ($data->is_correct) {
-            $htmlResume .= '<td>' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESUME_CORRECT'). '</td>';
+            if ($data->isRTL) {
+                $htmlResume .= '<td style="width: 30%;"> :' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESUME_LABEL') . '</td>';
+                $htmlResume .= '<td>' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESUME_CORRECT'). '</td>';
+            } else {
+                $htmlResume .= '<td style="width: 30%;">' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESUME_LABEL') . ': </td>';
+                $htmlResume .= '<td>' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESUME_CORRECT'). '</td>';
+            }
         } else {
-            $htmlResume .= '<td>' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESUME_INCORRECT'). '</td>';
+            if ($data->isRTL) {
+                $htmlResume .= '<td style="width: 30%;"> :' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESUME_LABEL') . '</td>';
+                $htmlResume .= '<td>' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESUME_INCORRECT'). '</td>';
+            } else {
+                $htmlResume .= '<td style="width: 30%;">' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESUME_LABEL') . ': </td>';
+                $htmlResume .= '<td>' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESUME_INCORRECT'). '</td>';
+            }
         }
         $htmlResume .= '</tr></table>';
         $data->pdfResume = $htmlResume;
@@ -111,7 +122,11 @@ trait QuestionOptionsGetPdfData
             $feedback = $modelAjax->getQuestionFeedback($data->quizDataForFeedback, $savedQuestion);
 
             if (!empty($feedback['text'])) {
-                $htmlFeedback .= '<p>' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESULT_FEEDBACK') . ': ' . $feedback['text'] . '</p>';
+                if ($data->isRTL) {
+                    $htmlFeedback .= '<p>'. ' :' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESULT_FEEDBACK') . $feedback['text'] . '</p>';
+                } else {
+                    $htmlFeedback .= '<p>' . Text::_('PLG_QUIZTOOLS_HOTSPOTSMULTIPLE_PDF_RESULT_FEEDBACK') . ': ' . $feedback['text'] . '</p>';
+                }
             }
 
             $data->pdfFeedback = $htmlFeedback;

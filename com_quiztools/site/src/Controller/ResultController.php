@@ -18,6 +18,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Router\Route;
+use Qt\Component\Quiztools\Site\Helper\RouteHelper;
 
 /**
  * Results list controller class.
@@ -53,7 +54,11 @@ class ResultController extends BaseController
         }
 
         $adminResultController = $this->factory->createController('Result', 'Administrator', [], $this->app, $this->input);
-        $adminResultController->getPdf($resultId);
+        $getPdf = $adminResultController->getPdf($resultId);
+
+        if (!$getPdf) {
+            $this->setRedirect(Route::_(RouteHelper::getResultsRoute(), false));
+        }
 
         return true;
     }

@@ -99,7 +99,7 @@
                     class="input-medium font-family"
                     directory="/media/com_quiztools/fonts"
                     fileFilter="\.ttf$"
-                    default="arial"
+                    default="DejaVuSans"
                     stripext="true"
                     hide_none="true"
                     hide_default="true"

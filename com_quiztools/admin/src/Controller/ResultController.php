@@ -114,7 +114,7 @@ class ResultController extends BaseController
             'course' => htmlspecialchars($result->quiz_title, ENT_QUOTES, 'UTF-8'),
             'points' => $result->sum_points_received,
             'percent' => $userPercent,
-            'date' => $result->start_datetime_for_display,
+            'date' => $result->start_datetime,
             'output' => 'attachment',
         ];
 
@@ -168,6 +168,10 @@ class ResultController extends BaseController
             echo $pdf;
             jexit();
         } else {
+            if ($this->app->isClient('site')) {
+                return null;
+            }
+
             $referer = $_SERVER['HTTP_REFERER'] ?: '/';
             $this->setRedirect($referer);
         }
@@ -251,59 +255,128 @@ class ResultController extends BaseController
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
         $lang = $this->app->getLanguage()->getTag();
-        $altLang = [
-            'ar-AA', //Arabic (Unitag)
-            'ar-SA', //Arabic (Saudi Arabia)
-            'fa-IR', //Persian (Farsi)
-            'he-IL', //Hebrew (Israel)
-            'ja-JP', //Japanese (Japan)
-            'zh-CN', //Chinese (China)
-            'zh-HK', //Chinese (Hong Kong)
-            'zh-TW'  //Chinese (Taiwan)
+
+        $rtlLang = [
+            'ar-AA', // Arabic (Unitag)
+            'ar-SA', // Arabic (Saudi Arabia)
+            'fa-IR', // Persian (Farsi)
+            'ur-PK', // Urdu (Pakistan)
+            'ur-IN', // Urdu (India)
+            'ps-AF', // Pashto (Afghanistan)
+            'syr-SY', // Syrian (Syria)
+            'dv-MV', // Maldivian (Maldives)
+            'yi-001', 'yi', // Yiddish (Worldwide)
+            'he-IL', // Hebrew (Israel)
         ];
-        //if(\in_array($lang, $altLang)){
-        //    $pdf->SetFont('javiergb');  // ToDo ?
-        //} else {
-            $pdf->SetFont('helvetica', '', 12);
-        //}
+
+        $cyrillicLang = [
+            // Major Slavic languages:
+            'ru-RU', // Russian
+            'uk-UA', // Ukrainian
+            'be-BY', // Belarusian
+            'bg-BG', // Bulgarian
+            'sr-RS', // Serbian (Cyrillic script)
+            'mk-MK', // Macedonian
+            'mn-MN', // Mongolian
+            // Other languages that use the Cyrillic script:
+            'kk-KZ', // Kazakh
+            'ky-KG', // Kyrgyz
+            'tg-TJ', // Tajik
+            'uz-Cyrl', // Uzbek (in Cyrillic script)
+            'az-Cyrl', // Azerbaijani (in Cyrillic script)
+            'tt-RU', // Tatar
+            'ba-RU', // Bashkir
+            'cv-RU', // Chuvash
+            'ce-RU', // Chechen
+        ];
+
+        $cjk = [
+            'ja-JP' => 'cid0jp', // Japanese (Japan)
+            'zh-CN' => 'cid0cs', // Chinese (China)
+            'zh-HK' => 'cid0ct', // Chinese (Hong Kong)
+            'zh-TW' => 'cid0ct', // Chinese (Taiwan)
+            'ko-KR' => 'cid0kr', // Korean
+        ];
+
+        $fontDownloadUrl = 'https://github.com/fsvblr/TCPDF-v6-fonts/archive/refs/heads/master.zip';
+        $fontPath = dirname(__DIR__, 2) . '/vendor/tecnickcom/tcpdf/fonts/';
+        $fontPathRel = 'administrator/components/com_quiztools/vendor/tecnickcom/tcpdf/fonts';
+        $targetFont = 'helvetica';
+
+        $isRTL = false;
+        $dirAttr = '';
+
+        if(\in_array($lang, $rtlLang) || \in_array($lang, $cyrillicLang) || array_key_exists($lang, $cjk)){
+            if (\in_array($lang, $rtlLang)) {
+                $isRTL = true;
+                $dirAttr = 'dir="rtl"';
+
+                $pdf->setRTL(true);
+                $targetFont = 'dejavusans';
+            } else if (\in_array($lang, $cyrillicLang)) {
+                $targetFont = 'dejavusans';
+            } else if (array_key_exists($lang, $cjk)) {
+                $targetFont = $cjk[$lang];
+            }
+
+            if (file_exists($fontPath . $targetFont . '.php')) {
+                $pdf->SetFont($targetFont, '', 12);
+            } else {
+                if ($this->app->isClient('administrator')) {
+                    $msg = Text::sprintf(
+                        'COM_QUIZTOOLS_RESULT_PDF_ERROR_FONT_MISSING_ADMIN',
+                        $targetFont,
+                        $fontDownloadUrl,
+                        $fontPathRel
+                    );
+                    $this->app->enqueueMessage($msg, 'error');
+                } else if ($this->app->isClient('site')) {
+                    $this->app->enqueueMessage(Text::_('COM_QUIZTOOLS_RESULT_PDF_ERROR_FONT_MISSING_SITE'), 'warning');
+                }
+                return null;
+            }
+        } else {
+            $pdf->SetFont($targetFont, '', 12);
+        }
 
         // If a different font is needed, take it in
-        // https://github.com/tecnickcom/TCPDF/tree/main/fonts
+        // https://github.com/tecnickcom/TCPDF/tree/v6/fonts
+        // (OR download fonts: https://github.com/fsvblr/TCPDF-v6-fonts/archive/refs/heads/master.zip )
         // and put it in
-        // /administrator/components/com_quiztools/vendor/tecnickcom/tcpdf/fonts/ .
+        // administrator/components/com_quiztools/vendor/tecnickcom/tcpdf/fonts/ .
 
         $pdf->AddPage();
 
         $html = '';
-        $html .= '<table style="width: 50%;">';
+        $html .= '<table ' . $dirAttr . '>';
         $html .= '<tr>';
-        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_QUIZ_TITLE') . ': </b></td>';
+        $html .= '<td style="width: 30%;"><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_QUIZ_TITLE') . ' </b></td>';
         $html .= '<td>' . ($result->quiz_title ?: '-') . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_USER_NAME') . ': </b></td>';
+        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_USER_NAME') . ' </b></td>';
         $html .= '<td>' . ($result->user_name ?: '-') . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_USER_EMAIL') . ': </b></td>';
+        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_USER_EMAIL') . ' </b></td>';
         $html .= '<td>' . ($result->user_email ?: '-') . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_DATETIME') . ': </b></td>';
+        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_DATETIME') . ' </b></td>';
         $html .= '<td>' . ($result->start_datetime_for_display ?: '-') . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_TIME_SPENT') . ': </b></td>';
+        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_TIME_SPENT') . ' </b></td>';
         $html .= '<td>' . ($result->sum_time_spent ?: '-') . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_TOTAL_SCORE') . ': </b></td>';
+        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_TOTAL_SCORE') . ' </b></td>';
         $html .= '<td>' . (!empty($result->total_score) ? number_format((float) $result->total_score, 2, '.', '') : '-') . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
         $passingScore = round((float) $result->total_score * ((float) $result->passing_score / 100 ), 2);
         $passingScore = number_format($passingScore, 2, '.', '') . ' (' . $result->passing_score . '%)';
-        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_PASSING_SCORE') . ': </b></td>';
+        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_PASSING_SCORE') . ' </b></td>';
         $html .= '<td>' . $passingScore . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
@@ -314,24 +387,24 @@ class ResultController extends BaseController
         $txt = !empty($result->sum_points_received)
             ? number_format((float) $result->sum_points_received, 2, '.', '') . ' (' . $userPercent . '%)'
             : '-';
-        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_USER_SCORE') . ': </b></td>';
+        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_USER_SCORE') . ' </b></td>';
         $html .= '<td>' . $txt . '</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_RESULT') . ': </b></td>';
+        $html .= '<td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_RESULT') . ' </b></td>';
         $html .= '<td>' . ($result->passed ? Text::_('COM_QUIZTOOLS_RESULT_PDF_RESULT_PASSED') : Text::_('COM_QUIZTOOLS_RESULT_PDF_RESULT_FAILED')) . '</td>';
         $html .= '</tr>';
         $html .= '</table>';
 
         if ($result->results_by_categories) {
-            $html .= '<table>';
+            $html .= '<table ' . $dirAttr . '>';
             $html .= '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>';
-            $html .= '<tr><td><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_BY_CATEGORIES_TITLE') . ': </b></td><td>&nbsp;</td></tr>';
+            $html .= '<tr><td style="width: 50%;"><b>' . Text::_('COM_QUIZTOOLS_RESULT_PDF_BY_CATEGORIES_TITLE') . ' </b></td><td>&nbsp;</td></tr>';
             if (!empty($result->byCategories))  {
                 foreach ($result->byCategories as $categoryTitle => $category) {
                     $html .= '<tr>';
-                    $html .= '<td><b>' . $categoryTitle . ': </b></td>';
+                    $html .= '<td><b>' . $categoryTitle . ' </b></td>';
                     $html .= '<td>' . $category['userScore'] .
                         ' ' . Text::_('COM_QUIZTOOLS_RESULT_PDF_BY_CATEGORIES_OUT_OF') .
                         ' ' . $category['totalScore'] .
@@ -354,6 +427,8 @@ class ResultController extends BaseController
                         $question->quizDataForFeedback = $quizDataForFeedback;
                     }
 
+                    $question->isRTL = $isRTL;
+
                     // Get question's options HTML for PDF:
                     $question = $dispatcher->dispatch(
                         'onQuestionOptionsGetPdfData',
@@ -365,8 +440,14 @@ class ResultController extends BaseController
                     )->getArgument('result', $question);
                 }
 
-                $html .= '<p><b>' . $i . '. [' . $question->points_received . '/' . $question->total_points . '] ' .
-                    Text::_('PLG_QUIZTOOLS_QUESTION_TYPE_' . strtoupper($question->type) . '_NAME') . '</b></p>';
+                if ($isRTL) {
+                    $html .= '<p><b>' . Text::_('PLG_QUIZTOOLS_QUESTION_TYPE_' . strtoupper($question->type) . '_NAME')
+                         . ' [' . $question->points_received . '/' . $question->total_points . '] ' . $i . '</b></p>';
+                } else {
+                    $html .= '<p><b>' . $i . '. [' . $question->points_received . '/' . $question->total_points . '] ' .
+                        Text::_('PLG_QUIZTOOLS_QUESTION_TYPE_' . strtoupper($question->type) . '_NAME') . '</b></p>';
+                }
+
                 $html .= '<div>' . $question->text . '</div>';
 
                 if (!empty($question->results)) {
@@ -391,6 +472,9 @@ class ResultController extends BaseController
 
                         // And only now we fix the exact and final coordinates.
                         $currentX = $pdf->GetX();
+                        if ($isRTL) {
+                            $currentX = $pdf->GetAbsX();
+                        }
                         $currentY = $pdf->GetY();
 
                         $hasEmbeddedImage = preg_match('/<image[^>]*+>/i', $svgCodeForPdf);
@@ -410,6 +494,17 @@ class ResultController extends BaseController
 
                             // Reverting the auto-break settings back.
                             $pdf->SetAutoPageBreak($autoPageBreak, $bMargin);
+                        }
+
+                        if ($isRTL) {
+                            $svgCodeForPdf = preg_replace_callback(
+                                '/<text\b[^>]*>/i',
+                                function ($matches) {
+                                    // We are looking for `dx="-number"` (accounting for potential spaces, single/double quotes, and decimal fractions):
+                                    return preg_replace('/(\bdx\s*=\s*["\'])\s*-\s*([0-9.]+)/i', '$1$2', $matches[0]);
+                                },
+                                $svgCodeForPdf
+                            );
                         }
 
                         // Draw the SVG strictly on top at the same coordinates.

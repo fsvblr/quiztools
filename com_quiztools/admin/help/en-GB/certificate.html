@@ -11,12 +11,26 @@
             dd {
                 margin-bottom: 0.5rem;
             }
+            .note-info {
+                background: #DBE4F0;
+                padding: 0.5rem 1rem;
+                margin: 0.5rem 0;
+            }
         </style>
     </head>
     <body>
         <h1>QuizTools: Creating and editing a certificate</h1>
         <p>This page is used to create a new certificate for a quiz or edit an existing one.<br>
             A certificate can be assigned to a specific quiz in its settings so that it is issued to participants after successful completion.</p>
+
+        <div class="note-info">
+            For the best certificate rendering quality (especially when using RTL languages such as Arabic, Persian,
+            or Hebrew), it is recommended to have the <strong>Imagick</strong> PHP extension installed.
+            <br />
+            You can check if it is enabled in your Joomla admin panel under System → System Information
+            (administrator/index.php?option=com_admin&view=sysinfo), on the “PHP Information” tab. If the extension
+            is missing, please contact your hosting provider or system administrator.
+        </div>
 
         <h3>General tab</h3>
         <p>Basic certificate settings are configured here.</p>

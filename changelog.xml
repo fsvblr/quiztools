@@ -2,6 +2,26 @@
     <changelog>
         <element>pkg_quiztools</element>
         <type>package</type>
+        <version>1.5.2</version>
+        <fix>
+            <item>Generating a PDF report for RTL languages.</item>
+            <item>Display of time (as part of a date) on the website, in reports, and in certificates (broken since version 1.5.1).</item>
+        </fix>
+        <addition>
+            <item>A message regarding the need to add an appropriate font when generating a PDF report for certain languages.</item>
+            <item>Quiz title on the quiz results page on the front end.</item>
+            <item>The help (accessed via the "Help" button) on the certificate editing page has been updated to include information on the recommended server configuration for high-quality certificate generation.</item>
+            <item>Explanatory messages for certain situations where access is denied.</item>
+        </addition>
+        <change>
+            <item>Certificate generation has been improved, and a third-party library has been integrated for the group of Arabic languages.</item>
+            <item>The fonts used for certificate generation have been replaced with freely distributable ones. It is recommended (though not mandatory, as a fallback is provided) to re-save previously created certificates after selecting the new fonts for each field.</item>
+            <item>Third-party dependencies have been updated to their latest versions.</item>
+        </change>
+    </changelog>
+    <changelog>
+        <element>pkg_quiztools</element>
+        <type>package</type>
         <version>1.5.1</version>
         <fix>
             <item>Correct display of dates for non-Gregorian calendars, provided the corresponding language pack is installed.</item>

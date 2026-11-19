@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.5.2] - 2026-11-19
+
+### Added
+- A message regarding the need to add an appropriate font when generating a PDF report for certain languages.
+- Quiz title on the quiz results page on the front end.
+- The help (accessed via the "Help" button) on the certificate editing page has been updated to include information on the recommended server configuration for high-quality certificate generation.
+- Explanatory messages for certain situations where access is denied.
+
+### Changed
+- Certificate generation has been improved, and a third-party library has been integrated for the group of Arabic languages.
+- The fonts used for certificate generation have been replaced with freely distributable ones. It is recommended (though not mandatory, as a fallback is provided) to re-save previously created certificates after selecting the new fonts for each field.
+- Third-party dependencies have been updated to their latest versions.
+
+### Fixed
+- Generating a PDF report for RTL languages.
+- Display of time (as part of a date) on the website, in reports, and in certificates (broken since version 1.5.1).
+
 ## [1.5.1] - 2026-10-30
 
 ### Added
